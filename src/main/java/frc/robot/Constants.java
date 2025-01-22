@@ -22,6 +22,25 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static class OperatorConstants {
+
+    public static final int kButton1 = 1;
+    public static final int kButton2 = 2;
+    public static final int kButton3 = 3;
+    public static final int kButton4 = 4;
+    public static final int kButton5 = 5;
+    public static final int kButton6 = 6;
+    public static final int kButton7 = 7;
+    public static final int kButton8 = 8;
+    public static final int kButton9 = 9;
+    public static final int kButton10 = 10;
+    public static final int kButton11 = 11;
+    public static final int kButton12 = 12;
+
+    // Drive Stick Buttons
+    public static final int BRAKE_BUTTON = kButton1;
+  }
+
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
