@@ -1,22 +1,38 @@
-# MAXSwerve Java Template v2025.1
-
-See [the online changelog](https://github.com/REVrobotics/MAXSwerve-Java-Template/blob/main/CHANGELOG.md) for information about updates to the template that may have been released since you created your project.
-
-## Description
-
-A template project for an FRC swerve drivetrain that uses REV MAXSwerve Modules.
-
-Note that this is meant to be used with a drivetrain composed of four MAXSwerve Modules, each configured with two SPARKS MAX, a NEO as the driving motor, a NEO 550 as the turning motor, and a REV Through Bore Encoder as the absolute turning encoder.
-
-To get started, make sure you have calibrated the zero offsets for the absolute encoders in the Hardware Client using the `Absolute Encoder` tab under the associated turning SPARK MAX devices.
+# Code is based on MAXSwerve Java Template v2025.1 (https://github.com/REVrobotics/MAXSwerve-Java-Template)
 
 ## Prerequisites
 
 * SPARK MAX Firmware v25.0.0
 * REVLib v2025.0.0
 
-## Configuration
 
-It is possible that this project will not work for your robot right out of the box. Various things like the CAN IDs, PIDF gains, chassis configuration, etc. must be determined for your own robot!
+# Useful References
+- [FRC Team 7230 GitHub Repository](https://github.com/FRCTeam7230)
+- [FRC - WPI Library](https://docs.wpilib.org/en/stable/index.html)
+- [PathPlanner](https://pathplanner.dev/home.html)
+- [AdvantageScope](https://github.com/Mechanical-Advantage/AdvantageScope)
 
-These values can be adjusted in the `Configs.java` and `Constants.java` files.
+# Prerequisites
+
+## Create GitHub account and ask Software Lead to provide access to repository.
+http://github.com/
+
+## Install git
+https://git-scm.com/downloads
+
+## Install FRC Software
+https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/index.html
+
+## Install PathPlanner
+https://github.com/mjansen4857/pathplanner/releases
+
+
+# Robot Simulation
+
+## About Simulation
+- https://docs.wpilib.org/en/stable/docs/software/wpilib-tools/robot-simulation/introduction.html
+
+## Running Simulation
+- Clone repository (example, to C:\Robotics) - DO NOT clone into OneDrive or other file sharing folders.
+- WPILib: Simulate Robot Code
+
