@@ -11,6 +11,8 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.studica.frc.AHRS;
 
+import edu.wpi.first.math.controller.HolonomicDriveController;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
@@ -34,6 +36,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.utils.PPHolonomicDriveControllerCustom;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -61,10 +64,13 @@ public class DriveSubsystem extends SubsystemBase {
   // The gyro sensor
   private final AHRS m_gyro = new AHRS(AHRS.NavXComType.kMXP_SPI, AHRS.NavXUpdateRate.k50Hz);
   DoubleArrayPublisher gyro_publisher = NetworkTableInstance.getDefault().getDoubleArrayTopic("Yaw, Angle, Roll, Pitch").publish();
+  DoubleArrayPublisher error_publisher = NetworkTableInstance.getDefault().getDoubleArrayTopic("ERRORS: X, Y, Rotation").publish();
   BooleanPublisher gyro_calibrated = NetworkTableInstance.getDefault().getBooleanTopic("IsCalibearted").publish();
 
   StructPublisher<Pose2d> odomPublisher = NetworkTableInstance.getDefault().getStructTopic("Pose", Pose2d.struct).publish();  
   
+
+
   public double getFieldAngle(){
     return -m_gyro.getAngle();
   }
@@ -92,10 +98,23 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearRight.getPosition()
       });
 
+  PIDController xController;
+  PIDController yController;
+  PIDController rotController;
+
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     // Usage reporting for MAXSwerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_MaxSwerve);
+
+    PPHolonomicDriveControllerCustom autoDriveController = new PPHolonomicDriveControllerCustom(
+      new PIDConstants(5.0, 0.0, 0.0),
+      new PIDConstants(5.0, 0.0, 0.0)
+    );
+
+    xController = autoDriveController.getXController();
+    yController = autoDriveController.getYController();
+    rotController = autoDriveController.getRotationController();
 
     try {
       RobotConfig config = RobotConfig.fromGUISettings();
@@ -106,10 +125,7 @@ public class DriveSubsystem extends SubsystemBase {
         this::resetOdometry, 
         this::getSpeeds, 
         this::driveRobotRelative, 
-        new PPHolonomicDriveController(
-          new PIDConstants(5.0, 0.0, 0.0),
-          new PIDConstants(5.0, 0.0, 0.0)
-        ),
+        autoDriveController,
         config,
         () -> {
             // Boolean supplier that controls when the path will be mirrored for the red alliance
@@ -152,6 +168,10 @@ public class DriveSubsystem extends SubsystemBase {
     gyro_publisher.set(gyroData);
     gyro_calibrated.set(m_gyro.isCalibrating());
     odomPublisher.set(pose);
+
+    double[] errors = {xController.getError(), yController.getError(), rotController.getError()};
+
+    error_publisher.set(errors);
   }
 
   /**
