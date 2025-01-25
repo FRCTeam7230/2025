@@ -118,6 +118,14 @@ public class RobotContainer {
     new JoystickButton(m_driverController, 4) 
         .whileTrue(new RunCommand(
           () -> m_robotDrive.drive(0,-Constants.slowSpeedMode,0,false), m_robotDrive));
+    new JoystickButton(m_driverController, 12)
+        .whileTrue(new RunCommand(
+          () -> m_robotDrive.spinAngle(30)));
+
+    new JoystickButton(m_driverController, 11)
+        .whileTrue(new RunCommand(
+          () -> m_robotDrive.spinAngle(0)));    
+
     new JoystickButton(m_driverController, 5) 
         .whileTrue(new RunCommand(
           () -> m_robotDrive.drive(Constants.slowSpeedMode,0,0,false), m_robotDrive));

@@ -23,7 +23,9 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
 
-  public static final double slowSpeedMode = 0.25;
+  public static final double slowSpeedMode = 0.2;
+  public static final double movementDivider = 2;
+  public static final double rotateDivider = 5;
   
   public static class OperatorConstants {
 
