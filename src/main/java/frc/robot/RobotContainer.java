@@ -63,6 +63,7 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
 
   /**
+   * 
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
@@ -91,8 +92,7 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband),
-                true,
-                m_driverController.getThrottle()),
+                true),
             m_robotDrive));
 
   }
@@ -112,6 +112,18 @@ public class RobotContainer {
         .whileTrue(new RunCommand(
             () -> m_robotDrive.setX(),
             m_robotDrive));
+    new JoystickButton(m_driverController, 3) 
+        .whileTrue(new RunCommand(
+          () -> m_robotDrive.drive(0,Constants.slowSpeedMode,0,false), m_robotDrive));
+    new JoystickButton(m_driverController, 4) 
+        .whileTrue(new RunCommand(
+          () -> m_robotDrive.drive(0,-Constants.slowSpeedMode,0,false), m_robotDrive));
+    new JoystickButton(m_driverController, 5) 
+        .whileTrue(new RunCommand(
+          () -> m_robotDrive.drive(Constants.slowSpeedMode,0,0,false), m_robotDrive));
+          new JoystickButton(m_driverController, 6) 
+          .whileTrue(new RunCommand(
+          () -> m_robotDrive.drive(-Constants.slowSpeedMode,0,0,false), m_robotDrive));
 
     // Add a button to run the example auto to SmartDashboard, this will also be in the auto chooser built above
     //Add more paths here.
