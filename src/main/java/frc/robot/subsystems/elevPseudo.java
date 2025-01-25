@@ -1,5 +1,11 @@
-public class motor extends SubsystemBase {
-    Spark elev = new Spark(1,MotorType.kBrushless);
+package frc.robot.subsystems;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.drive.RobotDriveBase.MotorType;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+public class elevPseudo extends SubsystemBase {
+    Spark elev = new Spark(1);
+    Encoder encode = new Encoder(1,2);
     public void raiseelevator(){
         elev.set(2.000); //Full forward
     }
@@ -9,9 +15,6 @@ public class motor extends SubsystemBase {
     public void stopmotor(){
         elev.stopMotor();
     }
-}
-public class tracker extends SubsystemBase{
-    Encoder encode = new Encoder(1,2);
     public void resetcount(){
         encode.reset();
     }
@@ -21,48 +24,6 @@ public class tracker extends SubsystemBase{
     public boolean finddirection(){
         return encode.getDirection();
     }
+    
+}
 
-}
-public class motormoving extends Command {
-    motor motor1 = new motor();
-    tracker tracker1 = new tracker();
-    int phase = 0;
-   /* motor1.raiseelevator();
-    motor1.lowerelevator();
-    motor1.stopmotor();
-    tracker1.resetcount();
-    tracker1.finddistance();
-    tracker1.getDirection();*/
-    @Override
-    public void execute (){
-    //if (raisebutton.pressed()){
-        if (phase==0){
-            motor1.raiseelevator();
-            if (tracker1.finddistance()>100){
-                phase+=1;
-            }
-        }
-        if (phase==1){
-            motor1.lowerelevator();
-            if (tracker1.finddistance()<80){
-                phase+=1;
-            }
-        }
-        if (phase==2){
-            //Drive backwards.
-        }
-    //}
-    }
-    public boolean stops (){
-        if (phase==2){
-            return true;//Stop this command.
-        }
-    }
-}
-public class elevator {
-    public void Main(){
-        Joystick joystick = new Joystick(0);
-        JoystickButton button1 = new JoystickButton(joystick, 1);
-        button1.pressed(new motormoving());
-    }
-}
