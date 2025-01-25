@@ -56,13 +56,14 @@ import edu.wpi.first.math.util.Units;
  */
 public class RobotContainer {
   // The robot's subsystems
-  //private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+
+  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   //private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
 
-  private final ElevatorSubsystemYAGSL m_elevator = new ElevatorSubsystemYAGSL();
+  //private final ElevatorSubsystemYAGSL m_elevator = new ElevatorSubsystemYAGSL();
 
-  private final SwerveSubsystemSim m_robotDrive = new SwerveSubsystemSim();
-  //private final ElevatorSubsystemSim m_elevator = new ElevatorSubsystemSim();
+  //private final SwerveSubsystemSim m_robotDrive = new SwerveSubsystemSim();
+  private final ElevatorSubsystemSim m_elevator = new ElevatorSubsystemSim();
 
   // The driver's controller
   //XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -77,6 +78,7 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+
 /*
     if (RobotBase.isReal()) {
       m_robotDrive = new DriveSubsystem();
@@ -85,10 +87,10 @@ public class RobotContainer {
       m_robotDrive = new SwerveSubsystemSim();
     }
 */
-
     m_elevator.setGoal(0);
 
     // Register named commands
+
     NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
     NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
     NamedCommands.registerCommand("print hello", Commands.print("hello"));
@@ -103,6 +105,8 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Mode", autoChooser);
 
     // Configure default commands
+    
+    
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
@@ -132,6 +136,22 @@ public class RobotContainer {
             () -> m_robotDrive.setX(),
             m_robotDrive));
 
+    new JoystickButton(m_driverController, 3) 
+        .whileTrue(new RunCommand(
+          () -> m_robotDrive.drive(0, Constants.slowSpeedMode, 0, false, m_driverController.getThrottle()), m_robotDrive));
+
+    new JoystickButton(m_driverController, 4) 
+        .whileTrue(new RunCommand(
+          () -> m_robotDrive.drive(0, -Constants.slowSpeedMode, 0, false, m_driverController.getThrottle()), m_robotDrive));
+          
+    new JoystickButton(m_driverController, 5) 
+        .whileTrue(new RunCommand(
+          () -> m_robotDrive.drive(Constants.slowSpeedMode, 0, 0, false, m_driverController.getThrottle()), m_robotDrive));
+          
+    new JoystickButton(m_driverController, 6) 
+          .whileTrue(new RunCommand(
+          () -> m_robotDrive.drive(-Constants.slowSpeedMode, 0, 0, false, m_driverController.getThrottle()), m_robotDrive));
+
     new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_UP_BUTTON_LEFT)
         .whileTrue(new RunCommand(
           () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMaxElevatorHeightMeters),
@@ -157,8 +177,10 @@ public class RobotContainer {
 
 
     // Add a button to run the example auto to SmartDashboard, this will also be in the auto chooser built above
+    //Add more paths here.
     SmartDashboard.putData("Example Auto", new PathPlannerAuto("Example Auto"));
-
+    SmartDashboard.putData("Path to Knock off Algaes", new PathPlannerAuto("Path to Knock off Algaes"));
+    SmartDashboard.putData("Coral 1 Cycle", new PathPlannerAuto("Coral 1 Cycle"));
     // Add a button to run pathfinding commands to SmartDashboard
     SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
       new Pose2d(14.0, 6.5, Rotation2d.fromDegrees(0)), 
