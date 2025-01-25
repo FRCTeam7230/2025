@@ -111,13 +111,18 @@ public class RobotContainer {
         .whileTrue(new RunCommand(
             () -> m_robotDrive.setX(),
             m_robotDrive));
-    new JoystickButton(m_driverController, 2) 
-        .whileTrue(new RunCommand(
-          () -> m_robotDrive.drive(0,-Constants.slowSpeedMode,0,false), m_robotDrive));
-    new JoystickButton(m_driverController, 4) 
+    new JoystickButton(m_driverController, 3) 
         .whileTrue(new RunCommand(
           () -> m_robotDrive.drive(0,Constants.slowSpeedMode,0,false), m_robotDrive));
-    
+    new JoystickButton(m_driverController, 4) 
+        .whileTrue(new RunCommand(
+          () -> m_robotDrive.drive(0,-Constants.slowSpeedMode,0,false), m_robotDrive));
+    new JoystickButton(m_driverController, 5) 
+        .whileTrue(new RunCommand(
+          () -> m_robotDrive.drive(Constants.slowSpeedMode,0,0,false), m_robotDrive));
+          new JoystickButton(m_driverController, 6) 
+          .whileTrue(new RunCommand(
+          () -> m_robotDrive.drive(-Constants.slowSpeedMode,0,0,false), m_robotDrive));
 
     // Add a button to run the example auto to SmartDashboard, this will also be in the auto chooser built above
     SmartDashboard.putData("Example Auto", new PathPlannerAuto("Example Auto"));

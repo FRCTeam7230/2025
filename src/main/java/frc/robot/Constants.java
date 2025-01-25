@@ -23,7 +23,7 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
 
-  public static final double slowSpeedMode = 0.5;
+  public static final double slowSpeedMode = 0.25;
   
   public static class OperatorConstants {
 
