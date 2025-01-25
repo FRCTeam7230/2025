@@ -7,31 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Pickup"
+            "pathName": "Robot Start"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "print hello"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
+            "waitTime": 0.5
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Score"
+            "pathName": "New Path"
           }
         }
       ]
