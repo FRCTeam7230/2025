@@ -17,12 +17,18 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
+import frc.robot.Constants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.ElevatorSubsystemYAGSL;
+
+import frc.robot.subsystems.ElevatorSubsystemSim;
 import frc.robot.subsystems.SwerveSubsystemSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -50,9 +56,13 @@ import edu.wpi.first.math.util.Units;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  //private final SwerveSubsystemSim m_robotDrive = new SwerveSubsystemSim();
+  //private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  //private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
 
+  private final ElevatorSubsystemYAGSL m_elevator = new ElevatorSubsystemYAGSL();
+
+  private final SwerveSubsystemSim m_robotDrive = new SwerveSubsystemSim();
+  //private final ElevatorSubsystemSim m_elevator = new ElevatorSubsystemSim();
 
   // The driver's controller
   //XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -67,6 +77,16 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+/*
+    if (RobotBase.isReal()) {
+      m_robotDrive = new DriveSubsystem();
+    }
+    else {
+      m_robotDrive = new SwerveSubsystemSim();
+    }
+*/
+
+    m_elevator.setGoal(0);
 
     // Register named commands
     NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
@@ -94,7 +114,6 @@ public class RobotContainer {
                 true,
                 m_driverController.getThrottle()),
             m_robotDrive));
-
   }
 
   /**
@@ -112,6 +131,30 @@ public class RobotContainer {
         .whileTrue(new RunCommand(
             () -> m_robotDrive.setX(),
             m_robotDrive));
+
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_UP_BUTTON_LEFT)
+        .whileTrue(new RunCommand(
+          () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMaxElevatorHeightMeters),
+          m_elevator));
+
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_DOWN_BUTTON_LEFT)
+    .whileTrue(new RunCommand(
+      () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters),
+      m_elevator));
+
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_UP_BUTTON_RIGHT)
+    .whileTrue(new RunCommand(
+      () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMaxElevatorHeightMeters),
+      m_elevator));
+
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_DOWN_BUTTON_RIGHT)
+    .whileTrue(new RunCommand(
+      () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters),
+      m_elevator));
+
+    //m_elevator.atHeight(5, 0.1).whileTrue(Commands.print("Elevator Command!"));
+
+
 
     // Add a button to run the example auto to SmartDashboard, this will also be in the auto chooser built above
     SmartDashboard.putData("Example Auto", new PathPlannerAuto("Example Auto"));
