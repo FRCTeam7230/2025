@@ -50,8 +50,8 @@ import edu.wpi.first.math.util.Units;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  //private final SwerveSubsystemSim m_robotDrive = new SwerveSubsystemSim();
+  //private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final SwerveSubsystemSim m_robotDrive = new SwerveSubsystemSim();
 
 
   // The driver's controller
@@ -66,8 +66,7 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-
-    // Register named commands
+    // Register named commands. Add more commands here.
     NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
     NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
     NamedCommands.registerCommand("print hello", Commands.print("hello"));
@@ -82,6 +81,8 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Mode", autoChooser);
 
     // Configure default commands
+    
+    
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
@@ -113,8 +114,10 @@ public class RobotContainer {
             m_robotDrive));
 
     // Add a button to run the example auto to SmartDashboard, this will also be in the auto chooser built above
+    //Add more paths here.
     SmartDashboard.putData("Example Auto", new PathPlannerAuto("Example Auto"));
-
+    SmartDashboard.putData("Path to Knock off Algaes", new PathPlannerAuto("Path to Knock off Algaes"));
+    SmartDashboard.putData("Coral 1 Cycle", new PathPlannerAuto("Coral 1 Cycle"));
     // Add a button to run pathfinding commands to SmartDashboard
     SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
       new Pose2d(14.0, 6.5, Rotation2d.fromDegrees(0)), 
