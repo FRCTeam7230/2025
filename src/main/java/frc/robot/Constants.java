@@ -42,10 +42,10 @@ public final class Constants {
 
     // Drive Stick Buttons
     public static final int BRAKE_BUTTON = kButton1;
-    public static final int ELEVATOR_UP_BUTTON_LEFT = kButton5;
-    public static final int ELEVATOR_DOWN_BUTTON_LEFT = kButton3;
-    public static final int ELEVATOR_UP_BUTTON_RIGHT = kButton6;
-    public static final int ELEVATOR_DOWN_BUTTON_RIGHT = kButton4;
+    public static final int ELEVATOR_UP_BUTTON_LEFT = kButton7;
+    public static final int ELEVATOR_DOWN_BUTTON_LEFT = kButton8;
+    public static final int ELEVATOR_UP_BUTTON_RIGHT = kButton9;
+    public static final int ELEVATOR_DOWN_BUTTON_RIGHT = kButton10;
   }
 
   public static final class DriveConstants {
