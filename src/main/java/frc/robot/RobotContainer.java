@@ -145,7 +145,14 @@ public class RobotContainer {
     new JoystickButton(m_driverController, 4) 
         .whileTrue(new RunCommand(
           () -> m_robotDrive.drive(0, -Constants.slowSpeedMode, 0, false, m_driverController.getThrottle()), m_robotDrive));
-          
+    new JoystickButton(m_driverController, 12)
+        .whileTrue(new RunCommand(
+          () -> m_robotDrive.spinAngle(30)));
+
+    new JoystickButton(m_driverController, 11)
+        .whileTrue(new RunCommand(
+          () -> m_robotDrive.spinAngle(0)));    
+
     new JoystickButton(m_driverController, 5) 
         .whileTrue(new RunCommand(
           () -> m_robotDrive.drive(Constants.slowSpeedMode, 0, 0, false, m_driverController.getThrottle()), m_robotDrive));
@@ -154,25 +161,16 @@ public class RobotContainer {
           .whileTrue(new RunCommand(
           () -> m_robotDrive.drive(-Constants.slowSpeedMode, 0, 0, false, m_driverController.getThrottle()), m_robotDrive));
 
-    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_UP_BUTTON_LEFT)
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_UP_BUTTON)
         .whileTrue(new RunCommand(
           () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMaxElevatorHeightMeters),
           m_elevator));
 
-    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_DOWN_BUTTON_LEFT)
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_DOWN_BUTTON)
     .whileTrue(new RunCommand(
       () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters),
       m_elevator));
 
-    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_UP_BUTTON_RIGHT)
-    .whileTrue(new RunCommand(
-      () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMaxElevatorHeightMeters),
-      m_elevator));
-
-    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_DOWN_BUTTON_RIGHT)
-    .whileTrue(new RunCommand(
-      () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters),
-      m_elevator));
 
     //m_elevator.atHeight(5, 0.1).whileTrue(Commands.print("Elevator Command!"));
 
