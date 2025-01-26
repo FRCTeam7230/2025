@@ -60,13 +60,9 @@ public class RobotContainer {
 
   DriveSubsystem m_robotDrive;
 
-  //private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  //private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
+  private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
 
   //private final ElevatorSubsystemYAGSL m_elevator = new ElevatorSubsystemYAGSL();
-
-  //private final SwerveSubsystemSim m_robotDrive = new SwerveSubsystemSim();
-  private final ElevatorSubsystemSim m_elevator = new ElevatorSubsystemSim();
 
   // The driver's controller
   //XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
