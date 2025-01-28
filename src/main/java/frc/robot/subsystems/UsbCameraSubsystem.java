@@ -9,18 +9,23 @@ import edu.wpi.first.cscore.CvSink;
 import edu.wpi.first.cscore.CvSource;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import edu.wpi.first.wpilibj2.command.Command;
 
+import java.util.ArrayList;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.Rect;
 
 /*
  * Susbystem for the usb camera on the robot that puts video feed on the cameraserver class or however that works. 
  * can apply various openCV imgproc effects to the video feed such as gaussian blur or rawing overlays. 
  * Processed video feed is available in camera server named "Processed Feed"
  * Raw Video feed should be available in the defaulst usbcamera server.
+ * Also includes command to toggle the camera processing effects called "toggle overlay"
  */
 public class UsbCameraSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
@@ -28,6 +33,8 @@ public class UsbCameraSubsystem extends SubsystemBase {
       private Thread visionThread;
       //overlay on top of video feed toggle.
       private boolean overlay;
+      private Mat latestMat;
+      private final ReefPipePipeline reefDetection = new ReefPipePipeline();
       //Constructor that creates the image processing thread.
   public UsbCameraSubsystem() {
     visionThread =
@@ -81,9 +88,48 @@ visionThread.start();
  */
 private void processVideoFeed(Mat inputMat)
 {
+  Point target = getReeftargetCenter();
+  if(target.x != 0&&target.y != 0)
+  {
+    Imgproc.putText(inputMat, "TARGET", new Point(target.x-25,target.y+8), 0, 0.4, new Scalar(0,0,0,0));
+
+    Imgproc.circle(inputMat, target,30, new Scalar(0,0,0),3);
+  }
   //reef pipe visualizer
-  Imgproc.rectangle( inputMat, new Point(280, 180), new Point(360, 480), new Scalar(225, 20, 250), 5);
+  //Imgproc.rectangle( inputMat, new Point(280, 180), new Point(360, 480), new Scalar(225, 20, 250), 5);
   Imgproc.putText(inputMat, "Processed Camera Feed", new Point(20,50), 0, 1, new Scalar(0,0,0),3);
+
+
+  latestMat = inputMat;
+}
+private Rect locateReefPipeTarget()
+{
+  Mat latest = getLatestFrame();
+  if(latest == null) return new Rect(0,0,0,0);
+  reefDetection.process(getLatestFrame());
+  ArrayList<MatOfPoint> contoursResult = reefDetection.filterContoursOutput();
+  //find largest contour
+  Rect largestBox = new Rect(0,0,0,0);
+  for(int i = 0; i< contoursResult.size(); i++)
+  {
+    Rect bound = Imgproc.boundingRect(contoursResult.get(i));
+    double area = bound.area();
+    if(area>largestBox.area())
+    {
+      largestBox = bound;
+    }
+  }
+  return largestBox;
+}
+private Point getCenter(Rect rect)
+{
+  Point p1 = rect.tl();
+  Point p2 = rect.br();
+  return new Point((p1.x+p2.x)/2,(p1.y+p2.y)/2);
+}
+public Point getReeftargetCenter()
+{
+  return getCenter(locateReefPipeTarget());
 }
 public Command toggleOverlay()
 {
@@ -91,6 +137,13 @@ public Command toggleOverlay()
   {overlay = !overlay;}
   );
 }
+public Mat getLatestFrame()
+{
+  return latestMat;
+}
+/*
+ * returns rectangle around the largest in-view reef pipe. grip pipeline sucks, so it will likely not work. 
+ */
 
 //leftover subsystem methods.
   /**
