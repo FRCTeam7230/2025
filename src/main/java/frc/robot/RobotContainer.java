@@ -17,12 +17,19 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
+import frc.robot.Constants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.ElevatorSubsystemYAGSL;
+
+import frc.robot.subsystems.ElevatorSubsystemSim;
 import frc.robot.subsystems.SwerveSubsystemSim;
 import frc.robot.subsystems.UsbCameraSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -55,6 +62,11 @@ public class RobotContainer {
   private final UsbCameraSubsystem m_UsbCamera = new UsbCameraSubsystem();
   // private final SwerveSubsystemSim m_robotDrive = new SwerveSubsystemSim();
 
+  DriveSubsystem m_robotDrive;
+
+  private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
+
+  //private final ElevatorSubsystemYAGSL m_elevator = new ElevatorSubsystemYAGSL();
 
   // The driver's controller
   //XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -69,7 +81,18 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    // Register named commands. Add more commands here.
+
+    if (RobotBase.isReal()) {
+      m_robotDrive = new DriveSubsystem();
+    }
+    else {
+      m_robotDrive = new SwerveSubsystemSim();
+    }
+
+    m_elevator.setGoal(0);
+
+    // Register named commands
+
     NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
     NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
     NamedCommands.registerCommand("print hello", Commands.print("hello"));
@@ -94,9 +117,9 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband),
-                true),
+                true,
+                m_driverController.getThrottle()),
             m_robotDrive));
-
   }
 
   /**
@@ -114,18 +137,44 @@ public class RobotContainer {
         .whileTrue(new RunCommand(
             () -> m_robotDrive.setX(),
             m_robotDrive));
+
     new JoystickButton(m_driverController, 3) 
         .whileTrue(new RunCommand(
-          () -> m_robotDrive.drive(0,Constants.slowSpeedMode,0,false), m_robotDrive));
+          () -> m_robotDrive.drive(0, Constants.slowSpeedMode, 0, false, m_driverController.getThrottle()), m_robotDrive));
+
     new JoystickButton(m_driverController, 4) 
         .whileTrue(new RunCommand(
-          () -> m_robotDrive.drive(0,-Constants.slowSpeedMode,0,false), m_robotDrive));
+          () -> m_robotDrive.drive(0, -Constants.slowSpeedMode, 0, false, m_driverController.getThrottle()), m_robotDrive));
+    new JoystickButton(m_driverController, 12)
+        .whileTrue(new RunCommand(
+          () -> m_robotDrive.spinAngle(30)));
+
+    new JoystickButton(m_driverController, 11)
+        .whileTrue(new RunCommand(
+          () -> m_robotDrive.spinAngle(0)));    
+
     new JoystickButton(m_driverController, 5) 
         .whileTrue(new RunCommand(
-          () -> m_robotDrive.drive(Constants.slowSpeedMode,0,0,false), m_robotDrive));
-          new JoystickButton(m_driverController, 6) 
+          () -> m_robotDrive.drive(Constants.slowSpeedMode, 0, 0, false, m_driverController.getThrottle()), m_robotDrive));
+          
+    new JoystickButton(m_driverController, 6) 
           .whileTrue(new RunCommand(
-          () -> m_robotDrive.drive(-Constants.slowSpeedMode,0,0,false), m_robotDrive));
+          () -> m_robotDrive.drive(-Constants.slowSpeedMode, 0, 0, false, m_driverController.getThrottle()), m_robotDrive));
+
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_UP_BUTTON)
+        .whileTrue(new RunCommand(
+          () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMaxElevatorHeightMeters),
+          m_elevator));
+
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_DOWN_BUTTON)
+    .whileTrue(new RunCommand(
+      () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters),
+      m_elevator));
+
+
+    //m_elevator.atHeight(5, 0.1).whileTrue(Commands.print("Elevator Command!"));
+
+
 
     // Add a button to run the example auto to SmartDashboard, this will also be in the auto chooser built above
     //Add more paths here.
