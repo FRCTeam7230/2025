@@ -318,8 +318,8 @@ public class DriveSubsystem extends SubsystemBase {
     SwerveModuleState[] states = new SwerveModuleState[4];
 
     states[0] = m_frontLeft.getState();
-    states[1] = m_rearLeft.getState();
-    states[2] = m_frontRight.getState();
+    states[1] = m_frontRight.getState();
+    states[2] = m_rearLeft.getState();
     states[3] = m_rearRight.getState();
 
     return states;
@@ -333,16 +333,9 @@ public class DriveSubsystem extends SubsystemBase {
     ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
 
     SwerveModuleState[] targetStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(targetSpeeds);
-    setStates(targetStates);
+    setModuleStates(targetStates);
   }
 
-  public void setStates(SwerveModuleState[] targetStates) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(targetStates, Constants.DriveConstants.kMaxSpeedMetersPerSecond);
 
-    m_frontLeft.setDesiredState(targetStates[0]);
-    m_rearLeft.setDesiredState(targetStates[1]);
-    m_frontRight.setDesiredState(targetStates[2]);
-    m_rearRight.setDesiredState(targetStates[3]);
-  }
 
 }
