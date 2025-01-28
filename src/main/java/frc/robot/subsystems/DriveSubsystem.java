@@ -64,6 +64,12 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kRearRightTurningCanId,
       DriveConstants.kBackRightChassisAngularOffset);
 
+  Pose2d currentPose;
+  private Field2d field = new Field2d();
+
+  PIDController xController;
+  PIDController yController;
+  PIDController rotController;
 
   // The gyro sensor
   private final AHRS m_gyro = new AHRS(AHRS.NavXComType.kMXP_SPI, AHRS.NavXUpdateRate.k50Hz);
@@ -73,8 +79,6 @@ public class DriveSubsystem extends SubsystemBase {
 
   StructPublisher<Pose2d> odomPublisher = NetworkTableInstance.getDefault().getStructTopic("Pose", Pose2d.struct).publish();  
   
-
-
   public double getFieldAngle(){
     return -m_gyro.getAngle();
   }
@@ -89,8 +93,6 @@ public class DriveSubsystem extends SubsystemBase {
   //   dataPublisher.set(data);
   // }
 
-  private Field2d field = new Field2d();
-
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
       DriveConstants.kDriveKinematics,
@@ -101,10 +103,6 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearLeft.getPosition(),
           m_rearRight.getPosition()
       });
-
-  PIDController xController;
-  PIDController yController;
-  PIDController rotController;
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -156,8 +154,6 @@ public class DriveSubsystem extends SubsystemBase {
     PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
     SmartDashboard.putData("Field", field);
   }
-
-  Pose2d currentPose;
 
   @Override
   public void periodic() {
@@ -219,7 +215,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param fieldRelative Whether the provided x and y speeds are relative to the
    *                      field.
    */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, double speedMult) {
     // Convert the commanded speeds into the correct units for the drivetrain
     double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond / Constants.movementDivider;
     double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond / Constants.movementDivider;
