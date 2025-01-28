@@ -1,4 +1,4 @@
-# Code is based on [MAXSwerve Java Template v2025.1](https://github.com/REVrobotics/MAXSwerve-Java-Template)
+# Code is based on [MAXSwerve Java Template v2025.1](https://github.com/REVrobotics/MAXSwerve-Java-Template) from [REV Robotics](https://docs.revrobotics.com/brushless/revlib/code-examples).
 
 ## Prerequisites
 

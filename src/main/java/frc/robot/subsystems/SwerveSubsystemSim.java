@@ -21,13 +21,14 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 
 /**
  * Basic simulation of a swerve subsystem with the methods needed by PathPlanner
  */
-public class SwerveSubsystemSim extends SubsystemBase {
+public class SwerveSubsystemSim extends DriveSubsystem {
   private final SimSwerveModule[] modules;
   private final SwerveDriveOdometry odometry;
 
