@@ -10,6 +10,7 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.studica.frc.AHRS;
+import java.lang.Math;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
@@ -18,7 +19,9 @@ import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.Kinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -61,6 +64,13 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kRearRightTurningCanId,
       DriveConstants.kBackRightChassisAngularOffset);
 
+  Pose2d currentPose;
+  private Field2d field = new Field2d();
+
+  PIDController xController;
+  PIDController yController;
+  PIDController rotController;
+
   // The gyro sensor
   private final AHRS m_gyro = new AHRS(AHRS.NavXComType.kMXP_SPI, AHRS.NavXUpdateRate.k50Hz);
   DoubleArrayPublisher gyro_publisher = NetworkTableInstance.getDefault().getDoubleArrayTopic("Yaw, Angle, Roll, Pitch").publish();
@@ -69,8 +79,6 @@ public class DriveSubsystem extends SubsystemBase {
 
   StructPublisher<Pose2d> odomPublisher = NetworkTableInstance.getDefault().getStructTopic("Pose", Pose2d.struct).publish();  
   
-
-
   public double getFieldAngle(){
     return -m_gyro.getAngle();
   }
@@ -85,8 +93,6 @@ public class DriveSubsystem extends SubsystemBase {
   //   dataPublisher.set(data);
   // }
 
-  private Field2d field = new Field2d();
-
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
       DriveConstants.kDriveKinematics,
@@ -98,18 +104,18 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearRight.getPosition()
       });
 
-  PIDController xController;
-  PIDController yController;
-  PIDController rotController;
-
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     // Usage reporting for MAXSwerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_MaxSwerve);
 
+    double rotP = 5.0;
+    double rotI = 0.0;
+    double rotD = 0.0;
+
     PPHolonomicDriveControllerCustom autoDriveController = new PPHolonomicDriveControllerCustom(
       new PIDConstants(5.0, 0.0, 0.0),
-      new PIDConstants(5.0, 0.0, 0.0)
+      new PIDConstants(rotP, rotI, rotD)
     );
 
     xController = autoDriveController.getXController();
@@ -152,7 +158,7 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
-    Pose2d pose = m_odometry.update(
+    currentPose = m_odometry.update(
         Rotation2d.fromDegrees(getFieldAngle()),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
@@ -167,7 +173,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     gyro_publisher.set(gyroData);
     gyro_calibrated.set(m_gyro.isCalibrating());
-    odomPublisher.set(pose);
+    odomPublisher.set(currentPose);
 
     double[] errors = {xController.getError(), yController.getError(), rotController.getError()};
 
@@ -209,11 +215,11 @@ public class DriveSubsystem extends SubsystemBase {
    * @param fieldRelative Whether the provided x and y speeds are relative to the
    *                      field.
    */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, double speedMult) {
     // Convert the commanded speeds into the correct units for the drivetrain
-    double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond / 2;
-    double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond / 2;
-    double rotDelivered = rot * DriveConstants.kMaxAngularSpeed / 5;
+    double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond / Constants.movementDivider;
+    double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond / Constants.movementDivider;
+    double rotDelivered = rot * DriveConstants.kMaxAngularSpeed / Constants.rotateDivider;
 
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
@@ -228,6 +234,25 @@ public class DriveSubsystem extends SubsystemBase {
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_rearLeft.setDesiredState(swerveModuleStates[2]);
     m_rearRight.setDesiredState(swerveModuleStates[3]);
+  }
+
+  public double degreesToRadians(double angle){
+    return Math.toRadians(angle);
+  }
+
+  public void spinAngle(double angle){
+    double rotationFeedback = rotController.calculate(degreesToRadians(getFieldAngle()), degreesToRadians(angle));
+    double rotationFF = 0;
+
+    ChassisSpeeds c = ChassisSpeeds.fromFieldRelativeSpeeds(
+      0.0, 0.0, rotationFeedback + rotationFF, currentPose.getRotation());
+
+    SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(c);
+
+    m_frontLeft.setDesiredState(moduleStates[0]);
+    m_frontRight.setDesiredState(moduleStates[1]);
+    m_rearLeft.setDesiredState(moduleStates[2]);
+    m_rearRight.setDesiredState(moduleStates[3]);
   }
 
   /**
