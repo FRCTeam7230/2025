@@ -72,7 +72,7 @@ public class DriveSubsystem extends SubsystemBase {
   PIDController rotController;
 
   // The gyro sensor
-  private final AHRS m_gyro = new AHRS(AHRS.NavXComType.kMXP_SPI, AHRS.NavXUpdateRate.k50Hz);
+  private final AHRS m_gyro = new AHRS(AHRS.NavXComType.kMXP_SPI, AHRS.NavXUpdateRate.k200Hz);
   DoubleArrayPublisher gyro_publisher = NetworkTableInstance.getDefault().getDoubleArrayTopic("Yaw, Angle, Roll, Pitch").publish();
   DoubleArrayPublisher error_publisher = NetworkTableInstance.getDefault().getDoubleArrayTopic("ERRORS: X, Y, Rotation").publish();
   BooleanPublisher gyro_calibrated = NetworkTableInstance.getDefault().getBooleanTopic("IsCalibearted").publish();
@@ -314,8 +314,8 @@ public class DriveSubsystem extends SubsystemBase {
     SwerveModuleState[] states = new SwerveModuleState[4];
 
     states[0] = m_frontLeft.getState();
-    states[1] = m_rearLeft.getState();
-    states[2] = m_frontRight.getState();
+    states[1] = m_frontRight.getState();
+    states[2] = m_rearLeft.getState();
     states[3] = m_rearRight.getState();
 
     return states;
@@ -329,16 +329,9 @@ public class DriveSubsystem extends SubsystemBase {
     ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
 
     SwerveModuleState[] targetStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(targetSpeeds);
-    setStates(targetStates);
+    setModuleStates(targetStates);
   }
 
-  public void setStates(SwerveModuleState[] targetStates) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(targetStates, Constants.DriveConstants.kMaxSpeedMetersPerSecond);
 
-    m_frontLeft.setDesiredState(targetStates[0]);
-    m_rearLeft.setDesiredState(targetStates[1]);
-    m_frontRight.setDesiredState(targetStates[2]);
-    m_rearRight.setDesiredState(targetStates[3]);
-  }
 
 }
