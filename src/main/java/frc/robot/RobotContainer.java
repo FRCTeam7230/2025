@@ -197,7 +197,6 @@ public class RobotContainer {
       ), 
       0
     ));
-
     // Add a button to SmartDashboard that will create and follow an on-the-fly path
     // This example will simply move the robot 2m in the +X field direction
     SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
@@ -223,7 +222,11 @@ public class RobotContainer {
 
       AutoBuilder.followPath(path).schedule();
     }));
+    
     SmartDashboard.putData("Toggle camera overlay",m_UsbCamera.toggleOverlay());
+    SmartDashboard.putNumber("Elevator Position",m_elevator.getHeight());
+    SmartDashboard.putData("Start Main Camera",m_UsbCamera.StartCameraFeed(0));
+    SmartDashboard.putData("Start Alternate Camera Feed",m_UsbCamera.StartCameraFeed(1));
   }
 
   /**

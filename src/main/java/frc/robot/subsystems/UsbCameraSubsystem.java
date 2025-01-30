@@ -34,51 +34,11 @@ public class UsbCameraSubsystem extends SubsystemBase {
       //overlay on top of video feed toggle.
       private boolean overlay;
       private Mat latestMat;
-      private final ReefPipePipeline reefDetection = new ReefPipePipeline();
+      private final ReefDetectionPipeline reefDetection = new ReefDetectionPipeline();
+      
       //Constructor that creates the image processing thread.
   public UsbCameraSubsystem() {
-    visionThread =
-    new Thread(
-        () -> {
-          // Get the UsbCamera from CameraServer
-          UsbCamera camera = CameraServer.startAutomaticCapture();
-          // Set the resolution
-          camera.setResolution(640, 480);
-
-          // Get a CvSink. This will capture Mats from the camera
-          CvSink cvSink = CameraServer.getVideo();
-          // Setup a CvSource. This will send images back to the Dashboard
-          CvSource outputStream = CameraServer.putVideo("Processed Feed", 640, 480);
-
-          // Mats are very memory expensive. Lets reuse this Mat.
-          Mat mat = new Mat();
-
-          // This cannot be 'true'. The program will never exit if it is. This
-          // lets the robot stop this thread when restarting robot code or
-          // deploying.
-          while (!Thread.interrupted()) {
-            // Tell the CvSink to grab a frame from the camera and put it
-            // in the source mat.  If there is an error notify the output.
-            if (cvSink.grabFrame(mat) == 0) {
-              // Send the output the error.
-              outputStream.notifyError(cvSink.getError());
-              // skip the rest of the current iteration
-              continue;
-            }
-            // Apply image processing to image
-            if(overlay)
-            {
-              processVideoFeed(mat);
-
-            }
-          
-
-            // Give the output stream a new image to display
-            outputStream.putFrame(mat);
-          }
-        });
-visionThread.setDaemon(true);
-visionThread.start();
+//StartCamera(0);
   }
   //A few commands for the blur effect just for testing purposes.
 
@@ -94,7 +54,20 @@ private void processVideoFeed(Mat inputMat)
     Imgproc.putText(inputMat, "TARGET", new Point(target.x-25,target.y+8), 0, 0.4, new Scalar(0,0,0,0));
 
     Imgproc.circle(inputMat, target,30, new Scalar(0,0,0),3);
-  }
+    //Arrow - WIP
+    /*
+     double dx = 320-target.x;
+    double dy = 240-target.y;
+    double dist = Math.sqrt(dx*dx+dy*dy);
+    double scaledX = dx*30/dist;
+    double scaledY = dy*30/dist;
+    Imgproc.line(inputMat, new Point(target.x+scaledX,target.y+scaledY), new Point(320,240), new Scalar(0,0,0),2);
+    Imgproc.line(inputMat, new Point(320-scaledX+10,240-scaledY), new Point(320,240), new Scalar(0,0,0),10);
+     */
+
+
+
+  } 
   //reef pipe visualizer
   //Imgproc.rectangle( inputMat, new Point(280, 180), new Point(360, 480), new Scalar(225, 20, 250), 5);
   Imgproc.putText(inputMat, "Processed Camera Feed", new Point(20,50), 0, 1, new Scalar(0,0,0),3);
@@ -140,6 +113,61 @@ public Command toggleOverlay()
 public Mat getLatestFrame()
 {
   return latestMat;
+}
+public Command StartCameraFeed(int port)
+{
+  return runOnce(()->
+  {
+    StartCamera(port);
+  }
+  );
+
+}
+private void StartCamera(int dev)
+{
+  visionThread =
+  new Thread(
+
+      () -> {
+        UsbCamera camera = CameraServer.startAutomaticCapture(dev);
+
+        // Set the resolution
+        camera.setResolution(640, 480);
+
+        // Get a CvSink. This will capture Mats from the camera
+        CvSink cvSink = CameraServer.getVideo();
+        // Setup a CvSource. This will send images back to the Dashboard
+        CvSource outputStream = CameraServer.putVideo("Processed Feed", 640, 480);
+
+        // Mats are very memory expensive. Lets reuse this Mat.
+        Mat mat = new Mat();
+
+        // This cannot be 'true'. The program will never exit if it is. This
+        // lets the robot stop this thread when restarting robot code or
+        // deploying.
+        while (!Thread.interrupted()) {
+          // Tell the CvSink to grab a frame from the camera and put it
+          // in the source mat.  If there is an error notify the output.
+          if (cvSink.grabFrame(mat) == 0) {
+            // Send the output the error.
+            outputStream.notifyError(cvSink.getError());
+            // skip the rest of the current iteration
+            continue;
+          }
+          // Apply image processing to image
+          if(overlay)
+          {
+            processVideoFeed(mat);
+
+          }
+        
+
+          // Give the output stream a new image to display
+          outputStream.putFrame(mat);
+        }
+      });
+visionThread.setDaemon(true);
+visionThread.start();
 }
 /*
  * returns rectangle around the largest in-view reef pipe. grip pipeline sucks, so it will likely not work. 
