@@ -8,6 +8,7 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.CvSink;
 import edu.wpi.first.cscore.CvSource;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import org.opencv.core.Mat;
@@ -16,8 +17,6 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import edu.wpi.first.wpilibj2.command.Command;
 
-import java.util.ArrayList;
-import org.opencv.core.MatOfPoint;
 import org.opencv.core.Rect;
 
 /*
@@ -34,11 +33,13 @@ public class UsbCameraSubsystem extends SubsystemBase {
       //overlay on top of video feed toggle.
       private boolean overlay;
       private Mat latestMat;
-      private final ReefDetectionPipeline reefDetection = new ReefDetectionPipeline();
+
+      private boolean cameraStarted = false;
       
       //Constructor that creates the image processing thread.
   public UsbCameraSubsystem() {
 //StartCamera(0);
+cameraStarted = false;
   }
   //A few commands for the blur effect just for testing purposes.
 
@@ -48,12 +49,15 @@ public class UsbCameraSubsystem extends SubsystemBase {
  */
 private void processVideoFeed(Mat inputMat)
 {
-  Point target = getReeftargetCenter();
+  Point target = VisionSubsystem.getReeftargetCenter();
+  Rect targetBox = VisionSubsystem.locateReefPipeTarget();
   if(target.x != 0&&target.y != 0)
   {
     Imgproc.putText(inputMat, "TARGET", new Point(target.x-25,target.y+8), 0, 0.4, new Scalar(0,0,0,0));
 
     Imgproc.circle(inputMat, target,30, new Scalar(0,0,0),3);
+
+    Imgproc.rectangle(inputMat, targetBox, new Scalar(225,20,250),2);
     //Arrow - WIP
     /*
      double dx = 320-target.x;
@@ -75,54 +79,35 @@ private void processVideoFeed(Mat inputMat)
 
   latestMat = inputMat;
 }
-private Rect locateReefPipeTarget()
-{
-  Mat latest = getLatestFrame();
-  if(latest == null) return new Rect(0,0,0,0);
-  reefDetection.process(getLatestFrame());
-  ArrayList<MatOfPoint> contoursResult = reefDetection.filterContoursOutput();
-  //find largest contour
-  Rect largestBox = new Rect(0,0,0,0);
-  for(int i = 0; i< contoursResult.size(); i++)
-  {
-    Rect bound = Imgproc.boundingRect(contoursResult.get(i));
-    double area = bound.area();
-    if(area>largestBox.area())
-    {
-      largestBox = bound;
-    }
-  }
-  return largestBox;
-}
-private Point getCenter(Rect rect)
-{
-  Point p1 = rect.tl();
-  Point p2 = rect.br();
-  return new Point((p1.x+p2.x)/2,(p1.y+p2.y)/2);
-}
-public Point getReeftargetCenter()
-{
-  return getCenter(locateReefPipeTarget());
-}
+
+//toggles overlay such as reef pipe detection indicators
 public Command toggleOverlay()
 {
   return   runOnce(()->
   {overlay = !overlay;}
   );
 }
+// returns latest unprocessed video frame
 public Mat getLatestFrame()
 {
   return latestMat;
 }
+//begins camera on port number
 public Command StartCameraFeed(int port)
 {
   return runOnce(()->
   {
-    StartCamera(port);
+    if(!cameraStarted)
+    {
+      StartCamera(port);
+    }
+    cameraStarted = true;
   }
   );
 
 }
+
+// starts camera thread
 private void StartCamera(int dev)
 {
   visionThread =
@@ -158,7 +143,7 @@ private void StartCamera(int dev)
           if(overlay)
           {
             processVideoFeed(mat);
-
+                SmartDashboard.putNumber("EstimatedDistanceFromPipe:",VisionSubsystem.getReefPipeDistance());
           }
         
 
