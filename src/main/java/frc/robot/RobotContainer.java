@@ -176,7 +176,24 @@ public class RobotContainer {
         .whileTrue(new RunCommand(
             () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters),
             m_elevator));
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SLOW_UP_BUTTON)
+      .whileTrue(new RunCommand(
+          () -> m_elevator.slowUp(),
+          m_elevator));
 
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SLOW_DOWN_BUTTON)
+      .whileTrue(new RunCommand(
+          () -> m_elevator.slowDown(),
+          m_elevator));
+new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_UP_BUTTON)
+        .whileTrue(new RunCommand(
+            () -> m_elevator.normalUp(),
+            m_elevator));
+
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_DOWN_BUTTON)
+        .whileTrue(new RunCommand(
+            () -> m_elevator.normalDown()
+            ));
     // m_elevator.atHeight(5, 0.1).whileTrue(Commands.print("Elevator Command!"));
 
     // Add a button to run the example auto to SmartDashboard, this will also be in
