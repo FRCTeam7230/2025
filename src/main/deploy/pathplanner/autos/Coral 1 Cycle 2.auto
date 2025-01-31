@@ -3,24 +3,20 @@
   "command": {
     "type": "sequential",
     "data": {
-<<<<<<< Updated upstream
-      "commands": []
-=======
       "commands": [
         {
           "type": "path",
           "data": {
-            "pathName": "Coral 5 Cycle 1"
+            "pathName": "Coral 1 Right Return"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Reef 5 to Station right"
+            "pathName": "Coral 1 RIght"
           }
         }
       ]
->>>>>>> Stashed changes
     }
   },
   "resetOdom": true,
