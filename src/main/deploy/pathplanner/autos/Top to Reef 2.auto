@@ -7,19 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Early Game Top for Reef 1!"
+            "pathName": "Eary Game Top"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Lift the Elevator"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Reef 1 to Coral Station"
+            "pathName": "Reef 2 to Coral Station"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Reef 1 paths",
+  "folder": "Dumpster",
   "choreoAuto": false
 }

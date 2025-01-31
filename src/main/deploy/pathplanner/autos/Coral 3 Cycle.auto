@@ -7,19 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Early Game Bottom!"
+            "pathName": "Station to reef 4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Lift the Elevator"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Reef 2 to Coral Station"
+            "pathName": "Reef 4 to station"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Reef 2 Paths",
+  "folder": "Coral Cycles",
   "choreoAuto": false
 }

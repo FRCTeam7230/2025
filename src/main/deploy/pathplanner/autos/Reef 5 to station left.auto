@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Bottom to Reef 3!"
+            "pathName": "Reef 5 path Left"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Lift the Elevator"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Reef 3 to Coral Station"
+            "pathName": "Reef 5 to Station left"
           }
         }
       ]

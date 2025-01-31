@@ -1,29 +1,38 @@
 package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
-import edu.wpi.first.wpilibj.drive.RobotDriveBase.MotorType;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class elevPseudo extends SubsystemBase {
-    Spark elev = new Spark(1);
-    Encoder encode = new Encoder(1,2);
+    //Credit: https://github.com/REVrobotics/REVLib-Examples/blob/main/Java/SPARK/MAXMotion/src/main/java/frc/robot/Robot.java
+    SparkMax elev = new SparkMax(1,MotorType.kBrushless);
+    RelativeEncoder encode = elev.getAlternateEncoder();
+    
     public void raiseelevator(){
-        elev.set(2.000); //Full forward
+        elev.set(1.000); //Full forward
     }
     public void lowerelevator(){
-        elev.set(0.999);
+        elev.set(-1);
     }
     public void stopmotor(){
         elev.stopMotor();
     }
     public void resetcount(){
-        encode.reset();
+        encode.setPosition(0.0);//Set # of rotations to 0.
     }
     public double finddistance(){
-        return encode.getDistance();//Alternatively, use getposition();
+        return encode.getPosition();//Alternatively, use getposition();
     }
-    public boolean finddirection(){
-        return encode.getDirection();
+    public double findvelocity(){
+        return encode.getVelocity();
     }
-    
+
 }
 

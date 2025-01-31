@@ -7,31 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Robot Start"
+            "pathName": "Early Game Center for Reef 1"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.5
+            "name": "Lift the Elevator"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "New Path"
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": []
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": []
+            "pathName": "Reef 1 to Coral Station"
           }
         }
       ]

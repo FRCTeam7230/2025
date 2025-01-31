@@ -30,6 +30,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
+import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.config.SparkBaseConfig;
 import frc.robot.Constants.ElevatorConstants;
 
 public class ElevatorSubsystem extends SubsystemBase
@@ -46,9 +49,14 @@ public class ElevatorSubsystem extends SubsystemBase
           ElevatorConstants.kElevatorkV,
           ElevatorConstants.kElevatorkA);
   private final SparkMax                  m_motor      = new SparkMax(1, MotorType.kBrushless);
+  private final SparkMax                  m_motor2      = new SparkMax(2, MotorType.kBrushless);
   private final SparkClosedLoopController m_controller = m_motor.getClosedLoopController();
   private final RelativeEncoder           m_encoder    = m_motor.getEncoder();
   private final SparkMaxSim               m_motorSim   = new SparkMaxSim(m_motor, m_elevatorGearbox);
+  private final SparkClosedLoopController m_controller2 = m_motor2.getClosedLoopController();
+  private final RelativeEncoder           m_encoder2    = m_motor2.getEncoder();
+  private final SparkMaxSim               m_motorSim2   = new SparkMaxSim(m_motor2, m_elevatorGearbox);
+  private final SparkBaseConfig m_config = new SparkMaxConfig();
 
   // Simulation classes help us simulate what's going on, including gravity.
   private final ElevatorSim m_elevatorSim =
@@ -89,7 +97,8 @@ public class ElevatorSubsystem extends SubsystemBase
         .positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal)
         .allowedClosedLoopError(0.01);
     m_motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-
+    m_config.follow(m_motor,false);
+    m_motor2.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     // Publish Mechanism2d to SmartDashboard
     // To view the Elevator visualization, select Network Tables -> SmartDashboard -> Elevator Sim
     SmartDashboard.putData("Elevator Sim", m_mech2d);
@@ -126,6 +135,9 @@ public class ElevatorSubsystem extends SubsystemBase
                               ControlType.kPosition,
                               ClosedLoopSlot.kSlot0,
                               m_feedforward.calculate(m_encoder.getVelocity()));
+
+    //m_config.apply(m_controller);
+    //m_motor2.configure(m_config,ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
   }
 
 
@@ -170,6 +182,8 @@ public class ElevatorSubsystem extends SubsystemBase
   public void stop()
   {
     m_motor.set(0.0);
+
+
   }
 
   /**

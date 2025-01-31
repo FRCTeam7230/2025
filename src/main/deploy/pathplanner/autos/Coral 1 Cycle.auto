@@ -11,15 +11,9 @@
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "marker1"
+            "name": "Lift the Elevator"
           }
         },
         {
@@ -32,6 +26,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Coral Cycles",
   "choreoAuto": false
 }

@@ -7,37 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Robot Start"
+            "pathName": "To Reef 3"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.5
+            "name": "Lift the Elevator"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "New Path"
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": []
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": []
+            "pathName": "Reef 3 To Coral Station 2"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Dumpster",
+  "folder": null,
   "choreoAuto": false
 }

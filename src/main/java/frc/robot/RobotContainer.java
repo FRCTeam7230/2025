@@ -47,7 +47,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 import edu.wpi.first.math.util.Units;
-
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -92,10 +92,13 @@ public class RobotContainer {
     NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
     NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
     NamedCommands.registerCommand("print hello", Commands.print("hello"));
+    NamedCommands.registerCommand("Lift the Elevator",new WaitCommand(5));//We can add commands like this, and yes it works as long as you can bear the 5 second wait.
+    NamedCommands.registerCommand("Dance", Commands.print("This will not be a command where the robot will spin around itself."));
+
 
     // Use event markers as triggers
     new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
-
+    new EventTrigger("Dance").onTrue(Commands.print("This will not be a command where the robot will spin around itself."));
     // Configure the button bindings
     configureButtonBindings();
 
@@ -179,9 +182,17 @@ public class RobotContainer {
     // Add a button to run the example auto to SmartDashboard, this will also be in
     // the auto chooser built above
     // Add more paths here.
-    SmartDashboard.putData("Example Auto", new PathPlannerAuto("Example Auto"));
-    SmartDashboard.putData("Path to Knock off Algaes", new PathPlannerAuto("Path to Knock off Algaes"));
-    SmartDashboard.putData("Coral 1 Cycle", new PathPlannerAuto("Coral 1 Cycle"));
+
+    SmartDashboard.putData("Reef 1 to Coral Station Left", new PathPlannerAuto("Reef 1 to Coral Station Left"));
+    SmartDashboard.putData("Reef 1 to Station Right", new PathPlannerAuto("Reef 1 to Station Right"));
+    SmartDashboard.putData("Reef 2 to Station Right", new PathPlannerAuto("Reef 2 to Station Right"));
+    SmartDashboard.putData("Reef 2 to Station Left", new PathPlannerAuto("Reef 2 to Station Left"));
+    SmartDashboard.putData("Reef 3 to Station Top", new PathPlannerAuto("Reef 2 to Station Top"));
+    SmartDashboard.putData("Reef 3 to Station Bottom", new PathPlannerAuto("Reef 2 to Station Bottom"));
+    SmartDashboard.putData("Reef 5 to station right", new PathPlannerAuto("Reef 5 to station right"));
+    SmartDashboard.putData("Reef 5 to station left", new PathPlannerAuto("Reef 5 to station left"));
+    SmartDashboard.putData("Reef 6 to station right", new PathPlannerAuto("Reef 6 to station right"));
+    SmartDashboard.putData("Reef 6 to station left", new PathPlannerAuto("Reef 6 to station left"));
     // Add a button to run pathfinding commands to SmartDashboard
     SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
         new Pose2d(14.0, 6.5, Rotation2d.fromDegrees(0)),

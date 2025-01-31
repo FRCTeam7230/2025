@@ -2,10 +2,13 @@
   "robotWidth": 0.75,
   "robotLength": 0.75,
   "holonomicMode": true,
-  "pathFolders": [],
-  "autoFolders": [
+  "pathFolders": [
     "New Folder",
-    "New New Folder"
+    "Dumpster"
+  ],
+  "autoFolders": [
+    "Coral Cycles",
+    "Dumpster"
   ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
