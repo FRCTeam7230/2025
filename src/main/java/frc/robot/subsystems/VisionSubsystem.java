@@ -13,12 +13,16 @@ import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.core.Scalar;
 
 public class VisionSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   private static UsbCameraSubsystem cameraSubsystem;
   private static final ReefDetectionPipeline reefDetection = new ReefDetectionPipeline();
   private static double lastRangeValue = 0;
+  //This value is for the reeef pipe detection of width. It is the amount of extra pixels blocked from the camera view above the second-highest pipe.
+  //Adjust this if the robot does not detect a pipe.
+  private static int safetyPixels = 20;
 //initializes the camera feed to the vision system
   public VisionSubsystem(UsbCameraSubsystem camSys)
   {
@@ -34,21 +38,50 @@ public class VisionSubsystem extends SubsystemBase {
   public static Rect locateReefPipeTarget()
   {
   Mat latest = getLatestFrame();
+
   if(latest == null) return new Rect(0,0,0,0);
-  reefDetection.process(getLatestFrame());
+
+
+  reefDetection.process(latest);
   ArrayList<MatOfPoint> contoursResult = reefDetection.filterContoursOutput();
   //find largest contour
   Rect largestBox = new Rect(0,0,0,0);
+  Rect secondLargest = new Rect(0,0,0,0);
   for(int i = 0; i< contoursResult.size(); i++)
   {
     Rect bound = Imgproc.boundingRect(contoursResult.get(i));
     double area = bound.area();
     if(area>largestBox.area())
     {
+      secondLargest = largestBox;
       largestBox = bound;
     }
   }
-  return largestBox;
+  double br = largestBox.br().y;
+  if(secondLargest.area()>0)
+  {
+    Mat copied = new Mat();
+    latest.copyTo(copied);
+    int h = (int)(480-secondLargest.tl().y)+safetyPixels;
+    Imgproc.rectangle(copied, new Rect(new Point(0,480),new Point(640,479)), new Scalar(0,0,0),h*2);
+  
+    //run second vision pass to get more accurate results. 
+    reefDetection.process(copied);
+    contoursResult = reefDetection.filterContoursOutput();
+    //find largest contour
+    largestBox = new Rect(0,0,0,0);
+    for(int i = 0; i< contoursResult.size(); i++)
+    {
+      Rect bound = Imgproc.boundingRect(contoursResult.get(i));
+      double area = bound.area();
+      if(area>largestBox.area())
+      {
+        largestBox = bound;
+      }
+    }
+  }
+  Rect result = new Rect(largestBox.tl(),new Point(largestBox.br().x,br));
+  return result;
   }
 // returns the pixel width of reef pipe target
   public static double getPixelsWidth()
