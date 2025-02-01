@@ -51,6 +51,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 
 public class ElevatorSubsystemYAGSL extends SubsystemBase
@@ -268,9 +269,24 @@ public class ElevatorSubsystemYAGSL extends SubsystemBase
   /**
    * Stop the control loop and motor output.
    */
-  public void stop()
-  {
-    m_motor.set(0.0);
+  public void stop(){
+    m_motor.set(0);   
+  }
+  public void normalUp(){
+    m_motor.set(1);   
+    reachGoal(Constants.ElevatorSimConstants.kMaxElevatorHeightMeters);
+  }
+  public void normalDown(){
+    m_motor.set(1);
+    reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters);
+  }
+  public void slowUp(){
+    m_motor.set(0.25);
+    reachGoal(Constants.ElevatorSimConstants.kMaxElevatorHeightMeters);
+  }
+  public void slowDown(){
+    m_motor.set(0.25);
+    reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters);
   }
 
   /**

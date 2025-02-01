@@ -46,6 +46,8 @@ public final class Constants {
     public static final int BRAKE_BUTTON = kButton1;
     public static final int ELEVATOR_UP_BUTTON = kButton7;
     public static final int ELEVATOR_DOWN_BUTTON = kButton8;
+    public static final int ELEVATOR_SLOW_UP_BUTTON = kButton5;
+    public static final int ELEVATOR_SLOW_DOWN_BUTTON = kButton6;
 
   }
 
