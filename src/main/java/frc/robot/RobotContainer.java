@@ -25,9 +25,9 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+//import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.ElevatorSubsystem2;
 import frc.robot.subsystems.ElevatorSubsystemYAGSL;
 
 import frc.robot.subsystems.ElevatorSubsystemSim;
@@ -48,8 +48,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 import edu.wpi.first.math.util.Units;
-
-
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -60,14 +59,20 @@ public class RobotContainer {
   // The robot's subsystems
 
   DriveSubsystem m_robotDrive;
-  private final ElevatorSubsystem2 m_elevSubsystem = new ElevatorSubsystem2();
-  //private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
 
+  private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
+/*<<<<<<< Updated upstream
+
+  // private final ElevatorSubsystemYAGSL m_elevator = new ElevatorSubsystemYAGSL();
+=======
+  private final Climber m_climber = new Climber();
   //private final ElevatorSubsystemYAGSL m_elevator = new ElevatorSubsystemYAGSL();
+>>>>>>> Stashed changes*/
 
   // The driver's controller
-  //XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
-  
+  // XboxController m_driverController = new
+  // XboxController(OIConstants.kDriverControllerPort);
+
   // Logitech joystick controller.
   Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort);
 
@@ -81,22 +86,26 @@ public class RobotContainer {
 
     if (RobotBase.isReal()) {
       m_robotDrive = new DriveSubsystem();
-    }
-    else {
+    } else {
       m_robotDrive = new SwerveSubsystemSim();
     }
 
-    //m_elevator.setGoal(0);
+    m_elevator.setGoal(0);
+    m_elevator.resetencoder();//Resets the encoder position to 0.
+    m_robotDrive.zeroHeading();
 
     // Register named commands
 
     NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
     NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
     NamedCommands.registerCommand("print hello", Commands.print("hello"));
+    NamedCommands.registerCommand("Lift the Elevator",new WaitCommand(5));//We can add commands like this, and yes it works as long as you can bear the 5 second wait.
+    NamedCommands.registerCommand("Dance", Commands.print("This will not be a command where the robot will spin around itself."));
+
 
     // Use event markers as triggers
     new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
-
+    new EventTrigger("Dance").onTrue(Commands.print("This will not be a command where the robot will spin around itself."));
     // Configure the button bindings
     configureButtonBindings();
 
@@ -104,8 +113,7 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Mode", autoChooser);
 
     // Configure default commands
-    
-    
+
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
@@ -135,94 +143,122 @@ public class RobotContainer {
             () -> m_robotDrive.setX(),
             m_robotDrive));
 
-    new JoystickButton(m_driverController, 3) 
+    new JoystickButton(m_driverController, 7)
         .whileTrue(new RunCommand(
-          () -> m_robotDrive.drive(0, Constants.slowSpeedMode, 0, false, m_driverController.getThrottle()), m_robotDrive));
+            () -> m_robotDrive.zeroHeading()));
 
-    new JoystickButton(m_driverController, 4) 
+    new JoystickButton(m_driverController, 3)
         .whileTrue(new RunCommand(
-          () -> m_robotDrive.drive(0, -Constants.slowSpeedMode, 0, false, m_driverController.getThrottle()), m_robotDrive));
+            () -> m_robotDrive.drive(0, Constants.slowSpeedMode, 0, false, m_driverController.getThrottle()),
+            m_robotDrive));
+
+    new JoystickButton(m_driverController, 4)
+        .whileTrue(new RunCommand(
+            () -> m_robotDrive.drive(0, -Constants.slowSpeedMode, 0, false, m_driverController.getThrottle()),
+            m_robotDrive));
     new JoystickButton(m_driverController, 12)
         .whileTrue(new RunCommand(
-          () -> m_robotDrive.spinAngle(30)));
+            () -> m_robotDrive.spinAngle(30)));
 
     new JoystickButton(m_driverController, 11)
         .whileTrue(new RunCommand(
-          () -> m_robotDrive.spinAngle(0)));    
+            () -> m_robotDrive.spinAngle(0)));
 
-    new JoystickButton(m_driverController, 5) 
+    new JoystickButton(m_driverController, 5)
         .whileTrue(new RunCommand(
-          () -> m_robotDrive.drive(Constants.slowSpeedMode, 0, 0, false, m_driverController.getThrottle()), m_robotDrive));
-          
-    new JoystickButton(m_driverController, 6) 
-          .whileTrue(new RunCommand(
-          () -> m_robotDrive.drive(-Constants.slowSpeedMode, 0, 0, false, m_driverController.getThrottle()), m_robotDrive));
-/*
+            () -> m_robotDrive.drive(Constants.slowSpeedMode, 0, 0, false, m_driverController.getThrottle()),
+            m_robotDrive));
+
+    new JoystickButton(m_driverController, 6)
+        .whileTrue(new RunCommand(
+            () -> m_robotDrive.drive(-Constants.slowSpeedMode, 0, 0, false, m_driverController.getThrottle()),
+            m_robotDrive));
+
     new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_UP_BUTTON)
         .whileTrue(new RunCommand(
-          () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMaxElevatorHeightMeters),
-          m_elevator));
+            () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMaxElevatorHeightMeters),
+            m_elevator));
 
     new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_DOWN_BUTTON)
+        .whileTrue(new RunCommand(
+            () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters),
+            m_elevator));
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SLOW_UP_BUTTON)
+      .whileTrue(new RunCommand(
+          () -> m_elevator.slowUp(),
+          m_elevator));
+
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SLOW_DOWN_BUTTON)
+      .whileTrue(new RunCommand(
+          () -> m_elevator.slowDown(),
+          m_elevator));
+    
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_L2_BUTTON)
     .whileTrue(new RunCommand(
-      () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters),
-      m_elevator));
-    */
-    new JoystickButton(m_driverController, 8)
-    .whileTrue(new RunCommand(
-      () -> m_elevSubsystem.manualElevatorUp(), m_elevSubsystem));
+        () -> m_elevator.OneThird(),
+        m_elevator));
 
-    new JoystickButton(m_driverController, 10)
-    .whileTrue(new RunCommand(
-      () -> m_elevSubsystem.manualElevatorDown(), m_elevSubsystem));
-    //m_elevator.atHeight(5, 0.1).whileTrue(Commands.print("Elevator Command!"));
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_L3_BUTTON)
+      .whileTrue(new RunCommand(
+          () -> m_elevator.TwoThird(),
+          m_elevator));
+
+      /*new JoystickButton(m_driverController, Constants.OperatorConstants.CLIMB)
+      .whileTrue(new RunCommand(
+        () -> m_climber.hook(),
+        m_elevator));*/
 
 
+    // m_elevator.atHeight(5, 0.1).whileTrue(Commands.print("Elevator Command!"));
 
-    // Add a button to run the example auto to SmartDashboard, this will also be in the auto chooser built above
-    //Add more paths here.
-    SmartDashboard.putData("Example Auto", new PathPlannerAuto("Example Auto"));
-    SmartDashboard.putData("Path to Knock off Algaes", new PathPlannerAuto("Path to Knock off Algaes"));
-    SmartDashboard.putData("Coral 1 Cycle", new PathPlannerAuto("Coral 1 Cycle"));
+    // Add a button to run the example auto to SmartDashboard, this will also be in
+    // the auto chooser built above
+    // Add more paths here.
+
+    SmartDashboard.putData("Reef 1 to Coral Station Left", new PathPlannerAuto("Reef 1 to Coral Station Left"));
+    SmartDashboard.putData("Reef 1 to Station Right", new PathPlannerAuto("Reef 1 to Station Right"));
+    SmartDashboard.putData("Reef 2 to Station Right", new PathPlannerAuto("Reef 2 to Station Right"));
+    SmartDashboard.putData("Reef 2 to Station Left", new PathPlannerAuto("Reef 2 to Station Left"));
+    SmartDashboard.putData("Reef 3 to Station Top", new PathPlannerAuto("Reef 2 to Station Top"));
+    SmartDashboard.putData("Reef 3 to Station Bottom", new PathPlannerAuto("Reef 2 to Station Bottom"));
+    SmartDashboard.putData("Reef 5 to station right", new PathPlannerAuto("Reef 5 to station right"));
+    SmartDashboard.putData("Reef 5 to station left", new PathPlannerAuto("Reef 5 to station left"));
+    SmartDashboard.putData("Reef 6 to station right", new PathPlannerAuto("Reef 6 to station right"));
+    SmartDashboard.putData("Reef 6 to station left", new PathPlannerAuto("Reef 6 to station left"));
     // Add a button to run pathfinding commands to SmartDashboard
     SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
-      new Pose2d(14.0, 6.5, Rotation2d.fromDegrees(0)), 
-      new PathConstraints(
-        4.0, 4.0, 
-        Units.degreesToRadians(360), Units.degreesToRadians(540)
-      ), 
-      0
-    ));
+        new Pose2d(14.0, 6.5, Rotation2d.fromDegrees(0)),
+        new PathConstraints(
+            4.0, 4.0,
+            Units.degreesToRadians(360), Units.degreesToRadians(540)),
+        0));
     SmartDashboard.putData("Pathfind to Scoring Pos", AutoBuilder.pathfindToPose(
-      new Pose2d(2.15, 3.0, Rotation2d.fromDegrees(180)), 
-      new PathConstraints(
-        4.0, 4.0, 
-        Units.degreesToRadians(360), Units.degreesToRadians(540)
-      ), 
-      0
-    ));
+        new Pose2d(2.15, 3.0, Rotation2d.fromDegrees(180)),
+        new PathConstraints(
+            4.0, 4.0,
+            Units.degreesToRadians(360), Units.degreesToRadians(540)),
+        0));
 
     // Add a button to SmartDashboard that will create and follow an on-the-fly path
     // This example will simply move the robot 2m in the +X field direction
     SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
       Pose2d currentPose = m_robotDrive.getPose();
-      
+
       // The rotation component in these poses represents the direction of travel
       Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
-      Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(2.0, 0.0)), new Rotation2d());
+      Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(-0.5, 0.5)), new Rotation2d());
 
       List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPos, endPos);
       PathPlannerPath path = new PathPlannerPath(
-        waypoints, 
-        new PathConstraints(
-          4.0, 4.0, 
-          Units.degreesToRadians(360), Units.degreesToRadians(540)
-        ),
-        null, // Ideal starting state can be null for on-the-fly paths
-        new GoalEndState(0.0, currentPose.getRotation())
-      );
+          waypoints,
+          new PathConstraints(
+              1.0, 1.0,
+              Units.degreesToRadians(360), Units.degreesToRadians(540)),
+          null, // Ideal starting state can be null for on-the-fly paths
+          new GoalEndState(0.0, currentPose.getRotation()));
 
-      // Prevent this path from being flipped on the red alliance, since the given positions are already correct
+      // Prevent this path from being flipped on the red alliance, since the given
+      // positions are already correct
       path.preventFlipping = true;
 
       AutoBuilder.followPath(path).schedule();
@@ -235,49 +271,52 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    m_elevator.resetencoder();//Resets encoder.
     return autoChooser.getSelected();
-
     // Autos auto = new Autos(m_robotDriveSim);
     // return auto.getAutonomousCommand();
-/*
-    // Create config for trajectory
-    TrajectoryConfig config = new TrajectoryConfig(
-        AutoConstants.kMaxSpeedMetersPerSecond,
-        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-        // Add kinematics to ensure max speed is actually obeyed
-        .setKinematics(DriveConstants.kDriveKinematics);
-
-    // An example trajectory to follow. All units in meters.
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0)),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-        // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(3, 0, new Rotation2d(0)),
-        config);
-
-    var thetaController = new ProfiledPIDController(
-        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-        exampleTrajectory,
-        m_robotDrive::getPose, // Functional interface to feed supplier
-        DriveConstants.kDriveKinematics,
-
-        // Position controllers
-        new PIDController(AutoConstants.kPXController, 0, 0),
-        new PIDController(AutoConstants.kPYController, 0, 0),
-        thetaController,
-        m_robotDrive::setModuleStates,
-        m_robotDrive);
-
-    // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
-
-    // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
-*/
+    /*
+     * // Create config for trajectory
+     * TrajectoryConfig config = new TrajectoryConfig(
+     * AutoConstants.kMaxSpeedMetersPerSecond,
+     * AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+     * // Add kinematics to ensure max speed is actually obeyed
+     * .setKinematics(DriveConstants.kDriveKinematics);
+     * 
+     * // An example trajectory to follow. All units in meters.
+     * Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+     * // Start at the origin facing the +X direction
+     * new Pose2d(0, 0, new Rotation2d(0)),
+     * // Pass through these two interior waypoints, making an 's' curve path
+     * List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+     * // End 3 meters straight ahead of where we started, facing forward
+     * new Pose2d(3, 0, new Rotation2d(0)),
+     * config);
+     * 
+     * var thetaController = new ProfiledPIDController(
+     * AutoConstants.kPThetaController, 0, 0,
+     * AutoConstants.kThetaControllerConstraints);
+     * thetaController.enableContinuousInput(-Math.PI, Math.PI);
+     * 
+     * SwerveControllerCommand swerveControllerCommand = new
+     * SwerveControllerCommand(
+     * exampleTrajectory,
+     * m_robotDrive::getPose, // Functional interface to feed supplier
+     * DriveConstants.kDriveKinematics,
+     * 
+     * // Position controllers
+     * new PIDController(AutoConstants.kPXController, 0, 0),
+     * new PIDController(AutoConstants.kPYController, 0, 0),
+     * thetaController,
+     * m_robotDrive::setModuleStates,
+     * m_robotDrive);
+     * 
+     * // Reset odometry to the starting pose of the trajectory.
+     * m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
+     * 
+     * // Run path following command, then stop at the end.
+     * return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0,
+     * false));
+     */
   }
 }

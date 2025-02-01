@@ -41,14 +41,17 @@ public final class Constants {
     public static final int kButton10 = 10;
     public static final int kButton11 = 11;
     public static final int kButton12 = 12;
+    public static final int placeholder = 100;
 
     // Drive Stick Buttons
     public static final int BRAKE_BUTTON = kButton1;
     public static final int ELEVATOR_UP_BUTTON = kButton7;
     public static final int ELEVATOR_DOWN_BUTTON = kButton8;
-    public static final int ELEVATOR_SLOW_UP_BUTTON = kButton5;
-    public static final int ELEVATOR_SLOW_DOWN_BUTTON = kButton6;
-
+    public static final int ELEVATOR_SLOW_UP_BUTTON = placeholder;
+    public static final int ELEVATOR_SLOW_DOWN_BUTTON = placeholder;
+    public static final int CLIMB = placeholder;
+    public static final int ELEVATOR_L2_BUTTON = placeholder;
+    public static final int ELEVATOR_L3_BUTTON = placeholder;
   }
 
   public static final class DriveConstants {
@@ -182,9 +185,9 @@ public final class Constants {
 
   public static class ElevatorConstants
   {
-    public static final double gearRatio = 15;
-    public static final double gearRadius = 0.819; //inches
-    public static final double encoderCount = 42; //counts per revolution
+    public static final double MillimetersToInches = 0.03937008;
+    public static final double MaxCurrent = 10;//In amps?
+
     public static final double kElevatorKp = 5;
     public static final double kElevatorKi = 0;
     public static final double kElevatorKd = 0;
@@ -195,17 +198,18 @@ public final class Constants {
     public static final double kElevatorkA = 0.0; // volt per acceleration (V/(m/s²))
 
     public static final double kElevatorGearing = 10.0;
-    public static final double kElevatorDrumRadius = Units.inchesToMeters(2.0);
+    public static final double kElevatorDrumRadius = 2.0;
     public static final double kCarriageMass = 4.0; // kg
 
     // Encoder is reset to measure 0 at the bottom, so minimum height is 0.
     public static final double kMinElevatorHeightMeters = 0.0;
+    
     //public static final double kMaxElevatorHeightMeters = 10.25;
-    public static final double kMaxElevatorHeightMeters = 1.27;
+    public static final double kMaxElevatorHeightMeters = 66.264;
 
-    public static final double kRotationToMeters = kElevatorDrumRadius * 2 * Math.PI;
+    public static final double kRotationToInches = Units.metersToInches(kElevatorDrumRadius * 2 * Math.PI);//Meters to Inches conversion factor
     public static final double kRPMtoMPS = (kElevatorDrumRadius * 2 * Math.PI) / 60;
-    public static final double kElevatorMaxVelocity = 3.5;
-    public static final double kElevatorMaxAcceleration = 2.5;
+    public static final double kElevatorMaxVelocity = Units.metersToInches(3.5);
+    public static final double kElevatorMaxAcceleration = Units.metersToInches(2.5);
   }
 }

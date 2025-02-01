@@ -88,11 +88,11 @@ public class ElevatorSubsystem extends SubsystemBase
   {
     SparkMaxConfig config = new SparkMaxConfig();
     config.encoder
-        .positionConversionFactor(ElevatorConstants.kRotationToInches); // Converts Rotations to Meters
+        .positionConversionFactor(ElevatorConstants.kRotationToInches); // Converts Rotations to Inches
         //.velocityConversionFactor(0); // Converts RPM to MPS
     config.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pid(ElevatorConstants.kElevatorKp, ElevatorConstants.kElevatorKi, ElevatorConstants.kElevatorKd)
+        .pid(ElevatorConstants.kElevatorKp, ElevatorConstants.kElevatorKi, ElevatorConstants.kElevatorKd)//Change PID with these constants.
         .maxMotion
         .maxVelocity(ElevatorConstants.kElevatorMaxVelocity)
         .maxAcceleration(ElevatorConstants.kElevatorMaxAcceleration)
@@ -101,7 +101,7 @@ public class ElevatorSubsystem extends SubsystemBase
     config.idleMode(SparkBaseConfig.IdleMode.kBrake);
 
     m_motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-    m_config.follow(m_motor,true);
+    m_config.follow(m_motor,false);
     m_motor2.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
     // Publish Mechanism2d to SmartDashboard
@@ -184,6 +184,16 @@ public class ElevatorSubsystem extends SubsystemBase
   /*
    * Stop the control loop and motor output.
    */
+  public void OneThird(){
+    if (m_encoder.getPosition()==Constants.ElevatorSimConstants.kMaxElevatorHeightMeters/3){
+      m_motor.set(0);
+    }
+  }
+  public void TwoThird(){
+    if (m_encoder.getPosition()==Constants.ElevatorSimConstants.kMaxElevatorHeightMeters/3*2){
+      m_motor.set(0);
+    }
+  }
   public void normalUp(){
     m_motor.set(-0.25);   
     //reachGoal(Constants.ElevatorSimConstants.kMaxElevatorHeightMeters);
@@ -199,6 +209,15 @@ public class ElevatorSubsystem extends SubsystemBase
   public void slowDown(){
     m_motor.set(0.05);
     ///reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters);
+  }
+  public void ToggleMove(){
+    if (m_encoder.getPosition()==Constants.ElevatorConstants.kMaxElevatorHeightMeters){
+      m_motor.set(0.05);
+    } else if (m_encoder.getPosition()==Constants.ElevatorConstants.kMinElevatorHeightMeters){
+      m_motor.set(-0.05);
+    } else {
+      m_motor.set(0.05);//Go down by default
+    }
   }
   public void stop(){
     m_motor.set(0);
@@ -227,6 +246,9 @@ public class ElevatorSubsystem extends SubsystemBase
       }
       m_motor.set(0);
     }  
+    SmartDashboard.putNumber("Eleavtor Position",m_encoder.getPosition());
+    SmartDashboard.putNumber("Eleavtor Position",m_encoder.getPosition()*Constants.ElevatorConstants.kRPMtoMPS);
+
   }
 
 }
