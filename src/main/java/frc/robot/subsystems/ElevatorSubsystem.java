@@ -30,6 +30,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
+import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.config.SparkBaseConfig;
+
+import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 
 public class ElevatorSubsystem extends SubsystemBase
@@ -46,9 +51,14 @@ public class ElevatorSubsystem extends SubsystemBase
           ElevatorConstants.kElevatorkV,
           ElevatorConstants.kElevatorkA);
   private final SparkMax                  m_motor      = new SparkMax(1, MotorType.kBrushless);
+  private final SparkMax                  m_motor2      = new SparkMax(3, MotorType.kBrushless);
   private final SparkClosedLoopController m_controller = m_motor.getClosedLoopController();
   private final RelativeEncoder           m_encoder    = m_motor.getEncoder();
   private final SparkMaxSim               m_motorSim   = new SparkMaxSim(m_motor, m_elevatorGearbox);
+  private final SparkClosedLoopController m_controller2 = m_motor2.getClosedLoopController();
+  private final RelativeEncoder           m_encoder2    = m_motor2.getEncoder();
+  private final SparkMaxSim               m_motorSim2   = new SparkMaxSim(m_motor2, m_elevatorGearbox);
+  private final SparkBaseConfig m_config = new SparkMaxConfig();
 
   // Simulation classes help us simulate what's going on, including gravity.
   private final ElevatorSim m_elevatorSim =
@@ -67,9 +77,9 @@ public class ElevatorSubsystem extends SubsystemBase
   // Create a Mechanism2d visualization of the elevator
   private final Mechanism2d         m_mech2d         = new Mechanism2d(20, 12);
   private final MechanismRoot2d     m_mech2dRoot     = m_mech2d.getRoot("Elevator Root", 10, 0);
-  private final MechanismLigament2d m_elevatorMech2d =
+  /*private final MechanismLigament2d m_elevatorMech2d =
       m_mech2dRoot.append(
-          new MechanismLigament2d("Elevator", m_elevatorSim.getPositionMeters(), 90));
+          new MechanismLigament2d("Elevator", m_elevatorSim.getPositionMeters(), 90));*/
 
   /**
    * Subsystem constructor.
@@ -78,8 +88,8 @@ public class ElevatorSubsystem extends SubsystemBase
   {
     SparkMaxConfig config = new SparkMaxConfig();
     config.encoder
-        .positionConversionFactor(ElevatorConstants.kRotationToMeters) // Converts Rotations to Meters
-        .velocityConversionFactor(ElevatorConstants.kRPMtoMPS); // Converts RPM to MPS
+        .positionConversionFactor(ElevatorConstants.kRotationToInches); // Converts Rotations to Meters
+        //.velocityConversionFactor(0); // Converts RPM to MPS
     config.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .pid(ElevatorConstants.kElevatorKp, ElevatorConstants.kElevatorKi, ElevatorConstants.kElevatorKd)
@@ -88,7 +98,11 @@ public class ElevatorSubsystem extends SubsystemBase
         .maxAcceleration(ElevatorConstants.kElevatorMaxAcceleration)
         .positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal)
         .allowedClosedLoopError(0.01);
+    config.idleMode(SparkBaseConfig.IdleMode.kBrake);
+
     m_motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+    m_config.follow(m_motor,true);
+    m_motor2.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
     // Publish Mechanism2d to SmartDashboard
     // To view the Elevator visualization, select Network Tables -> SmartDashboard -> Elevator Sim
@@ -98,7 +112,7 @@ public class ElevatorSubsystem extends SubsystemBase
   /**
    * Advance the simulation.
    */
-  public void simulationPeriodic()
+  /*public void simulationPeriodic()
   {
     // In this method, we update our simulation of what our elevator is doing
     // First, we set our "inputs" (voltages)
@@ -113,7 +127,7 @@ public class ElevatorSubsystem extends SubsystemBase
     // SimBattery estimates loaded battery voltages
     RoboRioSim.setVInVoltage(
         BatterySim.calculateDefaultBatteryLoadedVoltage(m_elevatorSim.getCurrentDrawAmps()));
-  }
+  }*/
 
   /**
    * Run control loop to reach and maintain goal.
@@ -126,6 +140,9 @@ public class ElevatorSubsystem extends SubsystemBase
                               ControlType.kPosition,
                               ClosedLoopSlot.kSlot0,
                               m_feedforward.calculate(m_encoder.getVelocity()));
+
+    //m_config.apply(m_controller);
+    //m_motor2.configure(m_config,ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
   }
 
 
@@ -164,26 +181,52 @@ public class ElevatorSubsystem extends SubsystemBase
     return run(() -> reachGoal(goal));
   }
 
-  /**
+  /*
    * Stop the control loop and motor output.
    */
-  public void stop()
-  {
-    m_motor.set(0.0);
+  public void normalUp(){
+    m_motor.set(-0.25);   
+    //reachGoal(Constants.ElevatorSimConstants.kMaxElevatorHeightMeters);
   }
-
+  public void normalDown(){
+    m_motor.set(0.25);
+    //reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters);
+  }
+  public void slowUp(){
+    m_motor.set(-0.05);
+    //reachGoal(Constants.ElevatorSimConstants.kMaxElevatorHeightMeters);
+  }
+  public void slowDown(){
+    m_motor.set(0.05);
+    ///reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters);
+  }
+  public void stop(){
+    m_motor.set(0);
+  }
+  public void resetencoder(){
+    m_encoder.setPosition(0);
+  }
   /**
    * Update telemetry, including the mechanism visualization.
    */
-  public void updateTelemetry()
+  /*public void updateTelemetry()
   {
     // Update elevator visualization with position
-    m_elevatorMech2d.setLength(RobotBase.isSimulation() ? m_elevatorSim.getPositionMeters() : m_encoder.getPosition());
+    //m_elevatorMech2d.setLength(m_encoder.getPosition());
   }
-
+*/
   @Override
   public void periodic()
   {
-    updateTelemetry();
+    //updateTelemetry();
+    if (m_motor.getAppliedOutput()>Constants.ElevatorConstants.MaxCurrent){//Or m_motor.getBusVoltage()
+      if (m_motor.get()<0){
+        m_encoder.setPosition(Constants.ElevatorConstants.kMaxElevatorHeightMeters);
+      } else {
+        m_encoder.setPosition(Constants.ElevatorConstants.kMinElevatorHeightMeters);
+      }
+      m_motor.set(0);
+    }  
   }
+
 }
