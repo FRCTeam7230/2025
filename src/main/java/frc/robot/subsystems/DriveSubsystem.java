@@ -11,9 +11,11 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.studica.frc.AHRS;
 import java.lang.Math;
+import java.text.DecimalFormat;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
@@ -26,6 +28,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
@@ -40,6 +43,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.utils.PPHolonomicDriveControllerCustom;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -72,7 +77,7 @@ public class DriveSubsystem extends SubsystemBase {
   PIDController rotController;
 
   // The gyro sensor
-  private final AHRS m_gyro = new AHRS(AHRS.NavXComType.kMXP_SPI, AHRS.NavXUpdateRate.k200Hz);
+  private final AHRS m_gyro = new AHRS(AHRS.NavXComType.kMXP_SPI, AHRS.NavXUpdateRate.k50Hz);
   DoubleArrayPublisher gyro_publisher = NetworkTableInstance.getDefault().getDoubleArrayTopic("Yaw, Angle, Roll, Pitch").publish();
   DoubleArrayPublisher error_publisher = NetworkTableInstance.getDefault().getDoubleArrayTopic("ERRORS: X, Y, Rotation").publish();
   BooleanPublisher gyro_calibrated = NetworkTableInstance.getDefault().getBooleanTopic("IsCalibearted").publish();
@@ -180,6 +185,85 @@ public class DriveSubsystem extends SubsystemBase {
     error_publisher.set(errors);
   }
 
+  private double[] getPositions(){
+    double[] positions = {m_frontLeft.getPosition().distanceMeters,
+                          m_frontRight.getPosition().distanceMeters,
+                          m_rearLeft.getPosition().distanceMeters,
+                          m_rearRight.getPosition().distanceMeters};
+
+    return positions;
+  }
+  
+
+  private static final double WHEEL_RADIUS_RAMP_RATE = 0.1;
+  private static final double WHEEL_RADIUS_MAX_VELOCITY = 0.5;
+
+  double driveBaseRadius = Math.hypot(DriveConstants.kTrackWidth / 2.0, DriveConstants.kWheelBase / 2.0);
+
+  public Command wheelRadiusCharacterization(){
+    SlewRateLimiter limiter = new SlewRateLimiter(WHEEL_RADIUS_RAMP_RATE);
+    WheelRadiusCharacterizationState state = new WheelRadiusCharacterizationState();
+
+    return Commands.parallel(
+      Commands.sequence(
+        Commands.runOnce(
+          () -> {
+            limiter.reset(0.0);
+          }),
+        
+        Commands.run(
+          () -> {
+            double speed = limiter.calculate(WHEEL_RADIUS_MAX_VELOCITY);
+            drive(0.0, 0.0, speed, false);
+          }
+        )),
+      
+      Commands.sequence(
+        Commands.waitSeconds(1.0),
+
+        Commands.runOnce(
+          () -> {
+            state.positions = getPositions();
+            state.lastAngle = m_gyro.getRotation2d();
+            state.gyroDelta = 0.0;
+          }),
+
+        Commands.run(
+          () -> {
+            var rotation = m_gyro.getRotation2d();
+            state.gyroDelta += Math.abs(rotation.minus(state.lastAngle).getRadians());
+            state.lastAngle = rotation;
+
+            System.out.println("Gyro Delta: " + Units.radiansToDegrees(state.gyroDelta));
+            System.out.println("Rotation: " + rotation.getDegrees());
+          })
+
+          .finallyDo(
+            () -> {
+              double[] position = getPositions();
+              double wheelDelta = 0.0;
+
+              for (int i = 0; i < 4; i++){
+                wheelDelta += Math.abs(position[i] - state.positions[i]) / 4.0;
+              }
+
+              double wheelRadius = (state.gyroDelta * driveBaseRadius) / wheelDelta;
+
+              System.out.println("WHEEL DELTA: " + wheelDelta + " radians");
+              System.out.println("GYRO DELTA: " + state.gyroDelta + " radians, " + Units.radiansToDegrees(state.gyroDelta));
+              System.out.println("WHEEL RADIUS: " + wheelRadius + " meters, " + Units.metersToInches(wheelRadius) + " inches");
+            }
+          )
+      )
+    );
+  }
+
+  private static class WheelRadiusCharacterizationState {
+    double[] positions = new double[4];
+    Rotation2d lastAngle = new Rotation2d();
+    double gyroDelta = 0.0;
+  }
+
   /**
    * Returns the currently-estimated pose of the robot.
    *
@@ -215,7 +299,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param fieldRelative Whether the provided x and y speeds are relative to the
    *                      field.
    */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, double speedMult) {
+  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     // Convert the commanded speeds into the correct units for the drivetrain
     double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond / Constants.movementDivider;
     double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond / Constants.movementDivider;
