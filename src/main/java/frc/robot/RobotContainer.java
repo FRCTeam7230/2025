@@ -27,6 +27,7 @@ import frc.robot.Constants.OIConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem2;
 import frc.robot.subsystems.ElevatorSubsystemYAGSL;
 
 import frc.robot.subsystems.ElevatorSubsystemSim;
@@ -59,8 +60,8 @@ public class RobotContainer {
   // The robot's subsystems
 
   DriveSubsystem m_robotDrive;
-
-  private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
+  private final ElevatorSubsystem2 m_elevSubsystem = new ElevatorSubsystem2();
+  //private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
 
   //private final ElevatorSubsystemYAGSL m_elevator = new ElevatorSubsystemYAGSL();
 
@@ -85,7 +86,7 @@ public class RobotContainer {
       m_robotDrive = new SwerveSubsystemSim();
     }
 
-    m_elevator.setGoal(0);
+    //m_elevator.setGoal(0);
 
     // Register named commands
 
@@ -156,7 +157,7 @@ public class RobotContainer {
     new JoystickButton(m_driverController, 6) 
           .whileTrue(new RunCommand(
           () -> m_robotDrive.drive(-Constants.slowSpeedMode, 0, 0, false, m_driverController.getThrottle()), m_robotDrive));
-
+/*
     new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_UP_BUTTON)
         .whileTrue(new RunCommand(
           () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMaxElevatorHeightMeters),
@@ -166,8 +167,14 @@ public class RobotContainer {
     .whileTrue(new RunCommand(
       () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters),
       m_elevator));
+    */
+    new JoystickButton(m_driverController, 8)
+    .whileTrue(new RunCommand(
+      () -> m_elevSubsystem.manualElevatorUp(), m_elevSubsystem));
 
-
+    new JoystickButton(m_driverController, 10)
+    .whileTrue(new RunCommand(
+      () -> m_elevSubsystem.manualElevatorDown(), m_elevSubsystem));
     //m_elevator.atHeight(5, 0.1).whileTrue(Commands.print("Elevator Command!"));
 
 

@@ -1,6 +1,10 @@
 package frc.robot.subsystems;
+import edu.wpi.first.networktables.DoubleArrayPublisher;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -13,22 +17,40 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
-public class ElevatorSubsystem2 extends TimedRobot{
+public class ElevatorSubsystem2 extends SubsystemBase{
   private SparkMax motor1;
   private SparkMax motor2;
   private SparkMaxConfig motorConfig1;
   private SparkClosedLoopController closedLoopController;
   private RelativeEncoder encoder;
   private SparkBaseConfig motorConfig2;
+  
+  DoubleArrayPublisher encoder1_publisher = NetworkTableInstance.getDefault().getDoubleArrayTopic("encoder1value").publish();
+  DoubleArrayPublisher encoder2_publisher = NetworkTableInstance.getDefault().getDoubleArrayTopic("encoder2value").publish();
 
+  public double EncoderCounttoInches(double numRevolution) {
+    numRevolution = encoder.getPosition()/42;
+    double numRevShaft = numRevolution/15;
+    double elevHeight = numRevShaft*2*Math.PI*Constants.ElevatorConstants.gearRadius;
+    return elevHeight;
+  }
+
+  public double InchestoEncoderCount(double height) {
+    double revShaft = height/(2*Math.PI*Constants.ElevatorConstants.gearRadius);
+    double rev = revShaft*15;
+    double encoderCount = rev*42;
+    return encoderCount;
+  }
+  
   public ElevatorSubsystem2() {
     /*
      * Initialize the SPARK MAX and get its encoder and closed loop controller
      * objects for later use.
      */
     motor1 = new SparkMax(1, MotorType.kBrushless);
-    motor2 = new SparkMax(2, MotorType.kBrushless);
+    motor2 = new SparkMax(3, MotorType.kBrushless);
     closedLoopController = motor1.getClosedLoopController();
     encoder = motor1.getEncoder();
     
@@ -39,7 +61,7 @@ public class ElevatorSubsystem2 extends TimedRobot{
      * configuration parameters for the SPARK MAX that we will set below.
      */
     motorConfig1 = new SparkMaxConfig();
-
+    motorConfig1.idleMode(IdleMode.kBrake);
     /*
      * Configure the encoder. For this specific example, we are using the
      * integrated encoder of the NEO, and we don't need to configure it. If
@@ -49,6 +71,7 @@ public class ElevatorSubsystem2 extends TimedRobot{
     motorConfig1.encoder
         .positionConversionFactor(1)
         .velocityConversionFactor(1);
+
 
     /*
      * Configure the closed loop controller. We want to make sure we set the
@@ -80,6 +103,7 @@ public class ElevatorSubsystem2 extends TimedRobot{
         .maxVelocity(6000, ClosedLoopSlot.kSlot1)
         .allowedClosedLoopError(1, ClosedLoopSlot.kSlot1);
 
+        
     /*
      * Apply the configuration to the SPARK MAX.
      *
@@ -102,8 +126,18 @@ public class ElevatorSubsystem2 extends TimedRobot{
     SmartDashboard.setDefaultBoolean("Reset Encoder", false);
   }
 
-  @Override
-  public void teleopPeriodic() {
+  public void manualElevatorUp() {
+    motor1.set(-0.05);
+    //motorConfig1.idleMode(IdleMode.kBrake);
+  }
+
+  public void manualElevatorDown() {
+    motor1.set(0.05);
+    //motorConfig1.idleMode(IdleMode.kBrake);
+  }
+
+
+  public void periodic() {
     if (SmartDashboard.getBoolean("Control Mode", false)) {
       /*
        * Get the target velocity from SmartDashboard and set it as the setpoint
@@ -123,11 +157,6 @@ public class ElevatorSubsystem2 extends TimedRobot{
       closedLoopController.setReference(targetPosition, ControlType.kMAXMotionPositionControl,
           ClosedLoopSlot.kSlot0);
     }
-  }
-
-  @Override
-  public void robotPeriodic() {
-    // Display encoder position and velocity
     SmartDashboard.putNumber("Actual Position", encoder.getPosition());
     SmartDashboard.putNumber("Actual Velocity", encoder.getVelocity());
 
@@ -135,6 +164,13 @@ public class ElevatorSubsystem2 extends TimedRobot{
       SmartDashboard.putBoolean("Reset Encoder", false);
       // Reset the encoder position to 0
       encoder.setPosition(0);
-    }
+    // if (motor1.getOutputCurrent() > 10.0 && ) {
+    double [] encoder1value = {(double) encoder.getPosition(), 
+      };
+    encoder1_publisher.set(encoder1value);
+    // }
   }
+
+  }
+  
 }

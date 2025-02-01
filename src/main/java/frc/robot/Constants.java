@@ -180,7 +180,9 @@ public final class Constants {
 
   public static class ElevatorConstants
   {
-
+    public static final double gearRatio = 15;
+    public static final double gearRadius = 0.819; //inches
+    public static final double encoderCount = 42; //counts per revolution
     public static final double kElevatorKp = 5;
     public static final double kElevatorKi = 0;
     public static final double kElevatorKd = 0;
