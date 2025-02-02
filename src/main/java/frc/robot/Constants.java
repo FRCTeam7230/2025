@@ -185,31 +185,29 @@ public final class Constants {
 
   public static class ElevatorConstants
   {
-    public static final double MillimetersToInches = 0.03937008;
-    public static final double MaxCurrent = 10;//In amps?
+    public static final double MaxCurrent = 10;//In amps? TODO: This is too low of a max current, will need to test, but maybe 60 to start
 
-    public static final double kElevatorKp = 5;
+    public static final double kElevatorKp = 0.5; //TODO: Will need to tune this, I lowered it to start 
     public static final double kElevatorKi = 0;
     public static final double kElevatorKd = 0;
 
+    // Note: All of these should be 0.0 except kG - which we will need to determine empirically
     public static final double kElevatorkS = 0.0; // volts (V)
-    public static final double kElevatorkG = 0.762; // volts (V)
-    public static final double kElevatorkV = 0.762; // volt per velocity (V/(m/s))
+    public static final double kElevatorkG = 0.0; // volts (V) //TODO: Will need to tune
+    public static final double kElevatorkV = 0.0; // volt per velocity (V/(m/s))
     public static final double kElevatorkA = 0.0; // volt per acceleration (V/(m/s²))
 
-    public static final double kElevatorGearing = 10.0;
-    public static final double kElevatorDrumRadius = 2.0;
+    public static final double kElevatorGearing = 10.0; //TODO: Check this with hardware/CAD, I thought we were told 15:1 ?
+    public static final double kElevatorDrumRadius = 2.0; //TODO: Check this with hardware/CAD, I thought hardware measured 1.5?
     public static final double kCarriageMass = 4.0; // kg
 
     // Encoder is reset to measure 0 at the bottom, so minimum height is 0.
-    public static final double kMinElevatorHeightMeters = 0.0;
-    
-    //public static final double kMaxElevatorHeightMeters = 10.25;
-    public static final double kMaxElevatorHeightMeters = 66.264;
+    public static final double kMinElevatorHeightInches = 0.0;
+    public static final double kMaxElevatorHeightInches = 66.264;
 
-    public static final double kRotationToInches = Units.metersToInches(kElevatorDrumRadius * 2 * Math.PI);//Meters to Inches conversion factor
-    public static final double kRPMtoMPS = (kElevatorDrumRadius * 2 * Math.PI) / 60;
-    public static final double kElevatorMaxVelocity = Units.metersToInches(3.5);
-    public static final double kElevatorMaxAcceleration = Units.metersToInches(2.5);
+    //TODO: These conversions aren't right. You need the gearing 
+    public static final double kRotationToInches = kElevatorDrumRadius * 2 * Math.PI / kElevatorGearing;//Meters to Inches conversion factor
+    public static final double kElevatorMaxVelocity = Units.metersToInches(3.5); // TODO: Need a good inches per sec max, start slow (10?), remove 'meters to inches'
+    public static final double kElevatorMaxAcceleration = Units.metersToInches(2.5); // TODO: Need a good inches per sec per sec max, start slow (10?), remove 'meters to inches'
   }
 }

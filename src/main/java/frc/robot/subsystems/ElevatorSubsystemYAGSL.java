@@ -221,7 +221,7 @@ public class ElevatorSubsystemYAGSL extends SubsystemBase
       /*m_encoder.setPosition(convertDistanceToRotations(Millimeters.of(
                                         m_elevatorLaserCan.getMeasurement().distance_mm + m_laserCanOffsetMillimeters))
                                     .in(Rotations));*/
-      m_encoder.setPosition(Constants.ElevatorConstants.kMaxElevatorHeightMeters);
+      m_encoder.setPosition(Constants.ElevatorConstants.kMaxElevatorHeightInches);
     }
   }
 
@@ -326,9 +326,9 @@ public class ElevatorSubsystemYAGSL extends SubsystemBase
   {
     if (m_motor.getAppliedOutput()>Constants.ElevatorConstants.MaxCurrent){//Or m_motor.getBusVoltage()
       if (m_motor.get()<0){
-        m_encoder.setPosition(Constants.ElevatorConstants.kMaxElevatorHeightMeters);
+        m_encoder.setPosition(Constants.ElevatorConstants.kMaxElevatorHeightInches);
       } else {
-        m_encoder.setPosition(Constants.ElevatorConstants.kMinElevatorHeightMeters);
+        m_encoder.setPosition(Constants.ElevatorConstants.kMinElevatorHeightInches);
       }
       m_motor.set(0);
     }  

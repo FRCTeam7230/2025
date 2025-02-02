@@ -90,7 +90,6 @@ public class RobotContainer {
       m_robotDrive = new SwerveSubsystemSim();
     }
 
-    m_elevator.setGoal(0);
     m_elevator.resetencoder();//Resets the encoder position to 0.
     m_robotDrive.zeroHeading();
 
