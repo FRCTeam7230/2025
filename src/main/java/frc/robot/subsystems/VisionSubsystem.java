@@ -23,6 +23,8 @@ public class VisionSubsystem extends SubsystemBase {
   //This value is for the reeef pipe detection of width. It is the amount of extra pixels blocked from the camera view above the second-highest pipe.
   //Adjust this if the robot does not detect a pipe.
   private static int safetyPixels = 10;
+
+  private static boolean isTargetValid;
 //initializes the camera feed to the vision system
   public VisionSubsystem(UsbCameraSubsystem camSys)
   {
@@ -45,8 +47,10 @@ public class VisionSubsystem extends SubsystemBase {
   {
   Mat latest = getLatestFrame();
 
-  if(latest == null) return new Rect(0,0,0,0);
-
+  if(latest == null) {
+    isTargetValid = false;
+    return new Rect(0,0,0,0);
+  }
 
   reefDetection.process(latest);
   ArrayList<MatOfPoint> contoursResult = reefDetection.filterContoursOutput();
@@ -90,6 +94,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
   Rect result = new Rect(largestBox.tl(),new Point(largestBox.br().x,br));
+  isTargetValid = true;
   return result;
   }
 // returns the pixel width of reef pipe target
@@ -178,25 +183,10 @@ public static double getReefTargetOffset()
   return pixelOffset/pixelsScale;
 }
 
-
-  /**
-   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
-   *
-   * @return value of some boolean subsystem state, such as a digital sensor.
-   */
-  public boolean exampleCondition() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
+  public boolean isTargetValid()
+  {
+    return isTargetValid;
   }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
   
-
-  @Override
-  public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
-  }
 }
