@@ -90,7 +90,6 @@ public class RobotContainer {
       m_robotDrive = new SwerveSubsystemSim();
     }
 
-    m_elevator.resetEncoder();//Resets the encoder position to 0.
     m_robotDrive.zeroHeading();
 
     // Register named commands
@@ -125,7 +124,9 @@ public class RobotContainer {
                 m_driverController.getThrottle()),
             m_robotDrive));
   }
-
+  public Command resetEncoderCommand(){
+    return m_elevator.resetEncoderCommand();//Resets the encoder position to 0.
+  }
   /**
    * Use this method to define your button->command mappings. Buttons can be
    * created by

@@ -113,7 +113,9 @@ public class ElevatorSubsystem extends SubsystemBase
   public void resetEncoder(){
     m_encoder.setPosition(0);
   }
-
+  public Command resetEncoderCommand(){
+    return run (() -> resetEncoder());
+  }
   public ElevatorSubsystem()
   {
   

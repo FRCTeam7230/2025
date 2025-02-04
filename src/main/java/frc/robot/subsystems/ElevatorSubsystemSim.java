@@ -112,7 +112,7 @@ public class ElevatorSubsystemSim extends SubsystemBase implements AutoCloseable
   {
     return run(() -> reachGoal(goal));
   }
-
+  
   /** Advance the simulation. */
   public void simulationPeriodic() {
 
