@@ -22,7 +22,7 @@ public class VisionSubsystem extends SubsystemBase {
   private static double lastRangeValue = 0;
   //This value is for the reeef pipe detection of width. It is the amount of extra pixels blocked from the camera view above the second-highest pipe.
   //Adjust this if the robot does not detect a pipe.
-  private static int safetyPixels = 20;
+  private static int safetyPixels = 10;
 //initializes the camera feed to the vision system
   public VisionSubsystem(UsbCameraSubsystem camSys)
   {
@@ -34,7 +34,13 @@ public class VisionSubsystem extends SubsystemBase {
   {
     return cameraSubsystem.getLatestFrame();
   }
+
+
+
   //returns bounding rect of reef pipe target
+  //this works by first running the vision pipeline to find all purple contours in frame. Then it applies some filtering by slicing o all the camera feed except
+  // for the top of the tallest contour. This allows us to find the width of the closest reef pipe without having to worry about interference/ other pipes in frame. 
+  
   public static Rect locateReefPipeTarget()
   {
   Mat latest = getLatestFrame();
@@ -44,35 +50,38 @@ public class VisionSubsystem extends SubsystemBase {
 
   reefDetection.process(latest);
   ArrayList<MatOfPoint> contoursResult = reefDetection.filterContoursOutput();
-  //find largest contour
+  //find largest contours
   Rect largestBox = new Rect(0,0,0,0);
   Rect secondLargest = new Rect(0,0,0,0);
   for(int i = 0; i< contoursResult.size(); i++)
   {
     Rect bound = Imgproc.boundingRect(contoursResult.get(i));
-    double area = bound.area();
-    if(area>largestBox.area())
+    //uses height of rect as comparison metric
+    double height = bound.br().y-bound.tl().y;
+    if(height>largestBox.br().y-largestBox.tl().y)
     {
       secondLargest = largestBox;
       largestBox = bound;
     }
   }
   double br = largestBox.br().y;
+  //chop off bottom of frame
   if(secondLargest.area()>0)
   {
     Mat copied = new Mat();
     latest.copyTo(copied);
     int h = (int)(480-secondLargest.tl().y)+safetyPixels;
+    //inefficient chopping code - draws a really thick line across bottom of frame. 
     Imgproc.rectangle(copied, new Rect(new Point(0,480),new Point(640,479)), new Scalar(0,0,0),h*2);
   
     //run second vision pass to get more accurate results. 
     reefDetection.process(copied);
-    contoursResult = reefDetection.filterContoursOutput();
+    ArrayList<MatOfPoint> newContoursResult = reefDetection.filterContoursOutput();
     //find largest contour
     largestBox = new Rect(0,0,0,0);
-    for(int i = 0; i< contoursResult.size(); i++)
+    for(int i = 0; i< newContoursResult.size(); i++)
     {
-      Rect bound = Imgproc.boundingRect(contoursResult.get(i));
+      Rect bound = Imgproc.boundingRect(newContoursResult.get(i));
       double area = bound.area();
       if(area>largestBox.area())
       {
@@ -151,6 +160,22 @@ private static Point getCenter(Rect rect)
 public static Point getReeftargetCenter()
 {
   return getCenter(VisionSubsystem.locateReefPipeTarget());
+}
+/**
+ * 
+ * @return pixels from camera center to reef pipe center horizontally. Positive means pipe is to the right
+ */
+public static double getPipePixelOffset()
+{
+  double pix = getReeftargetCenter().x;
+  double offset = pix-320;
+  return offset;
+}
+public static double getReefTargetOffset()
+{
+  double pixelOffset = getPipePixelOffset();
+  double pixelsScale = getPixelsWidth()/1.25;
+  return pixelOffset/pixelsScale;
 }
 
 

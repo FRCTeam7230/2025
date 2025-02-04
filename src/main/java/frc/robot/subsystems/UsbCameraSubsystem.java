@@ -144,6 +144,7 @@ private void StartCamera(int dev)
           {
             processVideoFeed(mat);
                 SmartDashboard.putNumber("EstimatedDistanceFromPipe:",VisionSubsystem.getReefPipeDistance());
+                SmartDashboard.putNumber("Estimated horizontal offset",VisionSubsystem.getReefTargetOffset());
           }
         
 
