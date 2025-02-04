@@ -72,8 +72,8 @@ public class ElevatorSubsystem extends SubsystemBase
           ElevatorConstants.kElevatorGearing,
           ElevatorConstants.kCarriageMass,
           ElevatorConstants.kElevatorDrumRadius,
-          ElevatorConstants.kMinElevatorHeightInches,
-          ElevatorConstants.kMaxElevatorHeightInches,
+          ElevatorConstants.kMinRealElevatorHeightMeters,
+          ElevatorConstants.kMaxRealElevatorHeightMeters,
           true,
           0,
           0.01,
@@ -116,6 +116,7 @@ public class ElevatorSubsystem extends SubsystemBase
 
   public ElevatorSubsystem()
   {
+  
     m_config_motor1.encoder
         .positionConversionFactor(ElevatorConstants.kRotationToInches); // Converts Rotations to Inches
         //.velocityConversionFactor(0); // Converts RPM to MPS
@@ -222,22 +223,14 @@ public class ElevatorSubsystem extends SubsystemBase
   // TODO: THese should be referenceing the real robot heights, not the sim robot heights - fixed
   // Or include logic for if real use the real heights, if sim use the sim heights
   public void OneThird(){
-    m_motor1.set(-0.25);
-    setGoal(InchestoEncoderCount(Constants.ElevatorConstants.kMaxElevatorHeightInches/3)); //set goal or reach goal?
-    m_motor1.stopMotor();
     
-    if (m_encoder.getPosition()==InchestoEncoderCount(Constants.ElevatorConstants.kMaxElevatorHeightInches)/3){
-      m_motor1.stopMotor();
-    }
+    
+    
   }
   public void TwoThird(){
-    m_motor1.set(0.25);
-    reachGoal(InchestoEncoderCount(Constants.ElevatorConstants.kMaxElevatorHeightInches * 2/3));
-    m_motor1.stopMotor();
+    
 
-    if (m_encoder.getPosition()==InchestoEncoderCount(Constants.ElevatorConstants.kMaxElevatorHeightInches) * 2/3){
-      m_motor1.stopMotor();
-    }
+    
   }
 
   //These are good to use the set function
@@ -260,7 +253,7 @@ public class ElevatorSubsystem extends SubsystemBase
   }
 
   //TODO: Remove this function? It's not used and I'm not sure what exactly it's doing
-  public void ToggleMove(){ //need to ask yoshito about this
+  /*public void ToggleMove(){ //need to ask yoshito about this
     if (m_encoder.getPosition()==InchestoEncoderCount(Constants.ElevatorConstants.kMaxElevatorHeightInches)){
       m_motor1.set(0.05);
     } else if (m_encoder.getPosition()==Constants.ElevatorConstants.kMinElevatorHeightInches){
@@ -268,7 +261,7 @@ public class ElevatorSubsystem extends SubsystemBase
     } else {
       m_motor1.set(0.05);//Go down by default
     }
-  }
+  }*/
 
   /**
    * Update telemetry, including the mechanism visualization.
@@ -290,11 +283,11 @@ public class ElevatorSubsystem extends SubsystemBase
       // TODO: Replace get with getAppliedOutput or getBusVoltage - tbd which
       m_motor1.set(0);
       if (m_motor1.getBusVoltage() < 0) {
-        m_encoder.setPosition(Constants.ElevatorConstants.kMaxElevatorHeightInches);
+        m_encoder.setPosition(Constants.ElevatorConstants.kMaxRealElevatorHeightMeters);
       }
 
       else {
-        m_encoder.setPosition(Constants.ElevatorConstants.kMinElevatorHeightInches);
+        m_encoder.setPosition(Constants.ElevatorConstants.kMinRealElevatorHeightMeters);
       }
     }  
     SmartDashboard.putNumber("Elevator Position (Inches)", m_encoder.getPosition());

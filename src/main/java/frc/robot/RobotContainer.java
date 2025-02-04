@@ -182,6 +182,17 @@ public class RobotContainer {
         .whileTrue(new RunCommand(
             () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters),
             m_elevator));
+    
+    new JoystickButton(m_driverController, 11)
+            .whileTrue(new RunCommand(
+                () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxRealElevatorHeightMeters/3),
+                m_elevator));
+    
+    new JoystickButton(m_driverController, 12)
+            .whileTrue(new RunCommand(
+                () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMinRealElevatorHeightMeters * 2/3),
+                m_elevator));
+
     new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SLOW_UP_BUTTON)
       .whileTrue(new RunCommand(
           () -> m_elevator.ManualElevatorUp(),

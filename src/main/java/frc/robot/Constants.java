@@ -209,8 +209,8 @@ public final class Constants {
     public static final double kCarriageMass = 4.0; // kg
 
     // Encoder is reset to measure 0 at the bottom, so minimum height is 0.
-    public static final double kMinElevatorHeightInches = 0.0;
-    public static final double kMaxElevatorHeightInches = 66.264;
+    public static final double kMinRealElevatorHeightMeters = Units.inchesToMeters(0);
+    public static final double kMaxRealElevatorHeightMeters = Units.inchesToMeters(66.264);
 
     //TODO: These conversions aren't right. You need the gearing 
     public static final double kRotationToInches = kElevatorDrumRadius * 2 * Math.PI / kElevatorGearing;//Meters to Inches conversion factor
