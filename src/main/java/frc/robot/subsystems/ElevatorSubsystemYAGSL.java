@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import static au.grapplerobotics.interfaces.LaserCanInterface.LASERCAN_STATUS_VALID_MEASUREMENT;
 import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.InchesPerSecond;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Millimeters;
@@ -30,7 +29,6 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
@@ -69,16 +67,15 @@ public class ElevatorSubsystemYAGSL extends SubsystemBase
           ElevatorConstants.kElevatorkG,
           ElevatorConstants.kElevatorkV,
           ElevatorConstants.kElevatorkA);
-  private final SparkMax                  m_motor      = new SparkMax(1, MotorType.kBrushless);
-  private final SparkMax                  m_motor2      = new SparkMax(3, MotorType.kBrushless);
+  private final SparkMax                  m_motor      = new SparkMax(4, MotorType.kBrushless);
   private final SparkClosedLoopController m_controller = m_motor.getClosedLoopController();
   private final RelativeEncoder           m_encoder    = m_motor.getEncoder();
   private final SparkMaxSim               m_motorSim   = new SparkMaxSim(m_motor, m_elevatorGearbox);
-  private final SparkMaxConfig            m_config = new SparkMaxConfig();
+
   // Sensors
   private final LaserCan         m_elevatorLaserCan          = new LaserCan(0);
   private final LaserCanSim      m_elevatorLaserCanSim       = new LaserCanSim(0);
-  private final double           m_laserCanOffsetMillimeters = 3;
+  private final double           m_laserCanOffsetMillimeters = Inches.of(3).in(Millimeters);
   private final RegionOfInterest m_laserCanROI               = new RegionOfInterest(0, 0, 16, 16);
   private final TimingBudget     m_laserCanTimingBudget      = TimingBudget.TIMING_BUDGET_20MS;
   private final Alert            m_laserCanFailure           = new Alert("LaserCAN failed to configure.",
@@ -88,18 +85,18 @@ public class ElevatorSubsystemYAGSL extends SubsystemBase
   private       DIOSim       m_limitSwitchLowSim = null;
 
   // Simulation classes help us simulate what's going on, including gravity.
-  /*private final ElevatorSim m_elevatorSim =
+  private final ElevatorSim m_elevatorSim =
       new ElevatorSim(
           m_elevatorGearbox,
           ElevatorConstants.kElevatorGearing,
           ElevatorConstants.kCarriageMass,
           ElevatorConstants.kElevatorDrumRadius,
-          ElevatorConstants.kMinElevatorHeightMeters,
-          ElevatorConstants.kMaxElevatorHeightMeters,
+          ElevatorConstants.kMinElevatorHeightInches,
+          ElevatorConstants.kMaxElevatorHeightInches,
           true,
           0,
           0.01,
-          0.0);*/
+          0.0);
 
   // Create a Mechanism2d visualization of the elevator
 /*
@@ -110,12 +107,12 @@ public class ElevatorSubsystemYAGSL extends SubsystemBase
           new MechanismLigament2d("Elevator", m_elevatorSim.getPositionMeters(), 90));
 */
   private final Mechanism2d m_mech2d =
-      new Mechanism2d(10, 51);
+      new Mechanism2d(Units.inchesToMeters(10), Units.inchesToMeters(51));
   private final MechanismRoot2d m_mech2dRoot =
-      m_mech2d.getRoot("Elevator Root", 5, 0.5);
-  /*private final MechanismLigament2d m_elevatorMech2d =
+      m_mech2d.getRoot("Elevator Root", Units.inchesToMeters(5), Units.inchesToMeters(0.5));
+  private final MechanismLigament2d m_elevatorMech2d =
       m_mech2dRoot.append(
-          new MechanismLigament2d("Elevator", m_elevatorSim.getPositionMeters(), 90));*/
+          new MechanismLigament2d("Elevator", m_elevatorSim.getPositionMeters(), 90));
 
   /**
    * Subsystem constructor.
@@ -131,14 +128,10 @@ public class ElevatorSubsystemYAGSL extends SubsystemBase
         .pid(ElevatorConstants.kElevatorKp, ElevatorConstants.kElevatorKi, ElevatorConstants.kElevatorKd)
         .outputRange(-1, 1)
         .maxMotion
-        .maxVelocity(convertDistanceToRotations(Inches.of(1)).per(Second).in(RPM))
-        .maxAcceleration(convertDistanceToRotations(Inches.of(2)).per(Second).per(Second)
+        .maxVelocity(convertDistanceToRotations(Meters.of(1)).per(Second).in(RPM))
+        .maxAcceleration(convertDistanceToRotations(Meters.of(2)).per(Second).per(Second)
                                  .in(RPM.per(Second)));
-    config.idleMode(SparkBaseConfig.IdleMode.kBrake);
-
     m_motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-    m_config.follow(m_motor,true);
-    m_motor2.configure(m_config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
     // Publish Mechanism2d to SmartDashboard
     // To view the Elevator visualization, select Network Tables -> SmartDashboard -> Elevator Sim
@@ -163,7 +156,7 @@ public class ElevatorSubsystemYAGSL extends SubsystemBase
   /**
    * Advance the simulation.
    */
-  /*public void simulationPeriodic()
+  public void simulationPeriodic()
   {
     // In this method, we update our simulation of what our elevator is doing
     // First, we set our "inputs" (voltages)
@@ -194,7 +187,7 @@ public class ElevatorSubsystemYAGSL extends SubsystemBase
     ));
 
   }
-*/
+
   /**
    * Seed the elevator motor encoder with the sensed position from the LaserCAN which tells us the height of the
    * elevator.
@@ -203,7 +196,6 @@ public class ElevatorSubsystemYAGSL extends SubsystemBase
   {
     if (RobotBase.isSimulation())
     {
-      /* 
       // Get values from Simulation
       Measurement measurement = m_elevatorLaserCanSim.getMeasurement();
       // Change distance field
@@ -215,13 +207,11 @@ public class ElevatorSubsystemYAGSL extends SubsystemBase
       m_encoder.setPosition(convertDistanceToRotations(Millimeters.of(
                                         m_elevatorLaserCanSim.getMeasurement().distance_mm + m_laserCanOffsetMillimeters))
                                     .in(Rotations));
-                                    */
     } else
     {
-      /*m_encoder.setPosition(convertDistanceToRotations(Millimeters.of(
+      m_encoder.setPosition(convertDistanceToRotations(Millimeters.of(
                                         m_elevatorLaserCan.getMeasurement().distance_mm + m_laserCanOffsetMillimeters))
-                                    .in(Rotations));*/
-      m_encoder.setPosition(Constants.ElevatorConstants.kMaxElevatorHeightInches);
+                                    .in(Rotations));
     }
   }
 
@@ -232,12 +222,12 @@ public class ElevatorSubsystemYAGSL extends SubsystemBase
    */
   public void reachGoal(double goal)
   {
-    m_controller.setReference(convertDistanceToRotations(Inches.of(goal)).in(Rotations),
+    m_controller.setReference(convertDistanceToRotations(Meters.of(goal)).in(Rotations),
                               ControlType.kMAXMotionPositionControl,
                               ClosedLoopSlot.kSlot0,
                               m_feedforward.calculate(
                                   convertRotationsToDistance(Rotations.of(m_encoder.getVelocity())).per(Minute)
-                                          .in(InchesPerSecond)));
+                                          .in(MetersPerSecond)));
   }
 
 
@@ -248,7 +238,7 @@ public class ElevatorSubsystemYAGSL extends SubsystemBase
    */
   public double getHeight()
   {
-    return convertRotationsToDistance(Rotations.of(m_encoder.getPosition())).in(Inches);
+    return convertRotationsToDistance(Rotations.of(m_encoder.getPosition())).in(Meters);
   }
 
   /**
@@ -279,60 +269,39 @@ public class ElevatorSubsystemYAGSL extends SubsystemBase
   /**
    * Stop the control loop and motor output.
    */
-  public void OneThird(){
-    if (m_encoder.getPosition()==Constants.ElevatorSimConstants.kMaxElevatorHeightMeters/3){
-      m_motor.set(0);
-    }
-  }
-  public void TwoThird(){
-    if (m_encoder.getPosition()==Constants.ElevatorSimConstants.kMaxElevatorHeightMeters/3*2){
-      m_motor.set(0);
-    }
+  public void stop(){
+    m_motor.set(0);   
   }
   public void normalUp(){
-    m_motor.set(-0.25);   
-    
+    m_motor.set(1);   
+    reachGoal(Constants.ElevatorSimConstants.kMaxElevatorHeightMeters);
   }
   public void normalDown(){
-    m_motor.set(0.05);
-   
+    m_motor.set(1);
+    reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters);
   }
   public void slowUp(){
-    m_motor.set(-0.05);
-    
+    m_motor.set(0.25);
+    reachGoal(Constants.ElevatorSimConstants.kMaxElevatorHeightMeters);
   }
   public void slowDown(){
     m_motor.set(0.25);
-    
+    reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters);
   }
-  public void stop()
-  {
-    m_motor.set(0.0);
-  }
-  public void resetencoder(){
-    m_encoder.setPosition(0);
-  }
+
   /**
    * Update telemetry, including the mechanism visualization.
    */
   public void updateTelemetry()
   {
     // Update elevator visualization with position
-    //m_elevatorMech2d.setLength(RobotBase.isSimulation() ? m_elevatorSim.getPositionMeters() : m_encoder.getPosition());
+    m_elevatorMech2d.setLength(RobotBase.isSimulation() ? m_elevatorSim.getPositionMeters() : m_encoder.getPosition());
   }
 
   @Override
   public void periodic()
   {
-    if (m_motor.getAppliedOutput()>Constants.ElevatorConstants.MaxCurrent){//Or m_motor.getBusVoltage()
-      if (m_motor.get()<0){
-        m_encoder.setPosition(Constants.ElevatorConstants.kMaxElevatorHeightInches);
-      } else {
-        m_encoder.setPosition(Constants.ElevatorConstants.kMinElevatorHeightInches);
-      }
-      m_motor.set(0);
-    }  
-    //updateTelemetry();
+    updateTelemetry();
   }
 
     /**
@@ -343,7 +312,7 @@ public class ElevatorSubsystemYAGSL extends SubsystemBase
      */
     public static Angle convertDistanceToRotations(Distance distance)
     {
-      return Rotations.of(distance.in(Inches) /
+      return Rotations.of(distance.in(Meters) /
                           (ElevatorConstants.kElevatorDrumRadius * 2 * Math.PI) *
                           ElevatorConstants.kElevatorGearing);
     }
@@ -356,7 +325,7 @@ public class ElevatorSubsystemYAGSL extends SubsystemBase
      */
     public static Distance convertRotationsToDistance(Angle rotations)
     {
-      return Inches.of((rotations.in(Rotations) / ElevatorConstants.kElevatorGearing) *
+      return Meters.of((rotations.in(Rotations) / ElevatorConstants.kElevatorGearing) *
                        (ElevatorConstants.kElevatorDrumRadius * 2 * Math.PI));
     }
 }

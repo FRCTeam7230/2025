@@ -90,7 +90,7 @@ public class RobotContainer {
       m_robotDrive = new SwerveSubsystemSim();
     }
 
-    m_elevator.resetencoder();//Resets the encoder position to 0.
+    m_elevator.resetEncoder();//Resets the encoder position to 0.
     m_robotDrive.zeroHeading();
 
     // Register named commands
@@ -184,12 +184,12 @@ public class RobotContainer {
             m_elevator));
     new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SLOW_UP_BUTTON)
       .whileTrue(new RunCommand(
-          () -> m_elevator.slowUp(),
+          () -> m_elevator.ManualElevatorUp(),
           m_elevator));
 
     new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SLOW_DOWN_BUTTON)
       .whileTrue(new RunCommand(
-          () -> m_elevator.slowDown(),
+          () -> m_elevator.ManualElevatorDown(),
           m_elevator));
     
     new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_L2_BUTTON)
@@ -270,7 +270,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    m_elevator.resetencoder();//Resets encoder.
+    m_elevator.resetEncoder();//Resets encoder.
     return autoChooser.getSelected();
     // Autos auto = new Autos(m_robotDriveSim);
     // return auto.getAutonomousCommand();

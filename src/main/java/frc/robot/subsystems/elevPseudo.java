@@ -3,6 +3,8 @@ import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.drive.RobotDriveBase.MotorType;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+//might need to delete this file + the command
 public class elevPseudo extends SubsystemBase {
     Spark elev = new Spark(1);
     Encoder encode = new Encoder(1,2);

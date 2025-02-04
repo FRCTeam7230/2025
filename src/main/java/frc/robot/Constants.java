@@ -185,6 +185,13 @@ public final class Constants {
 
   public static class ElevatorConstants
   {
+    public static final int kElevMotor1 = 1;
+    public static final int kElevMotor2 = 3;
+
+    public static final double gearRatio = 15;
+    public static final double gearRadius = 0.819; //inches
+    public static final double encoderCount = 42; //counts per revolution
+    public static final double currentMax = 80; //max current tbd
     public static final double MaxCurrent = 10;//In amps? TODO: This is too low of a max current, will need to test, but maybe 60 to start
 
     public static final double kElevatorKp = 0.5; //TODO: Will need to tune this, I lowered it to start 
