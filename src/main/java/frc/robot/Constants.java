@@ -46,7 +46,7 @@ public final class Constants {
     public static final int BRAKE_BUTTON = kButton1;
     public static final int ELEVATOR_UP_BUTTON = kButton7;
     public static final int ELEVATOR_DOWN_BUTTON = kButton8;
-
+    public static final int INTAKE_BUTTON = kButton12;//Placeholder for intake button
   }
 
   public static final class DriveConstants {

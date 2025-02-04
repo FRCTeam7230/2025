@@ -14,24 +14,25 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class intakesubsystem extends SubsystemBase {
+public class IntakeSubsystem extends SubsystemBase {
     private final SparkMax motorController=new SparkMax(100, MotorType.kBrushless);
-    private final Encoder encoder=motorController.getEncoder();
-
-
-    public intakesubsystem(int motorID) {
-        
-    }
-
-    public void setMotorSpeed(double speed) {
-        motorController.set(speed);
+    private final RelativeEncoder encoder=motorController.getEncoder();
+    private final double motorspeed = 1;
+    public IntakeSubsystem(int motorID) {}  
+    public void runMotor(){
+        if (motorController.get()==0){//If the motor speed is 0 (when motor is not spinning)
+            motorController.set(motorspeed);
+        } else {
+            motorController.set(0);
+        }
+        //motorController.set(motorspeed);
     }
 
     public void stopMotor() {
         motorController.set(0);
     }
 
-    public double getEncoderPosition() {
+    /*public double getEncoderPosition() {
         return encoder.getPosition();
     }
 
@@ -41,5 +42,10 @@ public class intakesubsystem extends SubsystemBase {
 
     public void resetEncoder() {
         encoder.reset();
+    }*/
+    @Override
+    public void periodic()
+    {
+        //motorController.set(motorspeed);
     }
 }

@@ -28,7 +28,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ElevatorSubsystemYAGSL;
-
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ElevatorSubsystemSim;
 import frc.robot.subsystems.SwerveSubsystemSim;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -60,7 +60,7 @@ public class RobotContainer {
   DriveSubsystem m_robotDrive;
 
   private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
-
+  private final IntakeSubsystem m_intake = new IntakeSubsystem(0);
   // private final ElevatorSubsystemYAGSL m_elevator = new ElevatorSubsystemYAGSL();
 
   // The driver's controller
@@ -173,7 +173,10 @@ public class RobotContainer {
         .whileTrue(new RunCommand(
             () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters),
             m_elevator));
-
+    new JoystickButton(m_driverController, Constants.OperatorConstants.INTAKE_BUTTON)
+    .onTrue(new RunCommand(//I think we can use toggleOnTrue to make it simpler on the code.
+        () -> m_intake.runMotor(),
+        m_elevator));
     // m_elevator.atHeight(5, 0.1).whileTrue(Commands.print("Elevator Command!"));
 
     // Add a button to run the example auto to SmartDashboard, this will also be in
