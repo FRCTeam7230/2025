@@ -130,7 +130,7 @@ public class ElevatorSubsystem extends SubsystemBase
         .maxVelocity(ElevatorConstants.kElevatorMaxVelocity)
         .maxAcceleration(ElevatorConstants.kElevatorMaxAcceleration)
         .positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal)
-        .allowedClosedLoopError(0.1); // TODO: 0.01 inches is a very small closed loop error, maybe 0.1? or 0.5?
+        .allowedClosedLoopError(0.1); // TODO: Tune this as we go -see what's reasonable
     m_config_motor1.idleMode(SparkBaseConfig.IdleMode.kBrake);
     m_config_motor2.idleMode(SparkBaseConfig.IdleMode.kBrake);
     // TODO: set smart current limit. Should be similar to the max current used to sense the top and bottom of the elevator
@@ -219,11 +219,8 @@ public class ElevatorSubsystem extends SubsystemBase
   /*
    * Stop the control loop and motor output.
    */
-  //TODO: Set the goal position to be the set elevator heights (can use reachGoal function)
-  // And that's all you need to do, the motor controller takes care of stopping
-  public void OneThird(){
-    
-    
+  //TODO: Can delete these since you're already doing this in RobotContainer at the button definition
+  public void OneThird(){    
     
   }
   public void TwoThird(){

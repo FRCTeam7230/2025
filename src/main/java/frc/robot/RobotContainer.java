@@ -177,6 +177,7 @@ public class RobotContainer {
             () -> m_robotDrive.drive(-Constants.slowSpeedMode, 0, 0, false, m_driverController.getThrottle()),
             m_robotDrive));
 
+    // TODO: These buttons clash with buttons defined earlier. Can you make all buttons a named constant?
     new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_UP_BUTTON)
         .whileTrue(new RunCommand(
             () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMaxElevatorHeightMeters),
@@ -187,6 +188,9 @@ public class RobotContainer {
             () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters),
             m_elevator));
     
+    //TODO: Use constants for button numbers! 
+    // These button numbers also clash with numbers to spin the robot defined earlier! EIther comment that out
+    // or change these numbers and ensure no clashes.
     new JoystickButton(m_driverController, 11)
             .whileTrue(new RunCommand(
                 () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxRealElevatorHeightMeters/3),
@@ -197,16 +201,21 @@ public class RobotContainer {
                 () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMinRealElevatorHeightMeters * 2/3),
                 m_elevator));
 
+    // TODO, Important!: For manual commands, need to set the Elevator to stop when the command ends! 
+    // For both up and down!
+    // I changed it for up, please do this for down as well
     new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SLOW_UP_BUTTON)
-      .whileTrue(new RunCommand(
-          () -> m_elevator.ManualElevatorUp(),
-          m_elevator));
+      .whileTrue(Commands.startEnd(
+                            () -> m_elevator.ManualElevatorUp(), 
+                            () -> m_elevator.motorStop(), 
+                            m_elevator));
 
     new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SLOW_DOWN_BUTTON)
       .whileTrue(new RunCommand(
           () -> m_elevator.ManualElevatorDown(),
           m_elevator));
     
+    // TODO: Delete these if you're using the buttons defined earlier in the file!
     new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_L2_BUTTON)
     .whileTrue(new RunCommand(
         () -> m_elevator.OneThird(),
