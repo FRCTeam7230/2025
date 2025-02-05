@@ -188,11 +188,16 @@ public final class Constants {
     public static final int kElevMotor1 = 1;
     public static final int kElevMotor2 = 3;
 
-    public static final double gearRatio = 15;
+    //TODO (for this whole section): 
+    // We have to be consistent with units, either we're using inches or meters. 
+    // If meters, we have to put a Units.inchesToMeters() around anything written in inches,
+    // Vice-versa if we're using inches 
+    // TODO: Should only be one gear ratio and radii in this section. Delete whichever one is wrong
+
+    public static final double gearRatio = 15; 
     public static final double gearRadius = 0.819; //inches
-    public static final double encoderCount = 42; //counts per revolution
-    public static final double currentMax = 80; //max current tbd
-    public static final double MaxCurrent = 10;//In amps? TODO: This is too low of a max current, will need to test, but maybe 60 to start
+    public static final double resetCurrent = 60; //max current tbd TODO: Tune these currents
+    public static final double maxCurrent   = 65;//In amps? TODO: Tune these currents
 
     public static final double kElevatorKp = 0.5; //TODO: Will need to tune this, I lowered it to start 
     public static final double kElevatorKi = 0;
@@ -213,7 +218,7 @@ public final class Constants {
     public static final double kMaxRealElevatorHeightMeters = Units.inchesToMeters(66.264);
 
     //TODO: These conversions aren't right. You need the gearing 
-    public static final double kRotationToInches = kElevatorDrumRadius * 2 * Math.PI / kElevatorGearing;//Meters to Inches conversion factor
+    public static final double kRotationToInches = kElevatorDrumRadius * 2 * Math.PI / kElevatorGearing;// Revolutions to Output units conversion factor
     public static final double kElevatorMaxVelocity = Units.metersToInches(3.5); // TODO: Need a good inches per sec max, start slow (10?), remove 'meters to inches'
     public static final double kElevatorMaxAcceleration = Units.metersToInches(2.5); // TODO: Need a good inches per sec per sec max, start slow (10?), remove 'meters to inches'
   }

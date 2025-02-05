@@ -20,6 +20,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
+import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
@@ -53,7 +54,6 @@ public class ElevatorSubsystem extends SubsystemBase
           ElevatorConstants.kElevatorkV,
           ElevatorConstants.kElevatorkA);
 
-  //TODO: CAN IDs should be constants
   private final SparkMax                  m_motor1        = new SparkMax(Constants.ElevatorConstants.kElevMotor1, MotorType.kBrushless);
   private final SparkMax                  m_motor2        = new SparkMax(Constants.ElevatorConstants.kElevMotor2, MotorType.kBrushless);
   private final SparkClosedLoopController m_controller    = m_motor1.getClosedLoopController();
@@ -89,9 +89,12 @@ public class ElevatorSubsystem extends SubsystemBase
   /**
    * Subsystem constructor.
    */
-  DoubleArrayPublisher encoder1_publisher = NetworkTableInstance.getDefault().getDoubleArrayTopic("encoder1value").publish();
-  DoubleArrayPublisher encoder2_publisher = NetworkTableInstance.getDefault().getDoubleArrayTopic("encoder2value").publish();
+  DoublePublisher encoder1_publisher = NetworkTableInstance.getDefault().getDoubleTopic("encoder1value").publish();
+  DoublePublisher encoder2_publisher = NetworkTableInstance.getDefault().getDoubleTopic("encoder2value").publish();
 
+  // TODO: It was a good excercise to go through this - but these converstion functions aren't neccesary
+  // if the positionConversionFactor is set correctly to convert from revolution to meters/inches
+  // then this will be done under the hood
   public double EncoderCounttoInches(double numRevolution) {
     numRevolution = m_encoder.getPosition()/42;
     double numRevShaft = numRevolution/15;
@@ -113,9 +116,7 @@ public class ElevatorSubsystem extends SubsystemBase
   public void resetEncoder(){
     m_encoder.setPosition(0);
   }
-  public Command resetEncoderCommand(){
-    return run (() -> resetEncoder());
-  }
+
   public ElevatorSubsystem()
   {
   
@@ -137,7 +138,6 @@ public class ElevatorSubsystem extends SubsystemBase
 
 
     m_motor1.configure(m_config_motor1, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-    // TODO: invert should be true not false, right?
     m_config_motor2.follow(m_motor1,true);
     m_motor2.configure(m_config_motor2, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -173,7 +173,6 @@ public class ElevatorSubsystem extends SubsystemBase
    */
   public void reachGoal(double goal)
   {
-    //TODO: This should be using ControlType kMAXMotionPositionControl
     m_controller.setReference(goal,
                               ControlType.kMAXMotionPositionControl,
                               ClosedLoopSlot.kSlot0,
@@ -220,10 +219,8 @@ public class ElevatorSubsystem extends SubsystemBase
   /*
    * Stop the control loop and motor output.
    */
-  //TODO: Should not stop the closed loop control with these. Rather, should set the goal position to be the 
-  // set elevator heights (can use reachGoal function)
-  // TODO: THese should be referenceing the real robot heights, not the sim robot heights - fixed
-  // Or include logic for if real use the real heights, if sim use the sim heights
+  //TODO: Set the goal position to be the set elevator heights (can use reachGoal function)
+  // And that's all you need to do, the motor controller takes care of stopping
   public void OneThird(){
     
     
@@ -254,17 +251,6 @@ public class ElevatorSubsystem extends SubsystemBase
     ///reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters);
   }
 
-  //TODO: Remove this function? It's not used and I'm not sure what exactly it's doing
-  /*public void ToggleMove(){ //need to ask yoshito about this
-    if (m_encoder.getPosition()==InchestoEncoderCount(Constants.ElevatorConstants.kMaxElevatorHeightInches)){
-      m_motor1.set(0.05);
-    } else if (m_encoder.getPosition()==Constants.ElevatorConstants.kMinElevatorHeightInches){
-      m_motor1.set(-0.05);
-    } else {
-      m_motor1.set(0.05);//Go down by default
-    }
-  }*/
-
   /**
    * Update telemetry, including the mechanism visualization.
    */
@@ -276,21 +262,18 @@ public class ElevatorSubsystem extends SubsystemBase
 */
   @Override
   public void periodic() {
-    double [] encoder1value = {(double) m_encoder.getPosition()};
-    encoder1_publisher.set(encoder1value);
+    encoder1_publisher.set(m_encoder.getPosition());
     //updateTelemetry();
-    // TODO: replace getAppliedOutput with getOutputCurrent
-    // TODO: Max Current should be set much higher - according to rev the empirical stall current is 105, I think something like 80 would be good
-    if (m_motor1.getOutputCurrent()>Constants.ElevatorConstants.currentMax){//Or m_motor.getBusVoltage()
-      // TODO: Replace get with getAppliedOutput or getBusVoltage - tbd which
-      m_motor1.set(0);
+    if (m_motor1.getOutputCurrent()>Constants.ElevatorConstants.resetCurrent){//Or m_motor.getBusVoltage()
+      // TODO: Replace get with getAppliedOutput or getBusVoltage - tbd which - done (but will need to test)
+      // TODO: Check if up is positive or negative volts
       if (m_motor1.getBusVoltage() < 0) {
         m_encoder.setPosition(Constants.ElevatorConstants.kMaxRealElevatorHeightMeters);
       }
-
       else {
         m_encoder.setPosition(Constants.ElevatorConstants.kMinRealElevatorHeightMeters);
       }
+      m_motor1.set(0);
     }  
     SmartDashboard.putNumber("Elevator Position (Inches)", m_encoder.getPosition());
   }

@@ -56,11 +56,10 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems
 
+  // Declare the robot's subsystems
   DriveSubsystem m_robotDrive;
-
-  private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
+  ElevatorSubsystem m_elevator;
 /*<<<<<<< Updated upstream
 
   // private final ElevatorSubsystemYAGSL m_elevator = new ElevatorSubsystemYAGSL();
@@ -84,13 +83,19 @@ public class RobotContainer {
    */
   public RobotContainer() {
 
+    //Set up Subsystems
     if (RobotBase.isReal()) {
       m_robotDrive = new DriveSubsystem();
+      m_elevator = new ElevatorSubsystem();
     } else {
       m_robotDrive = new SwerveSubsystemSim();
+      m_elevator = new ElevatorSubsystem();
     }
 
+
+    // Zero/Reset sensors
     m_robotDrive.zeroHeading();
+    m_elevator.resetEncoder();
 
     // Register named commands
 
@@ -124,9 +129,7 @@ public class RobotContainer {
                 m_driverController.getThrottle()),
             m_robotDrive));
   }
-  public Command resetEncoderCommand(){
-    return m_elevator.resetEncoderCommand();//Resets the encoder position to 0.
-  }
+
   /**
    * Use this method to define your button->command mappings. Buttons can be
    * created by
