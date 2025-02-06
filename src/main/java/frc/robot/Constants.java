@@ -50,8 +50,9 @@ public final class Constants {
     public static final int ELEVATOR_SLOW_UP_BUTTON = placeholder;
     public static final int ELEVATOR_SLOW_DOWN_BUTTON = placeholder;
     public static final int CLIMB = placeholder;
-    public static final int ELEVATOR_L2_BUTTON = placeholder;
-    public static final int ELEVATOR_L3_BUTTON = placeholder;
+    public static final int ELEVATOR_ONETHIRD_BUTTON = kButton9;
+    public static final int ELEVATOR_TWOTHIRDS_BUTTON = kButton10;
+    
   }
 
   public static final class DriveConstants {
@@ -195,7 +196,7 @@ public final class Constants {
     // TODO: Should only be one gear ratio and radii in this section. Delete whichever one is wrong
 
     public static final double gearRatio = 15; 
-    public static final double gearRadius = 0.819; //inches
+    public static final double gearRadius = Units.inchesToMeters(0.819); //inches
     public static final double resetCurrent = 60; //max current tbd TODO: Tune these currents
     public static final double maxCurrent   = 65;//In amps? TODO: Tune these currents
 
@@ -209,17 +210,17 @@ public final class Constants {
     public static final double kElevatorkV = 0.0; // volt per velocity (V/(m/s))
     public static final double kElevatorkA = 0.0; // volt per acceleration (V/(m/s²))
 
-    public static final double kElevatorGearing = 10.0; //TODO: Check this with hardware/CAD, I thought we were told 15:1 ?
-    public static final double kElevatorDrumRadius = 2.0; //TODO: Check this with hardware/CAD, I thought hardware measured 1.5?
+    
+    public static final double kElevatorDrumRadius = 1.5; //TODO: Check this with hardware/CAD, I thought hardware measured 1.5? what is this exactly? neither CAD nor hardware was sure when i asked
     public static final double kCarriageMass = 4.0; // kg
 
     // Encoder is reset to measure 0 at the bottom, so minimum height is 0.
     public static final double kMinRealElevatorHeightMeters = Units.inchesToMeters(0);
     public static final double kMaxRealElevatorHeightMeters = Units.inchesToMeters(66.264);
 
-    //TODO: These conversions aren't right. You need the gearing 
-    public static final double kRotationToInches = kElevatorDrumRadius * 2 * Math.PI / kElevatorGearing;// Revolutions to Output units conversion factor
-    public static final double kElevatorMaxVelocity = Units.metersToInches(3.5); // TODO: Need a good inches per sec max, start slow (10?), remove 'meters to inches'
-    public static final double kElevatorMaxAcceleration = Units.metersToInches(2.5); // TODO: Need a good inches per sec per sec max, start slow (10?), remove 'meters to inches'
+    //TODO: These conversions aren't right. You need the gearing; question: should we change this to be in meters?
+    public static final double kRotationToInches = kElevatorDrumRadius * 2 * Math.PI / gearRatio;// Revolutions to Output units conversion factor
+    public static final double kElevatorMaxVelocity = Units.inchesToMeters(10); // TODO: Need a good inches per sec max, start slow (10?), remove 'meters to inches'
+    public static final double kElevatorMaxAcceleration = Units.inchesToMeters(10); // TODO: Need a good inches per sec per sec max, start slow (10?), remove 'meters to inches'
   }
 }

@@ -15,28 +15,21 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
+import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
-import com.revrobotics.spark.config.ClosedLoopConfig;
-import com.revrobotics.spark.config.SparkBaseConfig;
-
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 
@@ -69,7 +62,7 @@ public class ElevatorSubsystem extends SubsystemBase
   private final ElevatorSim m_elevatorSim =
       new ElevatorSim(
           m_elevatorGearbox,
-          ElevatorConstants.kElevatorGearing,
+          ElevatorConstants.gearRatio,
           ElevatorConstants.kCarriageMass,
           ElevatorConstants.kElevatorDrumRadius,
           ElevatorConstants.kMinRealElevatorHeightMeters,
@@ -92,22 +85,6 @@ public class ElevatorSubsystem extends SubsystemBase
   DoublePublisher encoder1_publisher = NetworkTableInstance.getDefault().getDoubleTopic("encoder1value").publish();
   DoublePublisher encoder2_publisher = NetworkTableInstance.getDefault().getDoubleTopic("encoder2value").publish();
 
-  // TODO: It was a good excercise to go through this - but these converstion functions aren't neccesary
-  // if the positionConversionFactor is set correctly to convert from revolution to meters/inches
-  // then this will be done under the hood
-  public double EncoderCounttoInches(double numRevolution) {
-    numRevolution = m_encoder.getPosition()/42;
-    double numRevShaft = numRevolution/15;
-    double elevHeight = numRevShaft*2*Math.PI*Constants.ElevatorConstants.gearRadius;
-    return elevHeight;
-  }
-
-  public double InchestoEncoderCount(double height) {
-    double revShaft = height/(2*Math.PI*Constants.ElevatorConstants.gearRadius);
-    double rev = revShaft*15;
-    double encoderCount = rev*42;
-    return encoderCount;
-  }
 
   public void motorStop(){
     m_motor1.set(0);
@@ -219,15 +196,7 @@ public class ElevatorSubsystem extends SubsystemBase
   /*
    * Stop the control loop and motor output.
    */
-  //TODO: Can delete these since you're already doing this in RobotContainer at the button definition
-  public void OneThird(){    
-    
-  }
-  public void TwoThird(){
-    
-
-    
-  }
+ 
 
   //These are good to use the set function
   /*public void normalUp(){
@@ -237,7 +206,7 @@ public class ElevatorSubsystem extends SubsystemBase
   public void normalDown(){
     m_motor1.set(0.25);
     //reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters);
-  }*/
+  }*/ 
   public void ManualElevatorUp(){
     m_motor1.set(-0.05);
     //reachGoal(Constants.ElevatorSimConstants.kMaxElevatorHeightMeters);
@@ -246,6 +215,13 @@ public class ElevatorSubsystem extends SubsystemBase
   public void ManualElevatorDown(){
     m_motor1.set(0.05);
     ///reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters);
+  }
+
+  public void smartCurrentLimit() { //i think? this is brake mode - i was wondering if we should put this in 
+    if (m_motor1.getOutputCurrent() > Constants.ElevatorConstants.maxCurrent) {
+        m_config_motor1.idleMode(SparkBaseConfig.IdleMode.kBrake);
+        m_config_motor2.idleMode(SparkBaseConfig.IdleMode.kBrake);
+    }
   }
 
   /**
@@ -261,7 +237,7 @@ public class ElevatorSubsystem extends SubsystemBase
   public void periodic() {
     encoder1_publisher.set(m_encoder.getPosition());
     //updateTelemetry();
-    if (m_motor1.getOutputCurrent()>Constants.ElevatorConstants.resetCurrent){//Or m_motor.getBusVoltage()
+    if (m_motor1.getOutputCurrent() > Constants.ElevatorConstants.resetCurrent) {//Or m_motor.getBusVoltage()
       // TODO: Replace get with getAppliedOutput or getBusVoltage - tbd which - done (but will need to test)
       // TODO: Check if up is positive or negative volts
       if (m_motor1.getBusVoltage() < 0) {
