@@ -19,12 +19,14 @@ public class VisionSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   private static UsbCameraSubsystem cameraSubsystem;
   private static final ReefDetectionPipeline reefDetection = new ReefDetectionPipeline();
-  private static double lastRangeValue = 0;
   //This value is for the reeef pipe detection of width. It is the amount of extra pixels blocked from the camera view above the second-highest pipe.
   //Adjust this if the robot does not detect a pipe.
   private static int safetyPixels = 10;
 
   private static boolean isTargetValid;
+
+  private static double cameraOffsetInches = 0;
+  private static double lastPixelValue;
 //initializes the camera feed to the vision system
   public VisionSubsystem(UsbCameraSubsystem camSys)
   {
@@ -86,6 +88,7 @@ public class VisionSubsystem extends SubsystemBase {
     for(int i = 0; i< newContoursResult.size(); i++)
     {
       Rect bound = Imgproc.boundingRect(newContoursResult.get(i));
+      
       double area = bound.area();
       if(area>largestBox.area())
       {
@@ -100,12 +103,7 @@ public class VisionSubsystem extends SubsystemBase {
 // returns the pixel width of reef pipe target
   public static double getPixelsWidth()
 {
-  double res =  (VisionSubsystem.locateReefPipeTarget().width*lastRangeValue)/2;
-  if(Math.abs(res-lastRangeValue)>50)
-  {
-    res = lastRangeValue;
-  }
-  lastRangeValue = VisionSubsystem.locateReefPipeTarget().width;
+  double res =  (VisionSubsystem.locateReefPipeTarget().width);
   return res;
 }
 // converts pixels from camera of reef pipe to inches away from camera. 
@@ -139,7 +137,10 @@ private static double convertReefPipeToInches(double pixels)
   2 inches - 450 pixels
   1 inches - 640 pixels
    */
-  
+  if(pixels == 0)
+  {
+    pixels = lastPixelValue;
+  }
   return 1584.78/pixels-2.186;
 
 }
@@ -180,12 +181,29 @@ public static double getReefTargetOffset()
 {
   double pixelOffset = getPipePixelOffset();
   double pixelsScale = getPixelsWidth()/1.25;
-  return pixelOffset/pixelsScale;
+  if(pixelsScale==0)
+  {
+    pixelsScale = lastPixelValue;
+  }
+  else
+  {
+    lastPixelValue = pixelsScale;
+  }
+  return pixelOffset/pixelsScale-cameraOffsetInches;
 }
 
-  public boolean isTargetValid()
+  public static boolean isTargetValid()
   {
     return isTargetValid;
+  }
+
+  public static  boolean isReady()
+  {
+    if(Math.abs(getReefTargetOffset())<1)
+    {
+      return true;
+    }
+    return false;
   }
 
   

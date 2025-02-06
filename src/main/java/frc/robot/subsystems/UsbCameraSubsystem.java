@@ -55,9 +55,13 @@ private void processVideoFeed(Mat inputMat)
   {
     Imgproc.putText(inputMat, "TARGET", new Point(target.x-25,target.y+8), 0, 0.4, new Scalar(0,0,0,0));
 
-    Imgproc.circle(inputMat, target,30, new Scalar(0,0,0),3);
-
-    Imgproc.rectangle(inputMat, targetBox, new Scalar(225,20,250),2);
+    Imgproc.circle(inputMat, target,30, new Scalar(0,0,0),3); 
+    Scalar color =  new Scalar(225,20,250);
+    if(VisionSubsystem.isReady())
+    {
+      color = new Scalar(0,255,0);
+    }
+    Imgproc.rectangle(inputMat, targetBox,color,2);
     //Arrow - WIP
     /*
      double dx = 320-target.x;

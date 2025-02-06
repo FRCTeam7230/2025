@@ -13,6 +13,7 @@ public class LimelightSubsystem extends SubsystemBase {
   private double targetingOffsetY;
   /** Creates a new ExampleSubsystem. */
   public LimelightSubsystem() {}
+  
   /**
    * @return limelight offset in feet from primary in-view apriltag (asuming apriltag pipeline is active) [forward/backward, left/right, up/down]
    */
@@ -20,6 +21,10 @@ public class LimelightSubsystem extends SubsystemBase {
   {
     double[] limelightResults = LimelightHelpers.getTargetPose_RobotSpace("");
     double[] result = new double[3];
+    if(!LimelightHelpers.getTV(""))
+    {
+      return result;
+    }
     result[0] = limelightResults[0]*metersToFeet+targetingOffsetX;
     //forward positive
 
@@ -37,7 +42,10 @@ public class LimelightSubsystem extends SubsystemBase {
   public double getTargetRotation()
   {
     double[] limelightResults = LimelightHelpers.getBotPose_TargetSpace("");
-
+    if(!LimelightHelpers.getTV(""))
+    {
+      return 0;
+    }
     double yaw = limelightResults[4];// this is the yaw value of the robot in the targetSpace - testings needed to determine whether positive angels returned are left/right 
     return yaw;
   }
@@ -51,11 +59,11 @@ public class LimelightSubsystem extends SubsystemBase {
     targetingOffsetX = x;
     targetingOffsetY = y;
   }
-  public void SetTargetLeft()
+  public void setTargetLeft()
   {
     targetingOffsetY = Math.abs(targetingOffsetY)*-1;
   }
-  public void SetTargetRight()
+  public void setTargetRight()
   {
     targetingOffsetY = Math.abs(targetingOffsetY);
   }
