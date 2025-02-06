@@ -78,14 +78,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
+  
   public void autonomousPeriodic() {
-    PathPlannerAuto a = new PathPlannerAuto("Example Auto");
-    a.initialize();
-    a.execute();
-    if (a.activePath('?')==0){
-
-    }
-    //a.setCurrentTrajectory());
+    
   }
 
   @Override
