@@ -13,7 +13,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Joystick;
@@ -146,37 +145,61 @@ public class RobotContainer {
             () -> m_robotDrive.setX(),
             m_robotDrive));
 
-    new JoystickButton(m_driverController, 7)
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ZERO_HEADING_BUTTON)
         .whileTrue(new RunCommand(
             () -> m_robotDrive.zeroHeading()));
 
-    new JoystickButton(m_driverController, 3)
+    new JoystickButton(m_driverController, Constants.OperatorConstants.SLOW_MODE_LEFT)
         .whileTrue(new RunCommand(
             () -> m_robotDrive.drive(0, Constants.slowSpeedMode, 0, false, m_driverController.getThrottle()),
             m_robotDrive));
 
-    new JoystickButton(m_driverController, 4)
+    new JoystickButton(m_driverController, Constants.OperatorConstants.SLOW_MODE_RIGHT)
         .whileTrue(new RunCommand(
             () -> m_robotDrive.drive(0, -Constants.slowSpeedMode, 0, false, m_driverController.getThrottle()),
             m_robotDrive));
-    new JoystickButton(m_driverController, 12)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.spinAngle(30)));
 
-    new JoystickButton(m_driverController, 11)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.spinAngle(0)));
-
-    new JoystickButton(m_driverController, 5)
+    new JoystickButton(m_driverController, Constants.OperatorConstants.SLOW_MODE_FORWARD)
         .whileTrue(new RunCommand(
             () -> m_robotDrive.drive(Constants.slowSpeedMode, 0, 0, false, m_driverController.getThrottle()),
             m_robotDrive));
 
-    new JoystickButton(m_driverController, 6)
+    new JoystickButton(m_driverController, Constants.OperatorConstants.SLOW_MODE_BACKWARD)
         .whileTrue(new RunCommand(
             () -> m_robotDrive.drive(-Constants.slowSpeedMode, 0, 0, false, m_driverController.getThrottle()),
             m_robotDrive));
 
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SLOW_UP_BUTTON)
+        .whileTrue(Commands.startEnd(
+                              () -> m_elevator.ManualElevatorUp(), 
+                              () -> m_elevator.motorStop(), 
+                              m_elevator));
+      
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SLOW_DOWN_BUTTON)
+        .whileTrue(Commands.startEnd(
+                              () -> m_elevator.ManualElevatorDown(), 
+                              () -> m_elevator.motorStop(), 
+                              m_elevator));
+
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_ONETHIRD_BUTTON)
+        .whileTrue(new RunCommand(
+            () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxRealElevatorHeightMeters/3),
+            m_elevator));
+                      
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_TWOTHIRDS_BUTTON)
+        .whileTrue(new RunCommand(
+            () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxRealElevatorHeightMeters * 2/3),
+            m_elevator));
+                                  
+    new JoystickButton(m_driverController, Constants.OperatorConstants.SPIN_0)
+        .whileTrue(new RunCommand(
+            () -> m_robotDrive.spinAngle(0)));
+
+    new JoystickButton(m_driverController, Constants.OperatorConstants.SPIN_30)
+        .whileTrue(new RunCommand(
+            () -> m_robotDrive.spinAngle(30)));
+
+    
     // TODO: These buttons clash with buttons defined earlier. Can you make all buttons a named constant?
    /*  new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_UP_BUTTON)
         .whileTrue(new RunCommand(
@@ -191,27 +214,8 @@ public class RobotContainer {
     //TODO: Use constants for button numbers! 
     // These button numbers also clash with numbers to spin the robot defined earlier! EIther comment that out
     // or change these numbers and ensure no clashes.
-    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_ONETHIRD_BUTTON)
-            .whileTrue(new RunCommand(
-                () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxRealElevatorHeightMeters/3),
-                m_elevator));
-    
-    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_TWOTHIRDS_BUTTON)
-            .whileTrue(new RunCommand(
-                () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMinRealElevatorHeightMeters * 2/3),
-                m_elevator));
 
-    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SLOW_UP_BUTTON)
-      .whileTrue(Commands.startEnd(
-                            () -> m_elevator.ManualElevatorUp(), 
-                            () -> m_elevator.motorStop(), 
-                            m_elevator));
 
-    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SLOW_DOWN_BUTTON)
-      .whileTrue(Commands.startEnd(
-        () -> m_elevator.ManualElevatorDown(), 
-        () -> m_elevator.motorStop(), 
-        m_elevator));
     
 
 

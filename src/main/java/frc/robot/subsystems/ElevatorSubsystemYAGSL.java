@@ -88,9 +88,9 @@ public class ElevatorSubsystemYAGSL extends SubsystemBase
   private final ElevatorSim m_elevatorSim =
       new ElevatorSim(
           m_elevatorGearbox,
-          ElevatorConstants.gearRatio,
+          ElevatorConstants.kGearRatio,
           ElevatorConstants.kCarriageMass,
-          ElevatorConstants.kElevatorDrumRadius,
+          ElevatorConstants.kGearRadius,
           ElevatorConstants.kMinRealElevatorHeightMeters,
           ElevatorConstants.kMaxRealElevatorHeightMeters,
           true,
@@ -313,8 +313,8 @@ public class ElevatorSubsystemYAGSL extends SubsystemBase
     public static Angle convertDistanceToRotations(Distance distance)
     {
       return Rotations.of(distance.in(Meters) /
-                          (ElevatorConstants.kElevatorDrumRadius * 2 * Math.PI) *
-                          ElevatorConstants.gearRatio);
+                          (ElevatorConstants.kGearRadius * 2 * Math.PI) *
+                          ElevatorConstants.kGearRatio);
     }
 
     /**
@@ -325,7 +325,7 @@ public class ElevatorSubsystemYAGSL extends SubsystemBase
      */
     public static Distance convertRotationsToDistance(Angle rotations)
     {
-      return Meters.of((rotations.in(Rotations) / ElevatorConstants.gearRatio) *
-                       (ElevatorConstants.kElevatorDrumRadius * 2 * Math.PI));
+      return Meters.of((rotations.in(Rotations) / ElevatorConstants.kGearRatio) *
+                       (ElevatorConstants.kGearRadius * 2 * Math.PI));
     }
 }

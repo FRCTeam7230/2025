@@ -60,12 +60,12 @@ public class ElevatorSubsystem extends SubsystemBase
 
   // Simulation classes help us simulate what's going on, including gravity.
   // Question/TODO: Will this be used, or is all sim stuff in the YAGSL class? If no longer relevat, please delete
-  private final ElevatorSim m_elevatorSim =
+/*   private final ElevatorSim m_elevatorSim =
       new ElevatorSim(
           m_elevatorGearbox,
-          ElevatorConstants.gearRatio,
+          ElevatorConstants.kGearRatio,
           ElevatorConstants.kCarriageMass,
-          ElevatorConstants.kElevatorDrumRadius,
+          ElevatorConstants.kGearRadius,
           ElevatorConstants.kMinRealElevatorHeightMeters,
           ElevatorConstants.kMaxRealElevatorHeightMeters,
           true,
@@ -99,7 +99,7 @@ public class ElevatorSubsystem extends SubsystemBase
   {
   
     m_config_motor1.encoder
-        .positionConversionFactor(ElevatorConstants.kRotationToInches); // Converts Rotations to Inches
+        .positionConversionFactor(ElevatorConstants.kRotationToMeters); // Converts Rotations to Inches
         //.velocityConversionFactor(0); // Converts RPM to MPS
     m_config_motor1.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
@@ -111,6 +111,8 @@ public class ElevatorSubsystem extends SubsystemBase
         .allowedClosedLoopError(0.1); // TODO: Tune this as we go -see what's reasonable
     m_config_motor1.idleMode(SparkBaseConfig.IdleMode.kBrake);
     m_config_motor2.idleMode(SparkBaseConfig.IdleMode.kBrake);
+    m_config_motor1.smartCurrentLimit(Constants.ElevatorConstants.kMaxCurrent);
+    m_config_motor2.smartCurrentLimit(Constants.ElevatorConstants.kMaxCurrent);    
     // TODO: set smart current limit. Should be similar to the max current used to sense the top and bottom of the elevator
     // smartCurrentLimit function for both motor configs - set stall only
 
@@ -122,7 +124,7 @@ public class ElevatorSubsystem extends SubsystemBase
     // Publish Mechanism2d to SmartDashboard
     // To view the Elevator visualization, select Network Tables -> SmartDashboard -> Elevator Sim
     //TODO: Delete if not being used
-    SmartDashboard.putData("Elevator Sim", m_mech2d);
+    //SmartDashboard.putData("Elevator Sim", m_mech2d);
   }
 
   /**
@@ -219,20 +221,7 @@ public class ElevatorSubsystem extends SubsystemBase
     ///reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters);
   }
 
-  public void smartCurrentLimit() { //i think? this is brake mode - i was wondering if we should put this in. 
-    //Answer: Not exactly, the smart current limit is just a way for the motor controller itself to not allow the motors to kill themselves by stalling. 
-    // When the configured current is hit, the controllers will stop the motor 
-    // (usually wahtever the code was doing to hit that limit restarts the motor, and it sits at that current unti you disable or fic the issue) 
-    // You can configure this directly in the constructor with m_config_motor1.smartCurrentLimit(Constants.ElevatorConstants.maxCurrent); and do the same for motor2
-    // YOu do not need to check for any limit on your own, just set that parameter and the controller handles the rest
-    
-    // Brake mode is unrelated - it is the behavior of the motor when the motor is idle (set to zero output) 
-    // - brake means that they are harder to move when idled, coast means they're easier to move - we already have this set to brake in the constructor
-    if (m_motor1.getOutputCurrent() > Constants.ElevatorConstants.maxCurrent) {
-        m_config_motor1.idleMode(SparkBaseConfig.IdleMode.kBrake);
-        m_config_motor2.idleMode(SparkBaseConfig.IdleMode.kBrake);
-    }
-  }
+  
 
   /**
    * Update telemetry, including the mechanism visualization.
@@ -246,8 +235,9 @@ public class ElevatorSubsystem extends SubsystemBase
   @Override
   public void periodic() {
     encoder1_publisher.set(m_encoder.getPosition());
+    encoder2_publisher.set(m_encoder2.getPosition());
     //updateTelemetry();
-    if (m_motor1.getOutputCurrent() > Constants.ElevatorConstants.resetCurrent) {
+    if (m_motor1.getOutputCurrent() > Constants.ElevatorConstants.kResetCurrent) {
       // TODO: Replace get with getAppliedOutput or getBusVoltage - tbd which - done (but will need to test)
       // TODO: Check if up is positive or negative volts
       if (m_motor1.getBusVoltage() < 0) {
