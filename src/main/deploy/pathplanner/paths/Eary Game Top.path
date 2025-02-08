@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 5.45025,
-        "y": 5.3705
+        "x": 5.286577868852459,
+        "y": 5.085911885245901
       },
       "prevControl": {
-        "x": 5.1843930589449405,
-        "y": 5.227585571164259
+        "x": 5.0207209277974,
+        "y": 4.94299745641016
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
     "rotation": -119.99999999999999
   },
   "reversed": false,
-  "folder": "Reef 2",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

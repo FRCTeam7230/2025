@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.151415436964987,
+        "x": 5.76608606557377,
         "y": 3.8772611769792764
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.151415436964987,
+        "x": 5.76608606557377,
         "y": 2.8279119097068546
       },
       "isLocked": true,
@@ -77,7 +77,7 @@
     "rotation": -125.37999999999998
   },
   "reversed": false,
-  "folder": "Reef 3",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

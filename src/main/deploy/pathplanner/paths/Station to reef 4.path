@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 2.8177499999999998,
-        "y": 4.05425
+        "x": 3.2127049180327862,
+        "y": 4.1748463114754095
       },
       "prevControl": {
-        "x": 2.4355856316920796,
-        "y": 4.954687928255109
+        "x": 2.830540549724866,
+        "y": 5.075284239730519
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Coral 4 Cycle",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 125.37999999999998

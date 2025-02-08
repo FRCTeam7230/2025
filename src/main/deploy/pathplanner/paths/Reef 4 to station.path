@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.8177499999999998,
-        "y": 4.05425
+        "x": 3.2127049180327862,
+        "y": 4.1748463114754095
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0468125467742078,
-        "y": 3.954098366636815
+        "x": 3.4417674648069942,
+        "y": 4.074694678112225
       },
       "isLocked": false,
       "linkedName": "Reef 4"
@@ -45,7 +45,7 @@
     "rotation": 125.37999999999998
   },
   "reversed": false,
-  "folder": "Coral 4 Cycle",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

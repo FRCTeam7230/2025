@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 5.45025,
-        "y": 5.3705
+        "x": 5.286577868852459,
+        "y": 5.085911885245901
       },
       "prevControl": {
-        "x": 5.061079130077689,
-        "y": 5.664452000724143
+        "x": 4.8974069989301485,
+        "y": 5.379863885970044
       },
       "nextControl": null,
       "isLocked": false,
@@ -61,7 +61,7 @@
     "rotation": -119.99999999999999
   },
   "reversed": false,
-  "folder": "Coral 2 Cycle",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 125.37999999999998

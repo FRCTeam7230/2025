@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Coral 1"
+            "pathName": "Station to Coral 1 Left"
           }
         },
         {
@@ -19,7 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Coral 1 Return"
+            "pathName": "Reef 1 to Coral Station"
           }
         }
       ]

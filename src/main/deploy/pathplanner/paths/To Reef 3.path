@@ -16,11 +16,11 @@
     },
     {
       "anchor": {
-        "x": 6.151415436964987,
+        "x": 5.76608606557377,
         "y": 3.8772611769792764
       },
       "prevControl": {
-        "x": 7.019646737634068,
+        "x": 6.634317366242851,
         "y": 3.8641551174010127
       },
       "nextControl": null,
@@ -45,7 +45,7 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Reef 3",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0
