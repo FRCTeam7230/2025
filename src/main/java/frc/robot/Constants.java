@@ -197,8 +197,8 @@ public final class Constants {
 
     public static final double gearRatio = 15; 
     public static final double gearRadius = Units.inchesToMeters(0.819); //inches
-    public static final double resetCurrent = 60; //max current tbd TODO: Tune these currents
-    public static final double maxCurrent   = 65;//In amps? TODO: Tune these currents
+    public static final double resetCurrent = 60; //max current tbd TODO: Will need to tune these currents
+    public static final double maxCurrent   = 65;//In amps? TODO: Will need to tune these currents
 
     public static final double kElevatorKp = 0.5; //TODO: Will need to tune this, I lowered it to start 
     public static final double kElevatorKi = 0;
@@ -211,16 +211,16 @@ public final class Constants {
     public static final double kElevatorkA = 0.0; // volt per acceleration (V/(m/s²))
 
     
-    public static final double kElevatorDrumRadius = 1.5; //TODO: Check this with hardware/CAD, I thought hardware measured 1.5? what is this exactly? neither CAD nor hardware was sure when i asked
+    public static final double kElevatorDrumRadius = 1.5; //TODO: Check this with hardware/CAD, I thought hardware measured 1.5? what is this exactly? neither CAD nor hardware was sure when i asked; Answer: This is the same as the gearRadius above (drum a word similar to pulley in this context). TODO - delete the wrong one and replace where appropriate
     public static final double kCarriageMass = 4.0; // kg
 
     // Encoder is reset to measure 0 at the bottom, so minimum height is 0.
     public static final double kMinRealElevatorHeightMeters = Units.inchesToMeters(0);
     public static final double kMaxRealElevatorHeightMeters = Units.inchesToMeters(66.264);
 
-    //TODO: These conversions aren't right. You need the gearing; question: should we change this to be in meters?
+    //TODO: These conversions aren't right. You need the gearing - done; question: should we change this to be in meters? Answer: It doesn't matter as long as we're consistent. Seems like you've currently set everything to meters, which is perfectly good!
     public static final double kRotationToInches = kElevatorDrumRadius * 2 * Math.PI / gearRatio;// Revolutions to Output units conversion factor
-    public static final double kElevatorMaxVelocity = Units.inchesToMeters(10); // TODO: Need a good inches per sec max, start slow (10?), remove 'meters to inches'
-    public static final double kElevatorMaxAcceleration = Units.inchesToMeters(10); // TODO: Need a good inches per sec per sec max, start slow (10?), remove 'meters to inches'
+    public static final double kElevatorMaxVelocity = Units.inchesToMeters(10); // TODO: Need a good inches per sec max, start slow (10?)
+    public static final double kElevatorMaxAcceleration = Units.inchesToMeters(10); // TODO: Need a good inches per sec per sec max, start slow (10?)
   }
 }

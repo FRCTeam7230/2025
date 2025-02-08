@@ -59,6 +59,7 @@ public class ElevatorSubsystem extends SubsystemBase
   private final SparkMaxConfig            m_config_motor2 = new SparkMaxConfig();
 
   // Simulation classes help us simulate what's going on, including gravity.
+  // Question/TODO: Will this be used, or is all sim stuff in the YAGSL class? If no longer relevat, please delete
   private final ElevatorSim m_elevatorSim =
       new ElevatorSim(
           m_elevatorGearbox,
@@ -120,6 +121,7 @@ public class ElevatorSubsystem extends SubsystemBase
 
     // Publish Mechanism2d to SmartDashboard
     // To view the Elevator visualization, select Network Tables -> SmartDashboard -> Elevator Sim
+    //TODO: Delete if not being used
     SmartDashboard.putData("Elevator Sim", m_mech2d);
   }
 
@@ -217,7 +219,15 @@ public class ElevatorSubsystem extends SubsystemBase
     ///reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters);
   }
 
-  public void smartCurrentLimit() { //i think? this is brake mode - i was wondering if we should put this in 
+  public void smartCurrentLimit() { //i think? this is brake mode - i was wondering if we should put this in. 
+    //Answer: Not exactly, the smart current limit is just a way for the motor controller itself to not allow the motors to kill themselves by stalling. 
+    // When the configured current is hit, the controllers will stop the motor 
+    // (usually wahtever the code was doing to hit that limit restarts the motor, and it sits at that current unti you disable or fic the issue) 
+    // You can configure this directly in the constructor with m_config_motor1.smartCurrentLimit(Constants.ElevatorConstants.maxCurrent); and do the same for motor2
+    // YOu do not need to check for any limit on your own, just set that parameter and the controller handles the rest
+    
+    // Brake mode is unrelated - it is the behavior of the motor when the motor is idle (set to zero output) 
+    // - brake means that they are harder to move when idled, coast means they're easier to move - we already have this set to brake in the constructor
     if (m_motor1.getOutputCurrent() > Constants.ElevatorConstants.maxCurrent) {
         m_config_motor1.idleMode(SparkBaseConfig.IdleMode.kBrake);
         m_config_motor2.idleMode(SparkBaseConfig.IdleMode.kBrake);
@@ -237,7 +247,7 @@ public class ElevatorSubsystem extends SubsystemBase
   public void periodic() {
     encoder1_publisher.set(m_encoder.getPosition());
     //updateTelemetry();
-    if (m_motor1.getOutputCurrent() > Constants.ElevatorConstants.resetCurrent) {//Or m_motor.getBusVoltage()
+    if (m_motor1.getOutputCurrent() > Constants.ElevatorConstants.resetCurrent) {
       // TODO: Replace get with getAppliedOutput or getBusVoltage - tbd which - done (but will need to test)
       // TODO: Check if up is positive or negative volts
       if (m_motor1.getBusVoltage() < 0) {
@@ -248,7 +258,7 @@ public class ElevatorSubsystem extends SubsystemBase
       }
       m_motor1.set(0);
     }  
-    SmartDashboard.putNumber("Elevator Position (Inches)", m_encoder.getPosition());
+    SmartDashboard.putNumber("Elevator Position (Meters?)", m_encoder.getPosition());
   }
 
 }
