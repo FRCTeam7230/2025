@@ -16,6 +16,7 @@ import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import edu.wpi.first.wpilibj2.command.Command;
+import org.opencv.core.Core;
 
 import org.opencv.core.Rect;
 
@@ -31,7 +32,9 @@ public class UsbCameraSubsystem extends SubsystemBase {
   //vision thread processes vision
       private Thread visionThread;
       //overlay on top of video feed toggle.
-      private boolean overlay;
+      private boolean overlay = true;
+      private boolean flip = true;
+      //most recent frame from vision
       private Mat latestMat;
 
       private boolean cameraStarted = false;
@@ -81,7 +84,6 @@ private void processVideoFeed(Mat inputMat)
   Imgproc.putText(inputMat, "Processed Camera Feed", new Point(20,50), 0, 1, new Scalar(0,0,0),3);
 
 
-  latestMat = inputMat;
 }
 
 //toggles overlay such as reef pipe detection indicators
@@ -89,6 +91,12 @@ public Command toggleOverlay()
 {
   return   runOnce(()->
   {overlay = !overlay;}
+  );
+}
+public Command toggleFlip()
+{
+  return runOnce(()->
+  {flip = !flip;}
   );
 }
 // returns latest unprocessed video frame
@@ -111,7 +119,7 @@ public Command StartCameraFeed(int port)
 
 }
 
-// starts camera thread
+// starts camera in its own thread so that it doesnt interfere with other robot processes
 private void StartCamera(int dev)
 {
   visionThread =
@@ -135,6 +143,8 @@ private void StartCamera(int dev)
         // lets the robot stop this thread when restarting robot code or
         // deploying.
         while (!Thread.interrupted()) {
+          long startTime = System.currentTimeMillis();
+
           // Tell the CvSink to grab a frame from the camera and put it
           // in the source mat.  If there is an error notify the output.
           if (cvSink.grabFrame(mat) == 0) {
@@ -144,16 +154,23 @@ private void StartCamera(int dev)
             continue;
           }
           // Apply image processing to image
+          if(flip)
+          Core.flip(mat,mat,0);
+
           if(overlay)
           {
             processVideoFeed(mat);
-                SmartDashboard.putNumber("EstimatedDistanceFromPipe:",VisionSubsystem.getReefPipeDistance());
-                SmartDashboard.putNumber("Estimated horizontal offset",VisionSubsystem.getReefTargetOffset());
+                SmartDashboard.putNumber("EstimatedDistanceFromPipe:",0.01*(int)(VisionSubsystem.getReefPipeDistance()*100));
+                SmartDashboard.putNumber("Estimated horizontal offset",0.01*(int)(VisionSubsystem.getReefTargetOffset()*100));
           }
         
 
-          // Give the output stream a new image to display
+          // Give the output stream a new image to display 
+
           outputStream.putFrame(mat);
+          latestMat = mat;
+          long time = System.currentTimeMillis()-startTime;
+          SmartDashboard.putNumber("Vision FPS: ",((int)1000.00/time));
         }
       });
 visionThread.setDaemon(true);

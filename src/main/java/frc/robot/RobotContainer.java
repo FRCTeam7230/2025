@@ -226,6 +226,8 @@ public class RobotContainer {
     }));
     
     SmartDashboard.putData("Toggle camera overlay",m_UsbCamera.toggleOverlay());
+    SmartDashboard.putData("Toggle camera flip",m_UsbCamera.toggleFlip());
+
     SmartDashboard.putData("Start Main Camera",m_UsbCamera.StartCameraFeed(0));
     SmartDashboard.putData("Start Alternate Camera Feed",m_UsbCamera.StartCameraFeed(1));
 

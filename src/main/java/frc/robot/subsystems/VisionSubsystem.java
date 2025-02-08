@@ -27,6 +27,8 @@ public class VisionSubsystem extends SubsystemBase {
 
   private static double cameraOffsetInches = 0;
   private static double lastPixelValue;
+
+  public static double AcceptableError = 0.5; // inches
 //initializes the camera feed to the vision system
   public VisionSubsystem(UsbCameraSubsystem camSys)
   {
@@ -199,7 +201,7 @@ public static double getReefTargetOffset()
 
   public static  boolean isReady()
   {
-    if(Math.abs(getReefTargetOffset())<1)
+    if(Math.abs(getReefTargetOffset())<AcceptableError)
     {
       return true;
     }
