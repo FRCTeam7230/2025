@@ -3,11 +3,16 @@
   "robotLength": 0.75,
   "holonomicMode": true,
   "pathFolders": [
-    "Dumpster"
+    "Center Auto Paths",
+    "Dumpster",
+    "Left (Processor) Side Auto Paths",
+    "Right (Our Barge) Side Auto Paths",
+    "Unused"
   ],
   "autoFolders": [
     "Coral Cycles",
-    "Dumpster"
+    "Dumpster",
+    "Unused"
   ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,

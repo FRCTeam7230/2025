@@ -9,7 +9,7 @@
       "prevControl": null,
       "nextControl": {
         "x": 2.794989638271546,
-        "y": 2.561720527834954
+        "y": 2.5617205278349537
       },
       "isLocked": false,
       "linkedName": "reef 5 left"
@@ -45,7 +45,7 @@
     "rotation": -125.37999999999998
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Left (Processor) Side Auto Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 59.99999999999999

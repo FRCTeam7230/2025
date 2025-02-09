@@ -182,29 +182,29 @@ public class RobotContainer {
     // the auto chooser built above
     // Add more paths here.
 
-    SmartDashboard.putData("Reef 1 to Coral Station Left", new PathPlannerAuto("Reef 1 to Coral Station Left"));
-    SmartDashboard.putData("Reef 1 to Station Right", new PathPlannerAuto("Reef 1 to Station Right"));
-    SmartDashboard.putData("Reef 2 to Station Right", new PathPlannerAuto("Reef 2 to Station Right"));
-    SmartDashboard.putData("Reef 2 to Station Left", new PathPlannerAuto("Reef 2 to Station Left"));
-    SmartDashboard.putData("Reef 3 to Station Top", new PathPlannerAuto("Reef 2 to Station Top"));
-    SmartDashboard.putData("Reef 3 to Station Bottom", new PathPlannerAuto("Reef 2 to Station Bottom"));
-    SmartDashboard.putData("Reef 5 to station right", new PathPlannerAuto("Reef 5 to station right"));
-    SmartDashboard.putData("Reef 5 to station left", new PathPlannerAuto("Reef 5 to station left"));
-    SmartDashboard.putData("Reef 6 to station right", new PathPlannerAuto("Reef 6 to station right"));
-    SmartDashboard.putData("Reef 6 to station left", new PathPlannerAuto("Reef 6 to station left"));
-    // Add a button to run pathfinding commands to SmartDashboard
-    SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
-        new Pose2d(14.0, 6.5, Rotation2d.fromDegrees(0)),
-        new PathConstraints(
-            4.0, 4.0,
-            Units.degreesToRadians(360), Units.degreesToRadians(540)),
-        0));
-    SmartDashboard.putData("Pathfind to Scoring Pos", AutoBuilder.pathfindToPose(
-        new Pose2d(2.15, 3.0, Rotation2d.fromDegrees(180)),
-        new PathConstraints(
-            4.0, 4.0,
-            Units.degreesToRadians(360), Units.degreesToRadians(540)),
-        0));
+    // SmartDashboard.putData("Reef 1 to Coral Station Left", new PathPlannerAuto("Reef 1 to Coral Station Left"));
+    // SmartDashboard.putData("Reef 1 to Station Right", new PathPlannerAuto("Reef 1 to Station Right"));
+    // SmartDashboard.putData("Reef 2 to Station Right", new PathPlannerAuto("Reef 2 to Station Right"));
+    // SmartDashboard.putData("Reef 2 to Station Left", new PathPlannerAuto("Reef 2 to Station Left"));
+    // SmartDashboard.putData("Reef 3 to Station Top", new PathPlannerAuto("Reef 2 to Station Top"));
+    // SmartDashboard.putData("Reef 3 to Station Bottom", new PathPlannerAuto("Reef 2 to Station Bottom"));
+    // SmartDashboard.putData("Reef 5 to station right", new PathPlannerAuto("Reef 5 to station right"));
+    // SmartDashboard.putData("Reef 5 to station left", new PathPlannerAuto("Reef 5 to station left"));
+    // SmartDashboard.putData("Reef 6 to station right", new PathPlannerAuto("Reef 6 to station right"));
+    // SmartDashboard.putData("Reef 6 to station left", new PathPlannerAuto("Reef 6 to station left"));
+    // // Add a button to run pathfinding commands to SmartDashboard
+    // SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
+    //     new Pose2d(14.0, 6.5, Rotation2d.fromDegrees(0)),
+    //     new PathConstraints(
+    //         4.0, 4.0,
+    //         Units.degreesToRadians(360), Units.degreesToRadians(540)),
+    //     0));
+    // SmartDashboard.putData("Pathfind to Scoring Pos", AutoBuilder.pathfindToPose(
+    //     new Pose2d(2.15, 3.0, Rotation2d.fromDegrees(180)),
+    //     new PathConstraints(
+    //         4.0, 4.0,
+    //         Units.degreesToRadians(360), Units.degreesToRadians(540)),
+    //     0));
 
     // Add a button to SmartDashboard that will create and follow an on-the-fly path
     // This example will simply move the robot 2m in the +X field direction
