@@ -193,12 +193,6 @@ public final class Constants {
     public static final int kElevMotor1 = 1;
     public static final int kElevMotor2 = 3;
 
-    //TODO (for this whole section): 
-    // We have to be consistent with units, either we're using inches or meters. 
-    // If meters, we have to put a Units.inchesToMeters() around anything written in inches,
-    // Vice-versa if we're using inches 
-    // TODO: Should only be one gear ratio and radii in this section. Delete whichever one is wrong
-
     public static final double kGearRatio = 15; 
     public static final double kGearRadius = Units.inchesToMeters(5.5/(2*Math.PI)); //inches - lemme double check with 
     public static final double kResetCurrent = 60; //max current tbd TODO: Will need to tune these currents
@@ -220,7 +214,6 @@ public final class Constants {
     public static final double kMinRealElevatorHeightMeters = Units.inchesToMeters(0);
     public static final double kMaxRealElevatorHeightMeters = Units.inchesToMeters(66.264);
 
-    //TODO: These conversions aren't right. You need the gearing - done; question: should we change this to be in meters? Answer: It doesn't matter as long as we're consistent. Seems like you've currently set everything to meters, which is perfectly good!
     public static final double kRotationToMeters = kGearRadius * 2 * Math.PI / kGearRatio;// Revolutions to Output units conversion factor
     public static final double kElevatorMaxVelocity = Units.inchesToMeters(10); // TODO: Need a good inches per sec max, start slow (10?)
     public static final double kElevatorMaxAcceleration = Units.inchesToMeters(10); // TODO: Need a good inches per sec per sec max, start slow (10?)

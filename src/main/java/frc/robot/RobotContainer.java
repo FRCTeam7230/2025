@@ -198,24 +198,6 @@ public class RobotContainer {
     new JoystickButton(m_driverController, Constants.OperatorConstants.SPIN_30)
         .whileTrue(new RunCommand(
             () -> m_robotDrive.spinAngle(30)));
-
-    
-    // TODO: These buttons clash with buttons defined earlier. Can you make all buttons a named constant?
-   /*  new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_UP_BUTTON)
-        .whileTrue(new RunCommand(
-            () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMaxElevatorHeightMeters),
-            m_elevator));
-
-    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_DOWN_BUTTON)
-        .whileTrue(new RunCommand(
-            () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters),
-            m_elevator)); */
-    
-    //TODO: Use constants for button numbers! 
-    // These button numbers also clash with numbers to spin the robot defined earlier! EIther comment that out
-    // or change these numbers and ensure no clashes.
-
-
     
 
 
