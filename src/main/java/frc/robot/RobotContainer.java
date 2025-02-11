@@ -29,6 +29,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ElevatorSubsystemYAGSL;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.SmartDashboardSubsystem;
 
 import frc.robot.subsystems.ElevatorSubsystemSim;
 import frc.robot.subsystems.SwerveSubsystemSim;
@@ -61,6 +62,7 @@ public class RobotContainer {
   // The robot's subsystems
   private final UsbCameraSubsystem m_UsbCamera = new UsbCameraSubsystem();
   private final VisionSubsystem m_visionSubsystem = new VisionSubsystem(m_UsbCamera);
+  private final SmartDashboardSubsystem m_smartDashboard = new SmartDashboardSubsystem();
   // private final SwerveSubsystemSim m_robotDrive = new SwerveSubsystemSim();
 
   DriveSubsystem m_robotDrive;
@@ -230,7 +232,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("Start Main Camera",m_UsbCamera.StartCameraFeed(0));
     SmartDashboard.putData("Start Alternate Camera Feed",m_UsbCamera.StartCameraFeed(1));
-
+    
   }
 
   /**

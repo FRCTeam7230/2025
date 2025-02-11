@@ -20,6 +20,7 @@ public class VisionSubsystem extends SubsystemBase {
   private static UsbCameraSubsystem cameraSubsystem;
   private static final ReefDetectionPipeline reefDetection = new ReefDetectionPipeline();
   //This value is for the reeef pipe detection of width. It is the amount of extra pixels blocked from the camera view above the second-highest pipe.
+  
   //Adjust this if the robot does not detect a pipe.
   private static int safetyPixels = 10;
 

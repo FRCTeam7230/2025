@@ -47,8 +47,8 @@ cameraStarted = false;
   //A few commands for the blur effect just for testing purposes.
 
 /*
- * This is the main method for applying video effects. Also I think this is where we would put the mat through a grip pieline if we needed to.
- * Alter the inputMat in any way you need, after this method runs the mat will then bu uploaded to the cameraServer. 
+ * This is the main method for applying video effects.
+ * Alter the inputMat in any way you need, after this method runs the mat will then be uploaded to the cameraServer. 
  */
 private void processVideoFeed(Mat inputMat)
 {
@@ -65,16 +65,7 @@ private void processVideoFeed(Mat inputMat)
       color = new Scalar(0,255,0);
     }
     Imgproc.rectangle(inputMat, targetBox,color,2);
-    //Arrow - WIP
-    /*
-     double dx = 320-target.x;
-    double dy = 240-target.y;
-    double dist = Math.sqrt(dx*dx+dy*dy);
-    double scaledX = dx*30/dist;
-    double scaledY = dy*30/dist;
-    Imgproc.line(inputMat, new Point(target.x+scaledX,target.y+scaledY), new Point(320,240), new Scalar(0,0,0),2);
-    Imgproc.line(inputMat, new Point(320-scaledX+10,240-scaledY), new Point(320,240), new Scalar(0,0,0),10);
-     */
+
 
 
 
@@ -176,31 +167,5 @@ private void StartCamera(int dev)
 visionThread.setDaemon(true);
 visionThread.start();
 }
-/*
- * returns rectangle around the largest in-view reef pipe. grip pipeline sucks, so it will likely not work. 
- */
 
-//leftover subsystem methods.
-  /**
-   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
-   *
-   * @return value of some boolean subsystem state, such as a digital sensor.
-   */
-  public boolean exampleCondition() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
-  }
-
-  @Override
-  public void periodic() {
-   
-    // This method will be called once per scheduler run
-
-        }
-  
-
-  @Override
-  public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
-  }
 }
