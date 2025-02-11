@@ -28,8 +28,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ElevatorSubsystemYAGSL;
+import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
-import frc.robot.subsystems.SmartDashboardSubsystem;
 
 import frc.robot.subsystems.ElevatorSubsystemSim;
 import frc.robot.subsystems.SwerveSubsystemSim;
@@ -51,6 +51,8 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 import edu.wpi.first.math.util.Units;
 
+import edu.wpi.first.net.PortForwarder;
+
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -60,9 +62,9 @@ import edu.wpi.first.math.util.Units;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final UsbCameraSubsystem m_UsbCamera = new UsbCameraSubsystem();
-  private final VisionSubsystem m_visionSubsystem = new VisionSubsystem(m_UsbCamera);
-  private final SmartDashboardSubsystem m_smartDashboard = new SmartDashboardSubsystem();
+  private final UsbCameraSubsystem m_UsbCamera;
+  private final VisionSubsystem m_visionSubsystem;
+  private final LimelightSubsystem m_limelight;
   // private final SwerveSubsystemSim m_robotDrive = new SwerveSubsystemSim();
 
   DriveSubsystem m_robotDrive;
@@ -90,6 +92,14 @@ public class RobotContainer {
     }
     else {
       m_robotDrive = new SwerveSubsystemSim();
+    }
+    m_limelight = new LimelightSubsystem();
+    m_UsbCamera = new UsbCameraSubsystem();
+    m_visionSubsystem = new VisionSubsystem(m_UsbCamera);
+
+    for(int port = 5800; port<=5809; port++)
+    {
+      PortForwarder.add(port, "limelight.local",port);
     }
 
     m_elevator.setGoal(0);

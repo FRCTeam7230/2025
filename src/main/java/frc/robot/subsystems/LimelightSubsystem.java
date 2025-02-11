@@ -4,6 +4,10 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LimelightSubsystem extends SubsystemBase {
@@ -66,5 +70,20 @@ public class LimelightSubsystem extends SubsystemBase {
   public void setTargetRight()
   {
     targetingOffsetY = Math.abs(targetingOffsetY);
+  }
+  public double getTx()
+  {
+    /* 
+    NetworkTableInstance tableInstance = NetworkTableInstance.getDefault();  // Get the default instance
+        NetworkTable table = tableInstance.getTable("limelight");
+        NetworkTableEntry tx = table.getEntry("tx");
+    return tx.getDouble(0.0);
+    */
+    return LimelightHelpers.getTX("");
+  }
+  @Override
+  public void periodic()
+  {
+    SmartDashboard.putNumber("tx",getTx());
   }
 }
