@@ -13,23 +13,21 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
-    private final SparkMax motorController=new SparkMax(100, MotorType.kBrushless);
-    private final RelativeEncoder encoder=motorController.getEncoder();
-    private final double motorspeed = 1;
-    public IntakeSubsystem(int motorID) {}  
+    private final SparkMax intakeRollerMotor = new SparkMax(Constants.IntakeConstants.intakeRollerMotorID, MotorType.kBrushless);
+    //private final RelativeEncoder encoder=motorController.getEncoder();
+    public IntakeSubsystem() {
+    }  
+    
     public void runMotor(){
-        if (motorController.get()==0){//If the motor speed is 0 (when motor is not spinning)
-            motorController.set(motorspeed);
-        } else {
-            motorController.set(0);
-        }
+        intakeRollerMotor.set(1);
         //motorController.set(motorspeed);
     }
-
+    
     public void stopMotor() {
-        motorController.set(0);
+        intakeRollerMotor.stopMotor();
     }
 
     /*public double getEncoderPosition() {

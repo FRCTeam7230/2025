@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class ExecuteAutonmous extends SubsystemBase {
+public class ExecuteAutonomous extends SubsystemBase {
     Timer time = new Timer();
     PathPlannerAuto a = new PathPlannerAuto("Example Auto");
     int phase = 0;

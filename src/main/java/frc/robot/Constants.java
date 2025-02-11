@@ -204,4 +204,9 @@ public final class Constants {
     public static final double kElevatorMaxVelocity = 3.5;
     public static final double kElevatorMaxAcceleration = 2.5;
   }
+
+  public static class IntakeConstants {
+
+    public static final int intakeRollerMotorID = 2;
+  }
 }
