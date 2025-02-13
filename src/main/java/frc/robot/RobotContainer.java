@@ -176,8 +176,8 @@ public class RobotContainer {
             m_elevator));
     new JoystickButton(m_driverController, Constants.OperatorConstants.INTAKE_BUTTON)
         .whileTrue(new StartEndCommand(
-        () -> m_intake.runMotor(), 
-        () -> m_intake.stopMotor(),
+        () -> m_intake.runIntakeRollerMotor(), 
+        () -> m_intake.stopIntakeRollerMotor(),
         m_intake));
     // m_elevator.atHeight(5, 0.1).whileTrue(Commands.print("Elevator Command!"));
 

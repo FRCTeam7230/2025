@@ -21,29 +21,19 @@ public class IntakeSubsystem extends SubsystemBase {
     public IntakeSubsystem() {
     }  
     
-    public void runMotor(){
+    public void runIntakeRollerMotor(){
         intakeRollerMotor.set(1);
-        //motorController.set(motorspeed);
+    
     }
     
-    public void stopMotor() {
+    public void stopIntakeRollerMotor() {
         intakeRollerMotor.stopMotor();
     }
 
-    /*public double getEncoderPosition() {
-        return encoder.getPosition();
-    }
 
-    public double getEncoderSpeed() {
-        return encoder.getVelocity();
-    }
-
-    public void resetEncoder() {
-        encoder.reset();
-    }*/
     @Override
     public void periodic()
     {
-        //motorController.set(motorspeed);
+        
     }
 }
