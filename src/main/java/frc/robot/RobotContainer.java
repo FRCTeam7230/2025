@@ -28,9 +28,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ElevatorSubsystemYAGSL;
+import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 import frc.robot.subsystems.ElevatorSubsystemSim;
 import frc.robot.subsystems.SwerveSubsystemSim;
+import frc.robot.subsystems.UsbCameraSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -48,6 +51,8 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+
+import edu.wpi.first.net.PortForwarder;
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -56,16 +61,16 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
  */
 public class RobotContainer {
 
+  // The robot's subsystems
+  private final UsbCameraSubsystem m_UsbCamera;
+  private final VisionSubsystem m_visionSubsystem;
+  private final LimelightSubsystem m_limelight;
+  // private final SwerveSubsystemSim m_robotDrive = new SwerveSubsystemSim();
+
+
   // Declare the robot's subsystems
   DriveSubsystem m_robotDrive;
   ElevatorSubsystem m_elevator;
-/*<<<<<<< Updated upstream
-
-  // private final ElevatorSubsystemYAGSL m_elevator = new ElevatorSubsystemYAGSL();
-=======
-  private final Climber m_climber = new Climber();
-  //private final ElevatorSubsystemYAGSL m_elevator = new ElevatorSubsystemYAGSL();
->>>>>>> Stashed changes*/
 
   // The driver's controller
   // XboxController m_driverController = new
@@ -89,6 +94,14 @@ public class RobotContainer {
     } else {
       m_robotDrive = new SwerveSubsystemSim();
       m_elevator = new ElevatorSubsystem();
+    }
+    m_limelight = new LimelightSubsystem();
+    m_UsbCamera = new UsbCameraSubsystem();
+    m_visionSubsystem = new VisionSubsystem(m_UsbCamera);
+
+    for(int port = 5800; port<=5809; port++)
+    {
+      PortForwarder.add(port, "limelight.local",port);
     }
 
 
@@ -231,11 +244,14 @@ public class RobotContainer {
             Units.degreesToRadians(360), Units.degreesToRadians(540)),
         0));
     SmartDashboard.putData("Pathfind to Scoring Pos", AutoBuilder.pathfindToPose(
-        new Pose2d(2.15, 3.0, Rotation2d.fromDegrees(180)),
-        new PathConstraints(
-            4.0, 4.0,
-            Units.degreesToRadians(360), Units.degreesToRadians(540)),
-        0));
+
+      new Pose2d(2.15, 3.0, Rotation2d.fromDegrees(180)), 
+      new PathConstraints(
+        4.0, 4.0, 
+        Units.degreesToRadians(360), Units.degreesToRadians(540)
+      ), 
+      0
+    ));
 
     // Add a button to SmartDashboard that will create and follow an on-the-fly path
     // This example will simply move the robot 2m in the +X field direction
@@ -261,6 +277,14 @@ public class RobotContainer {
 
       AutoBuilder.followPath(path).schedule();
     }));
+    
+    SmartDashboard.putData("Toggle camera overlay",m_UsbCamera.toggleOverlay());
+    SmartDashboard.putData("Toggle camera flip",m_UsbCamera.toggleFlip());
+
+    SmartDashboard.putData("Start Main Camera",m_UsbCamera.StartCameraFeed(0));
+    SmartDashboard.putData("Start Alternate Camera Feed",m_UsbCamera.StartCameraFeed(1));
+    SmartDashboard.putData("Refresh Camera Data",m_UsbCamera.Refresh());
+    
   }
 
   /**

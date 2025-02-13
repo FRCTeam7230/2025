@@ -218,4 +218,19 @@ public final class Constants {
     public static final double kElevatorMaxVelocity = Units.inchesToMeters(10); // TODO: Need a good inches per sec max, start slow (10?)
     public static final double kElevatorMaxAcceleration = Units.inchesToMeters(10); // TODO: Need a good inches per sec per sec max, start slow (10?)
   }
+  public static class LimelightConstants
+  {
+    public static final double kDriveKp = 0;
+    public static final double kRotationKp = 0;
+
+    public static final double kHorizontalOffset = 0;
+    public static final double kForwardOffset = 0;
+    public static final double kForwardUnextendedOffset = 0;
+
+    public enum reefAlignSide
+    {
+      Right,
+      Left,
+    }
+  }
 }

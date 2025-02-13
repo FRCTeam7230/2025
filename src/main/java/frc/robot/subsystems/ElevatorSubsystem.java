@@ -151,6 +151,15 @@ public class ElevatorSubsystem extends SubsystemBase
   public void ManualElevatorDown(){
     m_motor1.set(0.05);
   }
+  /**
+   * Update telemetry, including the mechanism visualization.
+   */
+  public void updateTelemetry()
+  {
+    // Update elevator visualization with position
+    m_elevatorMech2d.setLength(RobotBase.isSimulation() ? m_elevatorSim.getPositionMeters() : m_encoder.getPosition());
+    SmartDashboard.putNumber("Elevator Position",getHeight());
+  }
 
   @Override
   public void periodic() {
