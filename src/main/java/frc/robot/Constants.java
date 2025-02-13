@@ -204,4 +204,19 @@ public final class Constants {
     public static final double kElevatorMaxVelocity = 3.5;
     public static final double kElevatorMaxAcceleration = 2.5;
   }
+  public static class LimelightConstants
+  {
+    public static final double kDriveKp = 0;
+    public static final double kRotationKp = 0;
+
+    public static final double kHorizontalOffset = 0;
+    public static final double kForwardOffset = 0;
+    public static final double kForwardUnextendedOffset = 0;
+
+    public enum reefAlignSide
+    {
+      Right,
+      Left,
+    }
+  }
 }

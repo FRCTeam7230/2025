@@ -179,6 +179,7 @@ public class ElevatorSubsystem extends SubsystemBase
   {
     // Update elevator visualization with position
     m_elevatorMech2d.setLength(RobotBase.isSimulation() ? m_elevatorSim.getPositionMeters() : m_encoder.getPosition());
+    SmartDashboard.putNumber("Elevator Position",getHeight());
   }
 
   @Override

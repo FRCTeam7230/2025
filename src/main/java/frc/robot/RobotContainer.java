@@ -242,6 +242,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("Start Main Camera",m_UsbCamera.StartCameraFeed(0));
     SmartDashboard.putData("Start Alternate Camera Feed",m_UsbCamera.StartCameraFeed(1));
+    SmartDashboard.putData("Refresh Camera Data",m_UsbCamera.Refresh());
     
   }
 

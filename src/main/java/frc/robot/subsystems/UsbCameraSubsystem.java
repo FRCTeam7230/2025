@@ -38,7 +38,12 @@ public class UsbCameraSubsystem extends SubsystemBase {
       private Mat latestMat;
 
       private boolean cameraStarted = false;
+
+      private Point target = new Point(0,0);
+      private Rect targetBox = new Rect(0,0,0,0);
+      private boolean isReady = false;
       
+      private boolean refreshRequested;
       //Constructor that creates the image processing thread.
   public UsbCameraSubsystem() {
 //StartCamera(0);
@@ -52,15 +57,14 @@ cameraStarted = false;
  */
 private void processVideoFeed(Mat inputMat)
 {
-  Point target = VisionSubsystem.getReeftargetCenter();
-  Rect targetBox = VisionSubsystem.locateReefPipeTarget();
+  
   if(target.x != 0&&target.y != 0)
   {
     Imgproc.putText(inputMat, "TARGET", new Point(target.x-25,target.y+8), 0, 0.4, new Scalar(0,0,0,0));
 
     Imgproc.circle(inputMat, target,30, new Scalar(0,0,0),3); 
     Scalar color =  new Scalar(225,20,250);
-    if(VisionSubsystem.isReady())
+    if(isReady)
     {
       color = new Scalar(0,255,0);
     }
@@ -75,6 +79,21 @@ private void processVideoFeed(Mat inputMat)
   Imgproc.putText(inputMat, "Processed Camera Feed", new Point(20,50), 0, 1, new Scalar(0,0,0),3);
 
 
+}
+private void RefreshData()
+{
+  target = VisionSubsystem.getReeftargetCenter();
+  targetBox = VisionSubsystem.locateReefPipeTarget();
+  SmartDashboard.putNumber("EstimatedDistanceFromPipe:",0.01*(int)(VisionSubsystem.getReefPipeDistance()*100));
+  SmartDashboard.putNumber("Estimated horizontal offset",0.01*(int)(VisionSubsystem.getReefTargetOffset()*100));
+  isReady = VisionSubsystem.isReady();
+}
+public Command Refresh()
+{
+  return runOnce(()->
+  {
+    refreshRequested = true;
+  });
 }
 
 //toggles overlay such as reef pipe detection indicators
@@ -151,8 +170,11 @@ private void StartCamera(int dev)
           if(overlay)
           {
             processVideoFeed(mat);
-                SmartDashboard.putNumber("EstimatedDistanceFromPipe:",0.01*(int)(VisionSubsystem.getReefPipeDistance()*100));
-                SmartDashboard.putNumber("Estimated horizontal offset",0.01*(int)(VisionSubsystem.getReefTargetOffset()*100));
+            if(refreshRequested)
+            {
+              refreshRequested = false;
+              RefreshData();
+            }
           }
         
 
@@ -162,10 +184,16 @@ private void StartCamera(int dev)
           latestMat = mat;
           long time = System.currentTimeMillis()-startTime;
           SmartDashboard.putNumber("Vision FPS: ",((int)1000.00/time));
+          
         }
       });
 visionThread.setDaemon(true);
 visionThread.start();
+}
+@Override
+public void periodic()
+{
+
 }
 
 }
