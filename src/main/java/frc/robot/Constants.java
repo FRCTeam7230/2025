@@ -43,10 +43,20 @@ public final class Constants {
     public static final int kButton12 = 12;
 
     // Drive Stick Buttons
+    //testing buttons: 2, 7-12
     public static final int BRAKE_BUTTON = kButton1;
-    public static final int ELEVATOR_UP_BUTTON = kButton7;
-    public static final int ELEVATOR_DOWN_BUTTON = kButton8;
-
+    public static final int ZERO_HEADING_BUTTON = kButton2;
+    public static final int SLOW_MODE_LEFT = kButton3;
+    public static final int SLOW_MODE_RIGHT = kButton4;  
+    public static final int SLOW_MODE_FORWARD = kButton5;
+    public static final int SLOW_MODE_BACKWARD = kButton6;          
+    public static final int ELEVATOR_SLOW_UP_BUTTON = kButton7;
+    public static final int ELEVATOR_SLOW_DOWN_BUTTON = kButton8;    
+    public static final int ELEVATOR_ONETHIRD_BUTTON = kButton9;
+    public static final int ELEVATOR_TWOTHIRDS_BUTTON = kButton10;
+    public static final int SPIN_0 = kButton11;
+    public static final int SPIN_30 = kButton12;   
+    
   }
 
   public static final class DriveConstants {
@@ -180,29 +190,33 @@ public final class Constants {
 
   public static class ElevatorConstants
   {
+    public static final int kElevMotor1 = 1;
+    public static final int kElevMotor2 = 3;
 
-    public static final double kElevatorKp = 5;
+    public static final double kGearRatio = 15; 
+    public static final double kGearRadius = Units.inchesToMeters(5.5/(2*Math.PI)); //inches - lemme double check with 
+    public static final double kResetCurrent = 60; //max current tbd TODO: Will need to tune these currents
+    public static final int kMaxCurrent   = 65;//In amps? TODO: Will need to tune these currents
+
+    public static final double kElevatorKp = 0.5; //TODO: Will need to tune this, I lowered it to start 
     public static final double kElevatorKi = 0;
     public static final double kElevatorKd = 0;
 
+    // Note: All of these should be 0.0 except kG - which we will need to determine empirically
     public static final double kElevatorkS = 0.0; // volts (V)
-    public static final double kElevatorkG = 0.762; // volts (V)
-    public static final double kElevatorkV = 0.762; // volt per velocity (V/(m/s))
+    public static final double kElevatorkG = 0.0; // volts (V) //TODO: Will need to tune
+    public static final double kElevatorkV = 0.0; // volt per velocity (V/(m/s))
     public static final double kElevatorkA = 0.0; // volt per acceleration (V/(m/s²))
 
-    public static final double kElevatorGearing = 10.0;
-    public static final double kElevatorDrumRadius = Units.inchesToMeters(2.0);
     public static final double kCarriageMass = 4.0; // kg
 
     // Encoder is reset to measure 0 at the bottom, so minimum height is 0.
-    public static final double kMinElevatorHeightMeters = 0.0;
-    //public static final double kMaxElevatorHeightMeters = 10.25;
-    public static final double kMaxElevatorHeightMeters = 1.27;
+    public static final double kMinRealElevatorHeightMeters = Units.inchesToMeters(0);
+    public static final double kMaxRealElevatorHeightMeters = Units.inchesToMeters(66.264);
 
-    public static final double kRotationToMeters = kElevatorDrumRadius * 2 * Math.PI;
-    public static final double kRPMtoMPS = (kElevatorDrumRadius * 2 * Math.PI) / 60;
-    public static final double kElevatorMaxVelocity = 3.5;
-    public static final double kElevatorMaxAcceleration = 2.5;
+    public static final double kRotationToMeters = kGearRadius * 2 * Math.PI / kGearRatio;// Revolutions to Output units conversion factor
+    public static final double kElevatorMaxVelocity = Units.inchesToMeters(10); // TODO: Need a good inches per sec max, start slow (10?)
+    public static final double kElevatorMaxAcceleration = Units.inchesToMeters(10); // TODO: Need a good inches per sec per sec max, start slow (10?)
   }
   public static class LimelightConstants
   {

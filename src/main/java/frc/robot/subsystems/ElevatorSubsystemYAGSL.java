@@ -51,6 +51,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 
 public class ElevatorSubsystemYAGSL extends SubsystemBase
@@ -66,7 +67,7 @@ public class ElevatorSubsystemYAGSL extends SubsystemBase
           ElevatorConstants.kElevatorkG,
           ElevatorConstants.kElevatorkV,
           ElevatorConstants.kElevatorkA);
-  private final SparkMax                  m_motor      = new SparkMax(1, MotorType.kBrushless);
+  private final SparkMax                  m_motor      = new SparkMax(4, MotorType.kBrushless);
   private final SparkClosedLoopController m_controller = m_motor.getClosedLoopController();
   private final RelativeEncoder           m_encoder    = m_motor.getEncoder();
   private final SparkMaxSim               m_motorSim   = new SparkMaxSim(m_motor, m_elevatorGearbox);
@@ -87,11 +88,11 @@ public class ElevatorSubsystemYAGSL extends SubsystemBase
   private final ElevatorSim m_elevatorSim =
       new ElevatorSim(
           m_elevatorGearbox,
-          ElevatorConstants.kElevatorGearing,
+          ElevatorConstants.kGearRatio,
           ElevatorConstants.kCarriageMass,
-          ElevatorConstants.kElevatorDrumRadius,
-          ElevatorConstants.kMinElevatorHeightMeters,
-          ElevatorConstants.kMaxElevatorHeightMeters,
+          ElevatorConstants.kGearRadius,
+          ElevatorConstants.kMinRealElevatorHeightMeters,
+          ElevatorConstants.kMaxRealElevatorHeightMeters,
           true,
           0,
           0.01,
@@ -268,9 +269,24 @@ public class ElevatorSubsystemYAGSL extends SubsystemBase
   /**
    * Stop the control loop and motor output.
    */
-  public void stop()
-  {
-    m_motor.set(0.0);
+  public void stop(){
+    m_motor.set(0);   
+  }
+  public void normalUp(){
+    m_motor.set(1);   
+    reachGoal(Constants.ElevatorSimConstants.kMaxElevatorHeightMeters);
+  }
+  public void normalDown(){
+    m_motor.set(1);
+    reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters);
+  }
+  public void slowUp(){
+    m_motor.set(0.25);
+    reachGoal(Constants.ElevatorSimConstants.kMaxElevatorHeightMeters);
+  }
+  public void slowDown(){
+    m_motor.set(0.25);
+    reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters);
   }
 
   /**
@@ -297,8 +313,8 @@ public class ElevatorSubsystemYAGSL extends SubsystemBase
     public static Angle convertDistanceToRotations(Distance distance)
     {
       return Rotations.of(distance.in(Meters) /
-                          (ElevatorConstants.kElevatorDrumRadius * 2 * Math.PI) *
-                          ElevatorConstants.kElevatorGearing);
+                          (ElevatorConstants.kGearRadius * 2 * Math.PI) *
+                          ElevatorConstants.kGearRatio);
     }
 
     /**
@@ -309,7 +325,7 @@ public class ElevatorSubsystemYAGSL extends SubsystemBase
      */
     public static Distance convertRotationsToDistance(Angle rotations)
     {
-      return Meters.of((rotations.in(Rotations) / ElevatorConstants.kElevatorGearing) *
-                       (ElevatorConstants.kElevatorDrumRadius * 2 * Math.PI));
+      return Meters.of((rotations.in(Rotations) / ElevatorConstants.kGearRatio) *
+                       (ElevatorConstants.kGearRadius * 2 * Math.PI));
     }
 }
