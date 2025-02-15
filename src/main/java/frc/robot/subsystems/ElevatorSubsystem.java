@@ -131,7 +131,10 @@ public class ElevatorSubsystem extends SubsystemBase
                                              getHeight(),
                                              tolerance));
   }
-
+  public boolean isFullyExtended(double tolerance)
+  {
+    return MathUtil.isNear(ElevatorConstants.kMaxRealElevatorHeightMeters,getHeight(),tolerance);
+  }
   /**
    * Set the goal of the elevator
    *
@@ -157,7 +160,7 @@ public class ElevatorSubsystem extends SubsystemBase
   public void updateTelemetry()
   {
     // Update elevator visualization with position
-    m_elevatorMech2d.setLength(RobotBase.isSimulation() ? m_elevatorSim.getPositionMeters() : m_encoder.getPosition());
+    //m_elevatorMech2d.setLength(RobotBase.isSimulation() ? m_elevatorSim.getPositionMeters() : m_encoder.getPosition());
     SmartDashboard.putNumber("Elevator Position",getHeight());
   }
 

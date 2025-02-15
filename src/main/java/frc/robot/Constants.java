@@ -224,8 +224,12 @@ public final class Constants {
     public static final double kRotationKp = 0;
 
     public static final double kHorizontalOffset = 0;
-    public static final double kForwardOffset = 0;
+    public static final double kForwardExtendedOffset = 0;
     public static final double kForwardUnextendedOffset = 0;
+
+    public static final double kPositionErrorThreshold = 0;
+    public static final double kRotationErrorThreshold = 0;
+    public static final double kElevatorTolerance = 0;
 
     public enum reefAlignSide
     {

@@ -4,11 +4,13 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
+
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlignWithLimelight extends Command {
@@ -21,19 +23,25 @@ public class AlignWithLimelight extends Command {
   double horizontalOffset;
   double forwardOffset;
 
+  PIDController xController;
+  PIDController forwardController;
+  PIDController yawController;
+  private boolean targetingExtendedPosition = false;
+
   /** Creates a new AlignWithLimelight. */
   public AlignWithLimelight(DriveSubsystem drive, LimelightSubsystem limelight, ElevatorSubsystem elevator,LimelightConstants.reefAlignSide side) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_drive = drive;
-    addRequirements(m_drive);
-
     m_limelight = limelight;
-    addRequirements(m_limelight);
-
     m_elevator = elevator;
-    addRequirements(m_elevator);
+    addRequirements(m_drive,m_limelight,m_elevator);
 
     alignSide = side;
+
+    xController = new PIDController(LimelightConstants.kDriveKp,0,0);
+    forwardController = new PIDController(LimelightConstants.kDriveKp,0,0);
+    yawController = new PIDController(LimelightConstants.kRotationKp,0,0);
+    targetingExtendedPosition = false;
   }
 
   // Called when the command is initially scheduled.
@@ -49,6 +57,17 @@ public class AlignWithLimelight extends Command {
       horizontalOffset = LimelightConstants.kHorizontalOffset;
     }
     forwardOffset = LimelightConstants.kForwardUnextendedOffset;
+
+
+
+    xController.setTolerance(LimelightConstants.kPositionErrorThreshold);
+    forwardController.setTolerance(LimelightConstants.kPositionErrorThreshold);
+    yawController.setTolerance(LimelightConstants.kRotationErrorThreshold);
+
+    xController.setSetpoint(horizontalOffset);
+    forwardController.setSetpoint(forwardOffset);
+    yawController.setSetpoint(0);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -62,10 +81,31 @@ public class AlignWithLimelight extends Command {
  * use pid class to calculate values
  * pass into drive system
  */
+//if elevator is extended, we can go right up to the reef
+    if(m_elevator.isFullyExtended(LimelightConstants.kElevatorTolerance)&&xController.atSetpoint()&&yawController.atSetpoint())
+    {
+      forwardController.setSetpoint(LimelightConstants.kForwardExtendedOffset);
+      targetingExtendedPosition = true;
+    }
     double[] targetData = m_limelight.getPose();
-    double tx = targetData[0];
-    double tz = targetData[2];
-    double yaw = targetData[4];
+    //ensures valid targetdata
+    if(m_limelight.isTV())
+    {
+
+      double tx = targetData[0];
+      double tz = targetData[2];
+      double yaw = targetData[4];
+  
+      double xValue = xController.calculate(tx);
+      double zValue = forwardController.calculate(tz);
+      double yawValue = yawController.calculate(yaw);
+      
+  
+      //drive x,z,yaw values
+      m_drive.driveTagRelative(-zValue,-xValue,yawValue,-yaw);
+  
+      
+    }
     
   }
 
@@ -73,6 +113,7 @@ public class AlignWithLimelight extends Command {
   @Override
   public void end(boolean interrupted) {
     //disable drive system
+    m_drive.setX();
     //maybe trigger scoring
 
   }
@@ -84,6 +125,13 @@ public class AlignWithLimelight extends Command {
      * get tx, tz, yaw values and calculate error
      * if error is below threshold and at the extended point we return true
      */
+
+     if(xController.atSetpoint()&&yawController.atSetpoint()&&forwardController.atSetpoint())
+     {
+        return targetingExtendedPosition;
+     }
     return false;
   }
+
+  
 }

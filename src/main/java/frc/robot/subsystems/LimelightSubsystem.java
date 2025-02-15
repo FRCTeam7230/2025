@@ -9,15 +9,12 @@ package frc.robot.subsystems;
 //import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.Command;
 
 public class LimelightSubsystem extends SubsystemBase {
 
-  private double metersToFeet = 0.3048;
-  private double targetingOffsetX;
-  private double targetingOffsetZ;
 
   private double[] targetData;
+  private boolean targetValid;
   /** Creates a new ExampleSubsystem. */
   public LimelightSubsystem() {}
   
@@ -27,35 +24,27 @@ public class LimelightSubsystem extends SubsystemBase {
   public void RefreshData()
   {
     targetData= LimelightHelpers.getCameraPose_TargetSpace("");
+    targetValid = LimelightHelpers.getTV("");
   }
-  /**
-   * 
-   * @param x offset in feet from apriltg of desired position -> negative is further from reef.
-   * @param y offset in feet horizontally from apriltag target -> positive is offset to the Right of apriltag. 
-   */
-  public void setTargetingOffset(double x, double z)
-  {
-    targetingOffsetX = x;
-    targetingOffsetZ = z;
-  }
+
   @Override
   public void periodic()
   {
-    SmartDashboard.putNumber("tx",targetData[0]);
+    RefreshData();
+    if(targetValid)
+    {
+      SmartDashboard.putNumberArray("Apriltag data",targetData);
+
+    }
   }
   public double[] getPose()
   {
     return targetData;
   }
-  public void AlignToTarget()
+  public boolean isTV()
   {
-        RefreshData();
-        double tx = targetData[0];
-        double tz = targetData[2];
-        double yaw = targetData[4];
-
-        tx-=targetingOffsetX;
-        tz-=targetingOffsetZ;
+    return targetValid;
   }
+
   
 }

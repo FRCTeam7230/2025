@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
+import org.opencv.core.Size;
+
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,6 +36,8 @@ public class UsbCameraSubsystem extends SubsystemBase {
       //overlay on top of video feed toggle.
       private boolean overlay = true;
       private boolean flip = true;
+
+      private double resolutionScale = 0.125;
       //most recent frame from vision
       private Mat latestMat;
 
@@ -72,12 +76,17 @@ private void processVideoFeed(Mat inputMat)
 
 
 
-
   } 
   //reef pipe visualizer
   //Imgproc.rectangle( inputMat, new Point(280, 180), new Point(360, 480), new Scalar(225, 20, 250), 5);
   Imgproc.putText(inputMat, "Processed Camera Feed", new Point(20,50), 0, 1, new Scalar(0,0,0),3);
+  Imgproc.resize(inputMat,inputMat,new Size(160,120));
 
+
+}
+private void simpleProcess(Mat inputMat)
+{
+  Imgproc.resize(inputMat,inputMat,new Size(160,120));
 
 }
 private void RefreshData()
@@ -144,7 +153,8 @@ private void StartCamera(int dev)
         // Get a CvSink. This will capture Mats from the camera
         CvSink cvSink = CameraServer.getVideo();
         // Setup a CvSource. This will send images back to the Dashboard
-        CvSource outputStream = CameraServer.putVideo("Processed Feed", 640, 480);
+        
+        CvSource outputStream = CameraServer.putVideo("Processed Feed", (160), (120));
 
         // Mats are very memory expensive. Lets reuse this Mat.
         Mat mat = new Mat();
@@ -163,24 +173,35 @@ private void StartCamera(int dev)
             // skip the rest of the current iteration
             continue;
           }
+          
           // Apply image processing to image
           if(flip)
           Core.flip(mat,mat,0);
 
           if(overlay)
           {
-            processVideoFeed(mat);
             if(refreshRequested)
             {
               refreshRequested = false;
               RefreshData();
             }
+            processVideoFeed(mat);
+
+          }
+          else
+          {
+            simpleProcess(mat);
           }
         
 
           // Give the output stream a new image to display 
 
           outputStream.putFrame(mat);
+          if(latestMat!=null)
+          {
+            latestMat.release();
+
+          }
           latestMat = mat;
           long time = System.currentTimeMillis()-startTime;
           SmartDashboard.putNumber("Vision FPS: ",((int)1000.00/time));

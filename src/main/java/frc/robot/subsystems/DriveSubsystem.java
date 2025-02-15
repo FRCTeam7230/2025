@@ -236,6 +236,25 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearRight.setDesiredState(swerveModuleStates[3]);
   }
 
+  public void driveTagRelative(double xSpeed, double ySpeed, double rot,double robotYaw)
+  {
+    double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond / Constants.movementDivider;
+    double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond / Constants.movementDivider;
+    double rotDelivered = rot * DriveConstants.kMaxAngularSpeed / Constants.rotateDivider;
+
+    var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
+        ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered,
+                Rotation2d.fromDegrees(robotYaw))); //TODO: verify correct robot yaw tag relative conversion  
+
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+        swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
+
+    m_frontLeft.setDesiredState(swerveModuleStates[0]);
+    m_frontRight.setDesiredState(swerveModuleStates[1]);
+    m_rearLeft.setDesiredState(swerveModuleStates[2]);
+    m_rearRight.setDesiredState(swerveModuleStates[3]);
+  }
+
   public double degreesToRadians(double angle){
     return Math.toRadians(angle);
   }

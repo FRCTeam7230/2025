@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.LimelightConstants.reefAlignSide;
+import frc.robot.commands.AlignWithLimelight;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -205,12 +207,11 @@ public class RobotContainer {
             m_elevator));
                                   
     new JoystickButton(m_driverController, Constants.OperatorConstants.SPIN_0)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.spinAngle(0)));
+        .onTrue(new AlignWithLimelight(m_robotDrive, m_limelight, m_elevator, reefAlignSide.Left));
+
 
     new JoystickButton(m_driverController, Constants.OperatorConstants.SPIN_30)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.spinAngle(30)));
+        .onTrue(new AlignWithLimelight(m_robotDrive, m_limelight, m_elevator, reefAlignSide.Right));
     
 
 
