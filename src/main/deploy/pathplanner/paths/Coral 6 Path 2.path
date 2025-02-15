@@ -3,41 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.9868852459016395,
-        "y": 2.868186475409835
+        "x": 5.187,
+        "y": 2.468
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.188608601436585,
-        "y": 2.231077185089516
+        "x": 4.3039902462151405,
+        "y": 2.16335407906316
       },
       "isLocked": false,
-      "linkedName": "Reef 6, 2"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.494749999996693,
-        "y": 2.4845000000011805
+        "x": 1.3186475409836067,
+        "y": 0.5665471311475403
       },
       "prevControl": {
-        "x": 4.741167339258858,
-        "y": 2.526672205432659
-      },
-      "nextControl": {
-        "x": 4.086598850086998,
-        "y": 2.4146484457533153
-      },
-      "isLocked": false,
-      "linkedName": "Bottom Corner"
-    },
-    {
-      "anchor": {
-        "x": 1.31625,
-        "y": 0.515
-      },
-      "prevControl": {
-        "x": 2.7540730530765165,
-        "y": 0.7087730795125186
+        "x": 2.1148776844523045,
+        "y": 1.0203290754754368
       },
       "nextControl": null,
       "isLocked": false,
@@ -61,10 +45,10 @@
     "rotation": -125.37999999999998
   },
   "reversed": false,
-  "folder": "Unused",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": -125.37999999999998
   },
   "useDefaultConstraints": true
 }

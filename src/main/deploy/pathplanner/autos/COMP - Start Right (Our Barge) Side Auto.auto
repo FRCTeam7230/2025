@@ -5,15 +5,47 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "To Reef 2, 2"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "To Reef 2, 2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Raise Elevator"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Lift the Elevator"
+            "name": "Vision Alignment"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Score"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Reef 2 Left Score"
+                }
+              }
+            ]
           }
         },
         {

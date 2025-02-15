@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Coral 6 Path 3"
+                  "pathName": "Station to Coral 1 Left"
                 }
               },
               {
@@ -34,37 +34,24 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "Score"
+                  "pathName": "Score for Reef 1 Left"
                 }
               },
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "Coral 6 After Scoring"
+                  "name": "Score"
                 }
               }
             ]
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Lower Elevator"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Coral 6 Path 2"
-                }
-              }
-            ]
+            "pathName": "Reef 1 to Coral Station"
           }
         }
       ]

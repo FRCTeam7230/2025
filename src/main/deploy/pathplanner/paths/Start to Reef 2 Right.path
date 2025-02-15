@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 5.286577868852459,
-        "y": 5.085911885245901
+        "x": 5.437977605310655,
+        "y": 5.271624454656753
       },
       "prevControl": {
-        "x": 6.560874870014893,
-        "y": 5.264193731255613
+        "x": 6.712274606473089,
+        "y": 5.449906300666465
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef 2"
+      "linkedName": "Reef 2 Before Score"
     }
   ],
   "rotationTargets": [],

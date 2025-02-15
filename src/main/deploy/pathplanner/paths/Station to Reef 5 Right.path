@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.5163622463966286,
-        "y": 0.8869533816666946
+        "x": 1.6691219198270022,
+        "y": 1.4339500112644679
       },
       "isLocked": false,
       "linkedName": "Coral Station 2"
@@ -20,8 +20,8 @@
         "y": 2.84421106557377
       },
       "prevControl": {
-        "x": 2.9815158231665992,
-        "y": 2.7474387238400912
+        "x": 2.9742707547183453,
+        "y": 2.595054333060726
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
     "rotation": 59.99999999999999
   },
   "reversed": false,
-  "folder": "Left (Processor) Side Auto Paths",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": -125.37999999999998

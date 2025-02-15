@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Coral 6 Path 3"
+                  "pathName": "Station to Reef 5 Left"
                 }
               },
               {
@@ -42,29 +42,16 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Coral 6 After Scoring"
+                  "pathName": "Scoring for Reef 5 Left"
                 }
               }
             ]
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Lower Elevator"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Coral 6 Path 2"
-                }
-              }
-            ]
+            "pathName": "Reef 5 to Station left"
           }
         }
       ]

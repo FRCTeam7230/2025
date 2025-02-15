@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 4.9832089360880865,
-        "y": 5.178686868854791
+        "x": 5.0895,
+        "y": 5.41925
       },
       "prevControl": {
-        "x": 5.55250673039693,
-        "y": 5.102176894105198
+        "x": 5.658797794308843,
+        "y": 5.342740025250407
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "reef 2, except 2"
+      "linkedName": "Reef 2 Left Before Score"
     }
   ],
   "rotationTargets": [],
