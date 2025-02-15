@@ -3,32 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.184133152039351,
-        "y": 5.540235785157506
+        "x": 7.071585738495782,
+        "y": 5.438108660372315
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.352993982082547,
-        "y": 5.355882808297563
+        "x": 5.701001457586119,
+        "y": 5.970875115791779
       },
       "isLocked": false,
-      "linkedName": "Reef 2 Left After Score"
-    },
-    {
-      "anchor": {
-        "x": 4.475250000000203,
-        "y": 6.023750000002809
-      },
-      "prevControl": {
-        "x": 4.894838656143014,
-        "y": 5.905212678943446
-      },
-      "nextControl": {
-        "x": 3.595110848182217,
-        "y": 6.272396705981569
-      },
-      "isLocked": false,
-      "linkedName": "Top Corner"
+      "linkedName": "End of Pushing the Robot"
     },
     {
       "anchor": {
@@ -36,8 +20,8 @@
         "y": 7.62275
       },
       "prevControl": {
-        "x": 1.8001915087992688,
-        "y": 7.617342396173438
+        "x": 1.9324662407402537,
+        "y": 7.472542964621575
       },
       "nextControl": null,
       "isLocked": false,
@@ -61,10 +45,10 @@
     "rotation": 125.37999999999998
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Pushing Robots",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -119.99999999999999
+    "rotation": 135.0
   },
   "useDefaultConstraints": true
 }

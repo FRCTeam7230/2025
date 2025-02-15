@@ -19,12 +19,6 @@
                 "data": {
                   "name": "Raise Elevator"
                 }
-              },
-              {
-                "type": "parallel",
-                "data": {
-                  "commands": []
-                }
               }
             ]
           }

@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 2.073872950819672,
-        "y": 7.471465163934425
+        "x": 1.5502500000000001,
+        "y": 7.62275
       },
       "prevControl": {
-        "x": 3.326082275822552,
-        "y": 7.116817358410507
+        "x": 2.80245932500288,
+        "y": 7.268102194476081
       },
       "nextControl": null,
       "isLocked": false,
@@ -61,7 +61,7 @@
     "rotation": 125.37999999999998
   },
   "reversed": false,
-  "folder": "Right (Our Barge) Side Auto Paths",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": -119.99999999999999

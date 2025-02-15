@@ -19,6 +19,12 @@
                 "data": {
                   "name": "Raise Elevator"
                 }
+              },
+              {
+                "type": "parallel",
+                "data": {
+                  "commands": []
+                }
               }
             ]
           }
@@ -30,28 +36,47 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Score for Reef 1 Left"
-                }
-              },
               {
                 "type": "named",
                 "data": {
                   "name": "Score"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.0
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Score for Reef 1 Left"
                 }
               }
             ]
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Reef 1 to Coral Station"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Reef 1 to Coral Station"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Lower Elevator"
+                }
+              }
+            ]
           }
         }
       ]

@@ -3,11 +3,11 @@
   "robotLength": 0.75,
   "holonomicMode": true,
   "pathFolders": [
-    "Center Auto Paths",
-    "Dumpster",
-    "Left (Processor) Side Auto Paths",
-    "Right (Our Barge) Side Auto Paths",
-    "Unused"
+    "Pushing Robots",
+    "Reef to Station Paths",
+    "Start to Reef Paths",
+    "Station to Reef Paths",
+    "Unrelated Pats"
   ],
   "autoFolders": [
     "Coral Cycles",

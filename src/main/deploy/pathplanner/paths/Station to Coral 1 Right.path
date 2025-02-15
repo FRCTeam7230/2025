@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.073872950819672,
-        "y": 7.471465163934425
+        "x": 1.5502500000000001,
+        "y": 7.62275
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0738729508196725,
-        "y": 7.471465163934425
+        "x": 2.5502500000000006,
+        "y": 7.62275
       },
       "isLocked": false,
       "linkedName": "Coral Station"
@@ -45,7 +45,7 @@
     "rotation": -59.99999999999999
   },
   "reversed": false,
-  "folder": "Right (Our Barge) Side Auto Paths",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 125.37999999999998

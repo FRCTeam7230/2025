@@ -3,61 +3,61 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.778073770491804,
-        "y": 4.2005
+        "x": 6.078,
+        "y": 4.2
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.763218183355826,
-        "y": 4.450058232745076
+        "x": 6.743773580729388,
+        "y": 4.18043919747225
       },
       "isLocked": false,
-      "linkedName": "Reef 3"
+      "linkedName": "Scored for Reef 3 Top"
     },
     {
       "anchor": {
-        "x": 6.162000000000001,
-        "y": 5.16753320310069
+        "x": 7.211553216577827,
+        "y": 4.2
       },
       "prevControl": {
-        "x": 6.3173680751333166,
-        "y": 4.9479600065429254
+        "x": 6.963507641475928,
+        "y": 4.025734275798188
       },
       "nextControl": {
-        "x": 5.898872561236948,
-        "y": 5.539396810097723
+        "x": 7.678988701039914,
+        "y": 4.52839925962778
       },
       "isLocked": false,
-      "linkedName": "Right Corner 2"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.475250000000203,
-        "y": 6.023750000002809
+        "x": 7.825311721901915,
+        "y": 4.767229016971687
       },
       "prevControl": {
-        "x": 4.708020885713067,
-        "y": 5.906046634175749
+        "x": 7.5360325906641314,
+        "y": 4.6610434744721925
       },
       "nextControl": {
-        "x": 4.252150750966083,
-        "y": 6.13656278775496
+        "x": 8.060000230387292,
+        "y": 4.853376007545412
       },
       "isLocked": false,
-      "linkedName": "Top Corner"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.5502500000000001,
-        "y": 7.62275
+        "x": 7.071585738495782,
+        "y": 5.438108660372315
       },
       "prevControl": {
-        "x": 1.8770148051368065,
-        "y": 7.5057912573349475
+        "x": 7.146592735436581,
+        "y": 4.577003767329639
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Coral Station"
+      "linkedName": "End of Pushing the Robot"
     }
   ],
   "rotationTargets": [],
@@ -74,10 +74,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 125.37999999999998
+    "rotation": 135.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Pushing Robots",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0
