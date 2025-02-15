@@ -3,45 +3,61 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.205250000000001,
-        "y": 1.88
+        "x": 6.078,
+        "y": 4.2
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.103501602127509,
-        "y": 1.6826586014031824
+        "x": 6.073241595280027,
+        "y": 4.449954711066868
+      },
+      "isLocked": false,
+      "linkedName": "Scored for Reef 3 Top"
+    },
+    {
+      "anchor": {
+        "x": 6.286,
+        "y": 5.35
+      },
+      "prevControl": {
+        "x": 6.490110335748213,
+        "y": 4.9711976923508265
+      },
+      "nextControl": {
+        "x": 5.976911930445577,
+        "y": 5.923627364752735
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.494749999996693,
-        "y": 2.4845000000011805
+        "x": 4.4779655920983625,
+        "y": 6.251
       },
       "prevControl": {
-        "x": 4.714022104409869,
-        "y": 2.364417760572458
+        "x": 4.68136786447895,
+        "y": 6.105646927826022
       },
       "nextControl": {
-        "x": 4.275477895583517,
-        "y": 2.604582239429903
+        "x": 4.271187469520597,
+        "y": 6.398765484737595
       },
       "isLocked": false,
-      "linkedName": "Bottom Corner"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.7326962200514258,
-        "y": 3.0366754410392587
+        "x": 1.4917500000000001,
+        "y": 7.6129999999999995
       },
       "prevControl": {
-        "x": 4.694348378479283,
-        "y": 2.224799077870248
+        "x": 2.000799770316582,
+        "y": 7.4890489467919945
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "reef 5 left"
+      "linkedName": "Coral Station"
     }
   ],
   "rotationTargets": [],
@@ -58,10 +74,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 59.99999999999999
+    "rotation": 125.37999999999998
   },
   "reversed": false,
-  "folder": "Unused",
+  "folder": "Center Auto Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

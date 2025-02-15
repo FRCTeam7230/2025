@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AutoElevatorCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -33,6 +34,7 @@ import frc.robot.subsystems.ElevatorSubsystemSim;
 import frc.robot.subsystems.SwerveSubsystemSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -88,6 +90,11 @@ public class RobotContainer {
     m_robotDrive.zeroHeading();
 
     // Register named commands
+    //TODO: Use parallel commands to speed things up if applicible.
+    AutoElevatorCommand elevUp = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kMaxElevatorHeightMeters);
+    AutoElevatorCommand elevDown = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kMinElevatorHeightMeters);
+    ProxyCommand a = new ProxyCommand(elevUp);//What if we use proxy?
+    AutoElevatorCommand score = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kMaxElevatorHeightMeters-0.1);
 
     NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
     NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
@@ -95,7 +102,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("Lift the Elevator",new WaitCommand(5));//We can add commands like this, and yes it works as long as you can bear the 5 second wait.
     NamedCommands.registerCommand("Dance", Commands.print("This will not be a command where the robot will spin around itself."));
 
-
+    NamedCommands.registerCommand("Raise Elevator",elevUp);
+    NamedCommands.registerCommand("Lower Elevator",elevDown);
+    NamedCommands.registerCommand("Score",score);
     // Use event markers as triggers
     new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
     new EventTrigger("Dance").onTrue(Commands.print("This will not be a command where the robot will spin around itself."));

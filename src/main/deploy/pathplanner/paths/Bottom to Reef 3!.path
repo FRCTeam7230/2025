@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.041215417020073,
-        "y": 4.197081146305396
+        "x": 6.035702546659434,
+        "y": 4.2140210207173485
       },
       "isLocked": false,
       "linkedName": "Bottom Starting Point"
@@ -20,8 +20,8 @@
         "y": 4.2005
       },
       "prevControl": {
-        "x": 6.205517282006581,
-        "y": 4.218579317220671
+        "x": 6.308828431529768,
+        "y": 4.2061500847923226
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Center Auto Paths",
+  "folder": "Start to Reef Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

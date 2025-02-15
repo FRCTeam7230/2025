@@ -7,19 +7,61 @@
         {
           "type": "path",
           "data": {
-            "pathName": "To Reef 3"
+            "pathName": "Start to Reef 3 Bottom"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Lift the Elevator"
+            "name": "Raise Elevator"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Reef 3 To Coral Station 2"
+            "pathName": "Elevator to Reef 3 Bottom"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Score for Reef 3 Bottom"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Lower Elevator"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef 3 Bottom to Station"
           }
         }
       ]

@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4917500000000001,
-        "y": 7.6129999999999995
+        "x": 6.129,
+        "y": 3.8772611769792764
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4917500000000006,
-        "y": 7.6129999999999995
+        "x": 5.640472844316576,
+        "y": 3.8831493524488887
       },
       "isLocked": false,
-      "linkedName": "Coral Station"
+      "linkedName": "Midpoint for Reef 3 Bottom"
     },
     {
       "anchor": {
-        "x": 3.7278666155409605,
-        "y": 5.019377816662301
+        "x": 5.628512100045529,
+        "y": 3.8772611769792764
       },
       "prevControl": {
-        "x": 2.7278666155409605,
-        "y": 5.019377816662301
+        "x": 6.146638170131479,
+        "y": 3.8762571267349766
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef 1"
+      "linkedName": "Reef 3, except 2"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -59.99999999999999
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Right (Our Barge) Side Auto Paths",
+  "folder": "Center Auto Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 125.37999999999998
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }
