@@ -33,6 +33,7 @@ import frc.robot.subsystems.ElevatorSubsystemSim;
 import frc.robot.subsystems.SwerveSubsystemSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -55,11 +56,12 @@ import edu.wpi.first.math.util.Units;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems
-
+  
+// The robot's subsystems
   DriveSubsystem m_robotDrive;
-
   private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
+
+  private Boolean fieldRelative = true;
 
   // private final ElevatorSubsystemYAGSL m_elevator = new ElevatorSubsystemYAGSL();
 
@@ -112,7 +114,7 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband),
-                true),
+                fieldRelative),
             m_robotDrive));
   }
 
@@ -147,6 +149,7 @@ public class RobotContainer {
         .whileTrue(new RunCommand(
             () -> m_robotDrive.drive(0, -Constants.slowSpeedMode, 0, false),
             m_robotDrive));
+            
     new JoystickButton(m_driverController, 12)
         .whileTrue(new RunCommand(
             () -> m_robotDrive.spinAngle(30)));
@@ -174,6 +177,11 @@ public class RobotContainer {
         .whileTrue(new RunCommand(
             () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters),
             m_elevator));
+
+    new JoystickButton(m_driverController, 14)
+        .whileTrue(new InstantCommand(
+            () -> fieldRelative = !fieldRelative, 
+            m_robotDrive));
 
     // m_elevator.atHeight(5, 0.1).whileTrue(Commands.print("Elevator Command!"));
 
