@@ -16,8 +16,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
-    private final SparkMax intakeRollerMotor = new SparkMax(Constants.IntakeConstants.intakeRollerMotorID, MotorType.kBrushless);
-    //private final RelativeEncoder encoder=motorController.getEncoder();
+    private final SparkMax intakeRollerMotor = new SparkMax(Constants.IntakeConstants.intakeRollerMotorID, MotorType.kBrushed);
+  
     public IntakeSubsystem() {
     }  
     
