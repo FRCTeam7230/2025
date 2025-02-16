@@ -191,10 +191,11 @@ public class RobotContainer {
     // the auto chooser built above
     // Add more paths here.
 
-    // SmartDashboard.putData("Reef 1 to Coral Station Left", new PathPlannerAuto("Reef 1 to Coral Station Left"));
-    // SmartDashboard.putData("Reef 1 to Station Right", new PathPlannerAuto("Reef 1 to Station Right"));
-    // SmartDashboard.putData("Reef 2 to Station Right", new PathPlannerAuto("Reef 2 to Station Right"));
-    // SmartDashboard.putData("Reef 2 to Station Left", new PathPlannerAuto("Reef 2 to Station Left"));
+     SmartDashboard.putData("COMP - Bottom Scoring", new PathPlannerAuto("COMP - Bottom Scoring"));
+     SmartDashboard.putData("COMP - Start Center to Left (Processor) Coral Station", new PathPlannerAuto("COMP - Start Center to Left (Processor) Coral Station"));
+     SmartDashboard.putData("COMP - Start Center to Right (Our Barge) Coral Station", new PathPlannerAuto("COMP - Start Center to Left (Processor) Coral Station"));
+     SmartDashboard.putData("COMP - Start Right (Our Barge) Side", new PathPlannerAuto("COMP - Start Right (Our Barge) Side"));
+     SmartDashboard.putData("COMP - Top Scoring", new PathPlannerAuto("COMP - Top Scoring"));
     // SmartDashboard.putData("Reef 3 to Station Top", new PathPlannerAuto("Reef 2 to Station Top"));
     // SmartDashboard.putData("Reef 3 to Station Bottom", new PathPlannerAuto("Reef 2 to Station Bottom"));
     // SmartDashboard.putData("Reef 5 to station right", new PathPlannerAuto("Reef 5 to station right"));
