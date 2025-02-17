@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.3039902462151405,
-        "y": 2.16335407906316
+        "x": 4.305269903803875,
+        "y": 2.193769253609593
       },
       "isLocked": false,
       "linkedName": "Reef 6 After Score"
@@ -20,8 +20,8 @@
         "y": 0.5665471311475403
       },
       "prevControl": {
-        "x": 2.1148776844523045,
-        "y": 1.0203290754754368
+        "x": 2.0539709074913737,
+        "y": 0.9671699243884379
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": -127.77404311707322
   },
   "reversed": false,
   "folder": null,
