@@ -48,6 +48,7 @@ public class AlignWithLimelight extends Command {
   @Override
   public void initialize() 
   {
+    targetingExtendedPosition = false;
     if(alignSide == LimelightConstants.reefAlignSide.Left)
     {
       horizontalOffset = -1*LimelightConstants.kHorizontalOffset;
@@ -106,6 +107,7 @@ public class AlignWithLimelight extends Command {
   
       
     }
+
     
   }
 
@@ -130,8 +132,11 @@ public class AlignWithLimelight extends Command {
      {
         return targetingExtendedPosition;
      }
+     //or if the target becomes invalid, something went wrong.
+     if(!m_limelight.isTV()) return true;
+
     return false;
   }
-
+  
   
 }

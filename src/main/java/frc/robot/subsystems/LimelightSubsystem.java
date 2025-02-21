@@ -9,22 +9,24 @@ package frc.robot.subsystems;
 //import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.LimelightConstants;
+import edu.wpi.first.math.geometry.Pose2d;
+
 
 public class LimelightSubsystem extends SubsystemBase {
 
 
   private double[] targetData;
   private boolean targetValid;
+  private Pose2d pose;
   /** Creates a new ExampleSubsystem. */
   public LimelightSubsystem() {}
   
-  /**
-   * @return limelight offset in feet from primary in-view apriltag (asuming apriltag pipeline is active) [forward/backward, left/right, up/down]
-   */
   public void RefreshData()
   {
-    targetData= LimelightHelpers.getCameraPose_TargetSpace("");
-    targetValid = LimelightHelpers.getTV("");
+    targetData= LimelightHelpers.getCameraPose_TargetSpace(LimelightConstants.kLimelightName);
+    targetValid = LimelightHelpers.getTV(LimelightConstants.kLimelightName);
+    pose = LimelightHelpers.getBotPose2d(LimelightConstants.kLimelightName);
   }
 
   @Override
@@ -44,6 +46,10 @@ public class LimelightSubsystem extends SubsystemBase {
   public boolean isTV()
   {
     return targetValid;
+  }
+  public Pose2d getPose2d()
+  {
+    return pose;
   }
 
   

@@ -37,7 +37,6 @@ public class UsbCameraSubsystem extends SubsystemBase {
       private boolean overlay = true;
       private boolean flip = true;
 
-      private double resolutionScale = 0.125;
       //most recent frame from vision
       private Mat latestMat;
 
@@ -48,6 +47,9 @@ public class UsbCameraSubsystem extends SubsystemBase {
       private boolean isReady = false;
       
       private boolean refreshRequested;
+
+      private int displayWidth = 640;
+      private int displayHeight = 480;
       //Constructor that creates the image processing thread.
   public UsbCameraSubsystem() {
 //StartCamera(0);
@@ -80,13 +82,13 @@ private void processVideoFeed(Mat inputMat)
   //reef pipe visualizer
   //Imgproc.rectangle( inputMat, new Point(280, 180), new Point(360, 480), new Scalar(225, 20, 250), 5);
   Imgproc.putText(inputMat, "Processed Camera Feed", new Point(20,50), 0, 1, new Scalar(0,0,0),3);
-  Imgproc.resize(inputMat,inputMat,new Size(160,120));
+  Imgproc.resize(inputMat,inputMat,new Size(displayWidth,displayHeight));
 
 
 }
 private void simpleProcess(Mat inputMat)
 {
-  Imgproc.resize(inputMat,inputMat,new Size(160,120));
+  Imgproc.resize(inputMat,inputMat,new Size(displayWidth,displayHeight));
 
 }
 private void RefreshData()
@@ -154,7 +156,7 @@ private void StartCamera(int dev)
         CvSink cvSink = CameraServer.getVideo();
         // Setup a CvSource. This will send images back to the Dashboard
         
-        CvSource outputStream = CameraServer.putVideo("Processed Feed", (160), (120));
+        CvSource outputStream = CameraServer.putVideo("Processed Feed", (displayWidth), (displayHeight));
 
         // Mats are very memory expensive. Lets reuse this Mat.
         Mat mat = new Mat();

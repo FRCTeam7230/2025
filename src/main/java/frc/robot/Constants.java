@@ -220,6 +220,8 @@ public final class Constants {
   }
   public static class LimelightConstants
   {
+    public static final String kLimelightName = "";
+
     public static final double kDriveKp = 0;
     public static final double kRotationKp = 0;
 
