@@ -26,6 +26,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.AddAutoSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ElevatorSubsystemYAGSL;
@@ -216,9 +217,13 @@ public class RobotContainer {
     // Add a button to run the example auto to SmartDashboard, this will also be in
     // the auto chooser built above
     // Add more paths here.
-    SequentialCommandGroup fullAuto = new SequentialCommandGroup();
+    /*SequentialCommandGroup fullAuto = new SequentialCommandGroup();
     fullAuto.addCommands(new PathPlannerAuto("COMP - Start Center to Left (Processor) Coral Station"));
-    fullAuto.addCommands(new PathPlannerAuto("COMP - Bottom Scoring"));
+    fullAuto.addCommands(new PathPlannerAuto("COMP - Bottom Scoring"));*/
+
+    SequentialCommandGroup fullAuto = new AddAutoSubsystem().configurePaths();//Should adapt to the list using this.
+    
+
      SmartDashboard.putData("COMP - Bottom Scoring", new PathPlannerAuto("COMP - Bottom Scoring"));
      SmartDashboard.putData("COMP - Start Center to Left (Processor) Coral Station", new PathPlannerAuto("COMP - Start Center to Left (Processor) Coral Station"));
      SmartDashboard.putData("COMP - Start Center to Right (Our Barge) Coral Station", new PathPlannerAuto("COMP - Start Center to Left (Processor) Coral Station"));
