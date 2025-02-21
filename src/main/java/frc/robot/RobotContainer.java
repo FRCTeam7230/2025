@@ -29,7 +29,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.ElevatorSubsystemYAGSL;
-
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ElevatorSubsystemSim;
 import frc.robot.subsystems.SwerveSubsystemSim;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -51,6 +51,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -79,8 +80,10 @@ public class RobotContainer {
    * 
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
-  public RobotContainer() {
+  private boolean isCompetition = true;//What replaces this?
 
+  public RobotContainer() {
+    
     if (RobotBase.isReal()) {
       m_robotDrive = new DriveSubsystem();
     } else {
@@ -92,27 +95,35 @@ public class RobotContainer {
 
     // Register named commands
     //TODO: Use parallel commands to speed things up if applicible.
+    IntakeSubsystem intakeSystem = new IntakeSubsystem();
+
     AutoElevatorCommand elevUp = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kMaxElevatorHeightMeters);
     AutoElevatorCommand elevDown = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kMinElevatorHeightMeters);
-    ProxyCommand a = new ProxyCommand(elevUp);//What if we use proxy?
+    //ProxyCommand a = new ProxyCommand(elevUp);//What if we use proxy?
     AutoElevatorCommand score = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kMaxElevatorHeightMeters-0.1);
-    
-    NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
+    //Command runintake = new RunCommand(null, null)
+    /*NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
     NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
     NamedCommands.registerCommand("print hello", Commands.print("hello"));
     NamedCommands.registerCommand("Lift the Elevator",new WaitCommand(5));//We can add commands like this, and yes it works as long as you can bear the 5 second wait.
     NamedCommands.registerCommand("Dance", Commands.print("This will not be a command where the robot will spin around itself."));
-
+*/
     NamedCommands.registerCommand("Raise Elevator",elevUp);
     NamedCommands.registerCommand("Lower Elevator",elevDown);
     NamedCommands.registerCommand("Score",score);
+    NamedCommands.registerCommand("Run Intake", Commands.run(() -> intakeSystem.runIntakeRollerMotor()));//Is this how it's done?
     // Use event markers as triggers
     new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
     new EventTrigger("Dance").onTrue(Commands.print("This will not be a command where the robot will spin around itself."));
     // Configure the button bindings
     configureButtonBindings();
 
-    autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
+    autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
+        (stream) -> isCompetition
+            ? stream.filter(auto -> auto.getName().startsWith("COMP"))
+            : stream
+        );
+    //autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
     SmartDashboard.putData("Auto Mode", autoChooser);
 
     // Configure default commands
@@ -120,14 +131,17 @@ public class RobotContainer {
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
-        new RunCommand(
-            () -> m_robotDrive.drive(
-                -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband),
-                true,
-                m_driverController.getThrottle()),
-            m_robotDrive));
+
+    new RunCommand(
+        () -> m_robotDrive.drive(
+            -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband),
+            true,
+            m_driverController.getThrottle()),
+        m_robotDrive));
+        
+    
   }
 
   /**
