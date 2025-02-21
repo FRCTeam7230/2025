@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.50038700211626,
-        "y": 3.866532672601088
+        "x": 6.012074201432656,
+        "y": 3.921868766206563
       },
       "isLocked": false,
       "linkedName": "Reef 3, except 2"
@@ -20,8 +20,8 @@
         "y": 3.8772611769792764
       },
       "prevControl": {
-        "x": 6.178963648267576,
-        "y": 3.8815243383372087
+        "x": 5.666073248835355,
+        "y": 3.8265713279426974
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Center Auto Paths",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

@@ -36,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
@@ -95,7 +96,7 @@ public class RobotContainer {
     AutoElevatorCommand elevDown = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kMinElevatorHeightMeters);
     ProxyCommand a = new ProxyCommand(elevUp);//What if we use proxy?
     AutoElevatorCommand score = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kMaxElevatorHeightMeters-0.1);
-
+    
     NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
     NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
     NamedCommands.registerCommand("print hello", Commands.print("hello"));
@@ -190,12 +191,15 @@ public class RobotContainer {
     // Add a button to run the example auto to SmartDashboard, this will also be in
     // the auto chooser built above
     // Add more paths here.
-
+    SequentialCommandGroup fullAuto = new SequentialCommandGroup();
+    fullAuto.addCommands(new PathPlannerAuto("COMP - Start Center to Left (Processor) Coral Station"));
+    fullAuto.addCommands(new PathPlannerAuto("COMP - Bottom Scoring"));
      SmartDashboard.putData("COMP - Bottom Scoring", new PathPlannerAuto("COMP - Bottom Scoring"));
      SmartDashboard.putData("COMP - Start Center to Left (Processor) Coral Station", new PathPlannerAuto("COMP - Start Center to Left (Processor) Coral Station"));
      SmartDashboard.putData("COMP - Start Center to Right (Our Barge) Coral Station", new PathPlannerAuto("COMP - Start Center to Left (Processor) Coral Station"));
      SmartDashboard.putData("COMP - Start Right (Our Barge) Side", new PathPlannerAuto("COMP - Start Right (Our Barge) Side"));
      SmartDashboard.putData("COMP - Top Scoring", new PathPlannerAuto("COMP - Top Scoring"));
+     SmartDashboard.putData("COMP - Our Autonomous", fullAuto);
     // SmartDashboard.putData("Reef 3 to Station Top", new PathPlannerAuto("Reef 2 to Station Top"));
     // SmartDashboard.putData("Reef 3 to Station Bottom", new PathPlannerAuto("Reef 2 to Station Bottom"));
     // SmartDashboard.putData("Reef 5 to station right", new PathPlannerAuto("Reef 5 to station right"));
