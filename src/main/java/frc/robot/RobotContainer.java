@@ -100,7 +100,7 @@ public class RobotContainer {
     AutoElevatorCommand elevUp = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kMaxElevatorHeightMeters);
     AutoElevatorCommand elevDown = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kMinElevatorHeightMeters);
     //ProxyCommand a = new ProxyCommand(elevUp);//What if we use proxy?
-    AutoElevatorCommand score = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kMaxElevatorHeightMeters-0.1);
+    AutoElevatorCommand score = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kScoreElevatorHeightMeters);
     //Command runintake = new RunCommand(null, null)
     /*NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
     NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
@@ -202,6 +202,17 @@ public class RobotContainer {
             m_elevator));
     // m_elevator.atHeight(5, 0.1).whileTrue(Commands.print("Elevator Command!"));
 
+    /*
+     * Discrete paths split into parts incase this is needed:
+     * new PathPlannerAuto("Bottom Scoring Part 1")
+     * new PathPlannerAuto("Bottom Scoring Part 2")
+     * new PathPlannerAuto("Start Left Side Part 1")
+     * new PathPlannerAuto("Start Left Side Part 2")
+     * new PathPlannerAuto("Start Right Side Part 1")
+     * new PathPlannerAuto("Start Right Side Part 2")
+     * 
+     * Note: If we have to add vision command seperately in code, we can do soemthing similar to what I did in fullAuto and include the Vision Align command.
+     */
     // Add a button to run the example auto to SmartDashboard, this will also be in
     // the auto chooser built above
     // Add more paths here.
