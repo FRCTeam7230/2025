@@ -48,8 +48,10 @@ public class UsbCameraSubsystem extends SubsystemBase {
       
       private boolean refreshRequested;
 
-      private int displayWidth = 640;
-      private int displayHeight = 480;
+      private int displayWidth = 160;
+      private int displayHeight = 120;
+      private int ticksPerRefresh = 20;
+      private int refreshTickCount = 0;
       //Constructor that creates the image processing thread.
   public UsbCameraSubsystem() {
 //StartCamera(0);
@@ -93,8 +95,9 @@ private void simpleProcess(Mat inputMat)
 }
 private void RefreshData()
 {
+  VisionSubsystem.RefreshVisionData();
   target = VisionSubsystem.getReeftargetCenter();
-  targetBox = VisionSubsystem.locateReefPipeTarget();
+  targetBox = VisionSubsystem.lastRect;
   SmartDashboard.putNumber("EstimatedDistanceFromPipe:",0.01*(int)(VisionSubsystem.getReefPipeDistance()*100));
   SmartDashboard.putNumber("Estimated horizontal offset",0.01*(int)(VisionSubsystem.getReefTargetOffset()*100));
   isReady = VisionSubsystem.isReady();
@@ -216,7 +219,13 @@ visionThread.start();
 @Override
 public void periodic()
 {
+  if(refreshTickCount>ticksPerRefresh)
+  {
+      refreshRequested = true;
+      refreshTickCount = 0;
 
+  }
+  refreshTickCount++;
 }
 
 }

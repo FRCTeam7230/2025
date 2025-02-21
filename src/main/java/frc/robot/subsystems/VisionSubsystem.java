@@ -30,6 +30,11 @@ public class VisionSubsystem extends SubsystemBase {
   private static double lastPixelValue;
 
   public static double AcceptableError = 0.5; // inches
+
+  public static Rect lastRect;
+
+
+
 //initializes the camera feed to the vision system
   public VisionSubsystem(UsbCameraSubsystem camSys)
   {
@@ -41,7 +46,10 @@ public class VisionSubsystem extends SubsystemBase {
   {
     return cameraSubsystem.getLatestFrame();
   }
-
+  public static void RefreshVisionData()
+  {
+    lastRect = locateReefPipeTarget();
+  }
 
 
   //returns bounding rect of reef pipe target
@@ -106,7 +114,7 @@ public class VisionSubsystem extends SubsystemBase {
 // returns the pixel width of reef pipe target
   public static double getPixelsWidth()
 {
-  double res =  (VisionSubsystem.locateReefPipeTarget().width);
+  double res =  (lastRect.width);
   return res;
 }
 // converts pixels from camera of reef pipe to inches away from camera. 
@@ -168,7 +176,7 @@ private static Point getCenter(Rect rect)
 
 public static Point getReeftargetCenter()
 {
-  return getCenter(VisionSubsystem.locateReefPipeTarget());
+  return getCenter(lastRect);
 }
 /**
  * 
