@@ -54,17 +54,17 @@ public class ElevatorSubsystem extends SubsystemBase
 
 
   // Set up publishers to Advatage Scope
-  DoublePublisher encoder1_publisher = NetworkTableInstance.getDefault().getDoubleTopic("encoder1value").publish();
-  DoublePublisher encoder2_publisher = NetworkTableInstance.getDefault().getDoubleTopic("encoder2value").publish();
-  DoublePublisher volt1_publisher = NetworkTableInstance.getDefault().getDoubleTopic("voltsMotor1").publish();
-  DoublePublisher volt2_publisher = NetworkTableInstance.getDefault().getDoubleTopic("voltsMotor1").publish();
+  DoublePublisher encoder1_publisher = NetworkTableInstance.getDefault().getDoubleTopic("Elevator/encoder1value").publish();
+  DoublePublisher encoder2_publisher = NetworkTableInstance.getDefault().getDoubleTopic("Elevator/encoder2value").publish();
+  DoublePublisher volt1_publisher = NetworkTableInstance.getDefault().getDoubleTopic("Elevator/outputMotor1").publish();
+  DoublePublisher volt2_publisher = NetworkTableInstance.getDefault().getDoubleTopic("Elevator/outputMotor2").publish();
   
   // Constructor
   public ElevatorSubsystem()
   {
     //Set up motor configs
     m_config_motor1.encoder
-        .positionConversionFactor(ElevatorConstants.kRotationToMeters) // Converts Rotations to Inches
+        .positionConversionFactor(ElevatorConstants.kRotationToMeters) // Converts Rotations to Meters
         .velocityConversionFactor(ElevatorConstants.kRotationToMeters / 60); // Converts RPM to MPS
     m_config_motor1.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
@@ -80,6 +80,7 @@ public class ElevatorSubsystem extends SubsystemBase
     m_config_motor2.smartCurrentLimit(Constants.ElevatorConstants.kMaxCurrent);    
 
     //Configure motors
+    m_config_motor1.disableFollowerMode();
     m_motor1.configure(m_config_motor1, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     m_config_motor2.follow(m_motor1,true);
     m_motor2.configure(m_config_motor2, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
@@ -145,11 +146,11 @@ public class ElevatorSubsystem extends SubsystemBase
 
   //These are good to use the set function
   public void ManualElevatorUp(){
-    m_motor1.set(-0.05);
+    m_motor1.set(0.2);
   }
 
   public void ManualElevatorDown(){
-    m_motor1.set(0.05);
+    m_motor1.set(-0.15);
   }
 
   @Override
@@ -158,14 +159,12 @@ public class ElevatorSubsystem extends SubsystemBase
     // Add useful info to dashboard(s)
     encoder1_publisher.set(m_encoder.getPosition());
     encoder2_publisher.set(m_encoder2.getPosition());
-    volt1_publisher.set(m_motor1.getBusVoltage());
-    volt2_publisher.set(m_motor2.getBusVoltage());
+    volt1_publisher.set(m_motor1.getAppliedOutput());
+    volt2_publisher.set(m_motor2.getAppliedOutput());
     
     //updateTelemetry();
-    if (m_motor1.getOutputCurrent() > Constants.ElevatorConstants.kResetCurrent) {
-      // TODO: Replace get with getAppliedOutput or getBusVoltage - tbd which - done (but will need to test)
-      // TODO: Check if up is positive or negative volts
-      if (m_motor1.getBusVoltage() < 0) {
+    if (false && m_motor1.getOutputCurrent() > Constants.ElevatorConstants.kResetCurrent) {
+      if (m_motor1.getAppliedOutput() > 0) {
         m_encoder.setPosition(Constants.ElevatorConstants.kMaxRealElevatorHeightMeters);
       }
       else {
