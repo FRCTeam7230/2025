@@ -182,6 +182,11 @@ public final class Constants {
     // Encoder is reset to measure 0 at the bottom, so minimum height is 0.
     public static final double kMinRealElevatorHeightMeters = 0;    // m
     public static final double kMaxRealElevatorHeightMeters = 1.575; // m
+    
+    public static final double kL4PreScoringHeightMeters = kMaxRealElevatorHeightMeters-0.01;
+    public static final double kL4PostScoringHeightMeters = kMaxRealElevatorHeightMeters-0.4;
+
+    public static final double kIntakeElevatorHeightMeters = 0.01;    // m
 
     public static final double kRotationToMeters = kGearCircumference / kGearRatio;// Revolutions to Output units conversion factor
     public static final double kElevatorMaxVelocity = 4000; // Motor RPM - does not get affected by conversion factor TODO: Need a good inches per sec max, start slow (10?)

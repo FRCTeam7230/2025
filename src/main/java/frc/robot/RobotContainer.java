@@ -105,9 +105,9 @@ public class RobotContainer {
     //TODO: Use parallel commands to speed things up if applicible.
     IntakeSubsystem intakeSystem = new IntakeSubsystem();
 
-    AutoElevatorCommand elevUp = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kMaxRealElevatorHeightMeters-0.01); // TODO: Replace with constants
-    AutoElevatorCommand elevDown = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kMinRealElevatorHeightMeters);
-    AutoElevatorCommand score = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kMaxRealElevatorHeightMeters-0.4);
+    AutoElevatorCommand elevUp = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PreScoringHeightMeters); // TODO: Replace with constants
+    AutoElevatorCommand elevDown = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kIntakeElevatorHeightMeters);
+    AutoElevatorCommand score = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PostScoringHeightMeters);
     WaitCommand visionAlignAndScoreLeft  = new WaitCommand(1.5); //TODO Replace with set of commands to align, score and drive backwards
     WaitCommand visionAlignAndScoreRight = new WaitCommand(1.5); //TODO Replace with set of commands to align, score and drive backwards
 
@@ -205,17 +205,17 @@ public class RobotContainer {
 
     new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_MINHEIGHT)
         .whileTrue(new RunCommand(
-            () -> m_elevator.reachGoal(0.01),
+            () -> m_elevator.reachGoal(Constants.ElevatorConstants.kIntakeElevatorHeightMeters),
             m_elevator));
                       
     new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_MAXHEIGHT)
         .whileTrue(new RunCommand(
-            () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxRealElevatorHeightMeters - 0.01),
+            () -> m_elevator.reachGoal(Constants.ElevatorConstants.kL4PreScoringHeightMeters),
             m_elevator));
 
     new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SCORINGHEIGHT)
         .whileTrue(new RunCommand(
-            () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxRealElevatorHeightMeters - 0.4),
+            () -> m_elevator.reachGoal(Constants.ElevatorConstants.kL4PostScoringHeightMeters),
             m_elevator));
                                   
     // new JoystickButton(m_driverController, Constants.OperatorConstants.SPIN_0)
