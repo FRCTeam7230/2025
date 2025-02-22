@@ -199,15 +199,11 @@ public class RobotContainer {
             () -> m_robotDrive.drive(0, -Constants.slowSpeedMode, 0, false),
             m_robotDrive));
 
-    new JoystickButton(m_driverController, Constants.OperatorConstants.SLOW_MODE_FORWARD)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.drive(Constants.slowSpeedMode, 0, 0, false),
-            m_robotDrive));
+    // new JoystickButton(m_driverController, Constants.OperatorConstants.SLOW_MODE_FORWARD)
+    //     .whileTrue(new AlignWithLimelight(m_robotDrive, m_limelight, m_elevator, reefAlignSide.Left);
 
-    new JoystickButton(m_driverController, Constants.OperatorConstants.SLOW_MODE_BACKWARD)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.drive(-Constants.slowSpeedMode, 0, 0, false),
-            m_robotDrive));
+    // new JoystickButton(m_driverController, Constants.OperatorConstants.SLOW_MODE_BACKWARD)
+    //     .whileTrue(new AlignWithLimelight(m_robotDrive, m_limelight, m_elevator, reefAlignSide.Right));
 
     // new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SLOW_UP_BUTTON)
     //     .whileTrue(Commands.startEnd(
@@ -224,6 +220,13 @@ public class RobotContainer {
                               () -> m_elevator.ManualElevatorDown(), 
                               () -> m_elevator.motorStop(), 
                               m_elevator));
+
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ROBOT_RELATIVE)
+    .whileTrue(Commands.startEnd(
+                        () -> m_elevator.ManualElevatorUp(), 
+                        () -> m_elevator.motorStop(), 
+                        m_elevator));
+                      
 
     new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_MINHEIGHT)
         .whileTrue(new RunCommand(
@@ -258,11 +261,11 @@ public class RobotContainer {
     //         () -> m_robotDrive.spinAngle(30)));
     
 
-    new JoystickButton(m_driverController, Constants.OperatorConstants.ROBOT_RELATIVE)
-        .whileTrue(Commands.sequence(
-           new InstantCommand(() -> fieldRelative = !fieldRelative, m_robotDrive),
-           new InstantCommand(() -> mode_publisher.set(fieldRelative)))
-        );
+    // new JoystickButton(m_driverController, Constants.OperatorConstants.ROBOT_RELATIVE)
+    //     .whileTrue(Commands.sequence(
+    //        new InstantCommand(() -> fieldRelative = !fieldRelative, m_robotDrive),
+    //        new InstantCommand(() -> mode_publisher.set(fieldRelative)))
+    //     );
 
     // m_elevator.atHeight(5, 0.1).whileTrue(Commands.print("Elevator Command!"));
 

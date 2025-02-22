@@ -115,7 +115,7 @@ public class AlignWithLimelight extends Command {
   @Override
   public void end(boolean interrupted) {
     //disable drive system
-    m_drive.setX();
+    m_drive.drive(0, 0, 0, false);
     //maybe trigger scoring
 
   }
@@ -133,7 +133,7 @@ public class AlignWithLimelight extends Command {
         return targetingExtendedPosition;
      }
      //or if the target becomes invalid, something went wrong.
-     if(!m_limelight.isTV()) return true;
+     if(!m_limelight.isTV()) return true; //TODO Remove
 
     return false;
   }

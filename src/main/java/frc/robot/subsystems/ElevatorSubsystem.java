@@ -157,7 +157,7 @@ public class ElevatorSubsystem extends SubsystemBase
   }
   public boolean isFullyExtended(double tolerance)
   {
-    return MathUtil.isNear(ElevatorConstants.kMaxRealElevatorHeightMeters,getHeight(),tolerance);
+    return MathUtil.isNear(ElevatorConstants.kL4PreScoringHeightMeters,getHeight(),tolerance);
   }
   /**
    * Set the goal of the elevator

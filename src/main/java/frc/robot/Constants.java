@@ -48,8 +48,8 @@ public final class Constants {
     public static final int ZERO_HEADING_BUTTON = kButton2;
     public static final int SLOW_MODE_LEFT = kButton3;
     public static final int SLOW_MODE_RIGHT = kButton4;  
-    public static final int SLOW_MODE_FORWARD = kButton5;
-    public static final int SLOW_MODE_BACKWARD = kButton6;          
+    public static final int SCORE_LEFT = kButton5;
+    public static final int SCORE_RIGHT = kButton6;          
     public static final int INTAKE_BUTTON = kButton7;
     public static final int ELEVATOR_MAXHEIGHT = kButton8;
     public static final int ROBOT_RELATIVE = kButton9;   
@@ -204,7 +204,7 @@ public final class Constants {
   }
   public static class LimelightConstants
   {
-    public static final String kLimelightName = "";
+    public static final String kLimelightName = "limelight";
 
     public static final double kDriveKp = 0;
     public static final double kRotationKp = 0;
@@ -213,9 +213,9 @@ public final class Constants {
     public static final double kForwardExtendedOffset = 0;
     public static final double kForwardUnextendedOffset = 0;
 
-    public static final double kPositionErrorThreshold = 0;
-    public static final double kRotationErrorThreshold = 0;
-    public static final double kElevatorTolerance = 0;
+    public static final double kPositionErrorThreshold = 0.025;
+    public static final double kRotationErrorThreshold = .5; // deg
+    public static final double kElevatorTolerance = 0.02; //m
 
     public enum reefAlignSide
     {

@@ -36,7 +36,9 @@ public class LimelightSubsystem extends SubsystemBase {
     if(targetValid)
     {
       SmartDashboard.putNumberArray("Apriltag data",targetData);
-
+      SmartDashboard.putNumber("tx",targetData[0]);
+      SmartDashboard.putNumber("tz",targetData[2]);
+      SmartDashboard.putNumber("yaw",targetData[4]);
     }
   }
   public double[] getPose()
