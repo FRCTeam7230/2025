@@ -121,44 +121,6 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
-
-    ArrayList<PathPlannerAuto> autoList = new ArrayList<PathPlannerAuto>();//This represents 1 giant auto.
-        PathPlannerAuto[][] listOfAuto = {//Paths can be stored here.
-                {
-                        new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"),
-                        new PathPlannerAuto("Test auto")
-                },
-                {
-                        new PathPlannerAuto("Start Right Side Part 1"),
-                        new PathPlannerAuto("Start Right Side Part 2"),
-                },
-                {
-                        new PathPlannerAuto("Start Left Side Part 1"),
-                        new PathPlannerAuto("Start Left Side Part 2"),
-                }
-        };
-        int totalAutoCount = listOfAuto.length;
-        AddAutoSubsystem[] autos = new AddAutoSubsystem[totalAutoCount];
-        for (int i = 0; i < totalAutoCount; i+=1){
-           autos[i] = new AddAutoSubsystem(new ArrayList<PathPlannerAuto>());//Adds lots of giant autos
-           for (int j = 0; j < listOfAuto[i].length; j+=1){
-                autos[i].addPathToEnd(listOfAuto[i][j]);
-           }
-           autos[i].displayPaths();
-        }
-        SequentialCommandGroup[] fullAutos = new SequentialCommandGroup[totalAutoCount];
-        for (int i = 0; i < totalAutoCount; i+=1){
-                fullAutos[i] = autos[i].configurePaths();
-                SmartDashboard.putData("Test Combined Path "+Integer.toString(i),fullAutos[i]);
-        }
-        AddAutoSubsystem auto1 = new AddAutoSubsystem(autoList);
-        //fullAuto.addCommands(new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"));
-        //fullAuto.addCommands(new PathPlannerAuto("Test auto"));
-        auto1.addPathToEnd(new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"));
-        auto1.addPathToEnd(new PathPlannerAuto("Test auto"));
-        auto1.displayPaths();
-        SmartDashboard.putData("Test Combined Path",auto1);
-
     autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
         (stream) -> isCompetition
             ? stream.filter(auto -> auto.getName().startsWith("COMP"))
