@@ -279,12 +279,12 @@ public class RobotContainer {
       AutoBuilder.followPath(path).schedule();
     }));
     
-    SmartDashboard.putData("Toggle camera overlay",m_UsbCamera.toggleOverlay());
-    SmartDashboard.putData("Toggle camera flip",m_UsbCamera.toggleFlip());
+    //SmartDashboard.putData("Toggle camera overlay",m_UsbCamera.toggleOverlay());
+    //sSmartDashboard.putData("Toggle camera flip",m_UsbCamera.toggleFlip());
 
     SmartDashboard.putData("Start Main Camera",m_UsbCamera.StartCameraFeed(0));
-    SmartDashboard.putData("Start Alternate Camera Feed",m_UsbCamera.StartCameraFeed(1));
-    SmartDashboard.putData("Refresh Camera Data",m_UsbCamera.Refresh());
+    //SmartDashboard.putData("Start Alternate Camera Feed",m_UsbCamera.StartCameraFeed(1));
+    //SmartDashboard.putData("Refresh Camera Data",m_UsbCamera.Refresh());
     
   }
 
