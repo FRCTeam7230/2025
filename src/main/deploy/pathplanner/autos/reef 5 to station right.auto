@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Station to Coral 1 Left"
+            "pathName": "Reef 5 path Right"
           }
         },
         {
@@ -19,13 +19,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Reef 1 to Coral Station"
+            "pathName": "Reef 5 to Station right"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Coral Cycles",
+  "folder": "Unused",
   "choreoAuto": false
 }

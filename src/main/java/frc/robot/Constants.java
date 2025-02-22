@@ -171,6 +171,12 @@ public final class Constants {
     public static final double kElevatorKd = 1;
     public static final double kElevatorRampRate = 0.2;
 
+    //elevator score slow
+    public static final double kSlowElevatorKp = 4.5; //TODO: Will need to tune this, I lowered it to start 
+    public static final double kSlowElevatorKi = 0;
+    public static final double kSlowElevatorKd = 1;
+    public static final double kSlowElevatorRampRate = 0.2;
+
     // Note: All of these should be 0.0 except kG - which we will need to determine empirically
     public static final double kElevatorkS = 0.0; // volts (V)
     public static final double kElevatorkG = 0.35; // volts (V) //TODO: Will need to tune
@@ -182,14 +188,18 @@ public final class Constants {
     // Encoder is reset to measure 0 at the bottom, so minimum height is 0.
     public static final double kMinRealElevatorHeightMeters = 0;    // m
     public static final double kMaxRealElevatorHeightMeters = 1.575; // m
+    
+    public static final double kL4PreScoringHeightMeters = kMaxRealElevatorHeightMeters-0.01;
+    public static final double kL4PostScoringHeightMeters = kMaxRealElevatorHeightMeters-0.4;
+
+    public static final double kIntakeElevatorHeightMeters = 0.01;    // m
 
     public static final double kRotationToMeters = kGearCircumference / kGearRatio;// Revolutions to Output units conversion factor
     public static final double kElevatorMaxVelocity = 4000; // Motor RPM - does not get affected by conversion factor TODO: Need a good inches per sec max, start slow (10?)
     public static final double kElevatorMaxAcceleration = 4000; // Motor RPM - does not get affected by conversion factor TODO: Need a good inches per sec per sec max, start slow (10?)
   }
-
-  public static class IntakeConstants {
-
+  
+  public static class IntakeConstants{
     public static final int intakeRollerMotorID = 2;
   }
 }

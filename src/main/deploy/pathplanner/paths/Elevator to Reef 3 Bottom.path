@@ -1,0 +1,68 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 6.129,
+        "y": 3.8772611769792764
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.640472844316576,
+        "y": 3.8831493524488887
+      },
+      "isLocked": false,
+      "linkedName": "Midpoint for Reef 3 Bottom"
+    },
+    {
+      "anchor": {
+        "x": 5.665976821192053,
+        "y": 3.8772611769792764
+      },
+      "prevControl": {
+        "x": 6.184102891278003,
+        "y": 3.876257126734976
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Reef 3, except 2"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "reversed": false,
+  "folder": "Center Paths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

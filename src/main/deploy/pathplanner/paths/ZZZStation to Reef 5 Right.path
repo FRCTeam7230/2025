@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 7.0
+        "x": 1.3186475409836067,
+        "y": 0.5665471311475403
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.0147472489776415,
-        "y": 6.750435341749695
+        "x": 1.6691219198270022,
+        "y": 1.4339500112644679
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Coral Station 2"
     },
     {
       "anchor": {
-        "x": 2.0,
-        "y": 5.829149590163934
+        "x": 3.7991100993377485,
+        "y": 2.441432119205299
       },
       "prevControl": {
-        "x": 2.001946721311475,
-        "y": 6.104866803278688
+        "x": 2.7574997065151106,
+        "y": 2.1922753866922546
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "reef 5 right"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 59.99999999999999
   },
   "reversed": false,
   "folder": "Unused",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -125.37999999999998
   },
   "useDefaultConstraints": true
 }

@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 7.0
+        "x": 7.14675,
+        "y": 5.41925
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.0147472489776415,
-        "y": 6.750435341749695
+        "x": 5.904049351373432,
+        "y": 5.558877176227838
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.0,
-        "y": 5.829149590163934
+        "x": 5.0895,
+        "y": 5.41925
       },
       "prevControl": {
-        "x": 2.001946721311475,
-        "y": 6.104866803278688
+        "x": 5.658797794308843,
+        "y": 5.342740025250407
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Reef 2 Left Before Score"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -119.99999999999999
   },
   "reversed": false,
-  "folder": "Unused",
+  "folder": "Right (Our Barge) Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

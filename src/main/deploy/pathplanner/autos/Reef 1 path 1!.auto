@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Station to Coral 1 Left"
+            "pathName": "Early Game Center for Reef 1"
           }
         },
         {
@@ -26,6 +26,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Coral Cycles",
+  "folder": "Unused",
   "choreoAuto": false
 }

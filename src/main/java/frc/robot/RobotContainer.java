@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AutoElevatorCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -35,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
@@ -82,8 +84,10 @@ public class RobotContainer {
    * 
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
-  public RobotContainer() {
+  private boolean isCompetition = true;//What replaces this?
 
+  public RobotContainer() {
+    
     //Set up Subsystems
     if (RobotBase.isReal()) {
       m_robotDrive = new DriveSubsystem();
@@ -100,21 +104,34 @@ public class RobotContainer {
     m_elevator.resetEncoder();
 
     // Register named commands
+    //TODO: Use parallel commands to speed things up if applicible.
+    IntakeSubsystem intakeSystem = new IntakeSubsystem();
 
-    NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
-    NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
-    NamedCommands.registerCommand("print hello", Commands.print("hello"));
-    NamedCommands.registerCommand("Lift the Elevator",new WaitCommand(5));//We can add commands like this, and yes it works as long as you can bear the 5 second wait.
-    NamedCommands.registerCommand("Dance", Commands.print("This will not be a command where the robot will spin around itself."));
+    AutoElevatorCommand elevUp = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PreScoringHeightMeters); // TODO: Replace with constants
+    AutoElevatorCommand elevDown = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kIntakeElevatorHeightMeters);
+    AutoElevatorCommand score = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PostScoringHeightMeters);
+    WaitCommand visionAlignAndScoreLeft  = new WaitCommand(1.5); //TODO Replace with set of commands to align, score and drive backwards
+    WaitCommand visionAlignAndScoreRight = new WaitCommand(1.5); //TODO Replace with set of commands to align, score and drive backwards
 
-
+    NamedCommands.registerCommand("Raise Elevator",elevUp);
+    NamedCommands.registerCommand("Lower Elevator",elevDown);
+    NamedCommands.registerCommand("Score",score);
+    NamedCommands.registerCommand("Run Intake", Commands.run(() -> intakeSystem.runIntakeRollerMotor()));//Is this how it's done?
+    NamedCommands.registerCommand("Stop Intake", Commands.run(() -> intakeSystem.stopIntakeRollerMotor()));//Is this how it's done?
+    NamedCommands.registerCommand("Vision Align And Score Left",visionAlignAndScoreLeft);
+    NamedCommands.registerCommand("Vision Align And Score Right",visionAlignAndScoreRight);
     // Use event markers as triggers
-    new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
-    new EventTrigger("Dance").onTrue(Commands.print("This will not be a command where the robot will spin around itself."));
+    // new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
+    // new EventTrigger("Dance").onTrue(Commands.print("This will not be a command where the robot will spin around itself."));
     // Configure the button bindings
     configureButtonBindings();
 
-    autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
+    autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
+        (stream) -> isCompetition
+            ? stream.filter(auto -> auto.getName().startsWith("COMP"))
+            : stream
+        );
+    //autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
     SmartDashboard.putData("Auto Mode", autoChooser);
 
     // Configure default commands
@@ -190,17 +207,17 @@ public class RobotContainer {
 
     new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_MINHEIGHT)
         .whileTrue(new RunCommand(
-            () -> m_elevator.reachGoal(0.01),
+            () -> m_elevator.reachGoal(Constants.ElevatorConstants.kIntakeElevatorHeightMeters),
             m_elevator));
                       
     new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_MAXHEIGHT)
         .whileTrue(new RunCommand(
-            () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxRealElevatorHeightMeters - 0.01),
+            () -> m_elevator.reachGoal(Constants.ElevatorConstants.kL4PreScoringHeightMeters),
             m_elevator));
 
     new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SCORINGHEIGHT)
         .whileTrue(new RunCommand(
-            () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxRealElevatorHeightMeters - 0.4),
+            () -> m_elevator.reachGoal(Constants.ElevatorConstants.kL4PostScoringHeightMeters),
             m_elevator));
     
     new JoystickButton(m_driverController, Constants.OperatorConstants.INTAKE_BUTTON)
@@ -229,27 +246,40 @@ public class RobotContainer {
 
     // m_elevator.atHeight(5, 0.1).whileTrue(Commands.print("Elevator Command!"));
 
+    /*
+     * Discrete paths split into parts incase this is needed:
+     * new PathPlannerAuto("Bottom Scoring Part 1")
+     * new PathPlannerAuto("Bottom Scoring Part 2")
+     * new PathPlannerAuto("Start Left Side Part 1")
+     * new PathPlannerAuto("Start Left Side Part 2")
+     * new PathPlannerAuto("Start Right Side Part 1")
+     * new PathPlannerAuto("Start Right Side Part 2")
+     * 
+     * Note: If we have to add vision command seperately in code, we can do soemthing similar to what I did in fullAuto and include the Vision Align command.
+     */
     // Add a button to run the example auto to SmartDashboard, this will also be in
     // the auto chooser built above
     // Add more paths here.
-    SmartDashboard.putData("Example Auto", new PathPlannerAuto("Example Auto"));
-    SmartDashboard.putData("Path to Knock off Algaes", new PathPlannerAuto("Path to Knock off Algaes"));
-    SmartDashboard.putData("Coral 1 Cycle", new PathPlannerAuto("Coral 1 Cycle"));
-    // Add a button to run pathfinding commands to SmartDashboard
-    SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
-        new Pose2d(14.0, 6.5, Rotation2d.fromDegrees(0)),
-        new PathConstraints(
-            4.0, 4.0,
-            Units.degreesToRadians(360), Units.degreesToRadians(540)),
-        0));
-    SmartDashboard.putData("Pathfind to Scoring Pos", AutoBuilder.pathfindToPose(
-        new Pose2d(2.15, 3.0, Rotation2d.fromDegrees(180)),
-        new PathConstraints(
-            4.0, 4.0,
-            Units.degreesToRadians(360), Units.degreesToRadians(540)),
-        0));
-    
-    SmartDashboard.putData("Calculate radius", m_robotDrive.wheelRadiusCharacterization());
+    // SequentialCommandGroup fullAuto = new SequentialCommandGroup();
+    // fullAuto.addCommands(new PathPlannerAuto("COMP - Start Center to Left (Processor) Coral Station"));
+    // fullAuto.addCommands(new PathPlannerAuto("COMP - Bottom Scoring"));
+     SmartDashboard.putData("COMP - Start Center to Left (Processor) Coral Station", new PathPlannerAuto("COMP - Start Center to Left (Processor) Coral Station"));
+     SmartDashboard.putData("COMP - Start Center to Right (Our Barge) Coral Station", new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"));
+     SmartDashboard.putData("COMP - Start Right (Our Barge) Side", new PathPlannerAuto("COMP - Start Right (Our Barge) Side"));
+     SmartDashboard.putData("COMP - Start Left (Processor) Side", new PathPlannerAuto("COMP - Start Left (Processor) Side"));
+    // // Add a button to run pathfinding commands to SmartDashboard
+    // SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
+    //     new Pose2d(14.0, 6.5, Rotation2d.fromDegrees(0)),
+    //     new PathConstraints(
+    //         4.0, 4.0,
+    //         Units.degreesToRadians(360), Units.degreesToRadians(540)),
+    //     0));
+    // SmartDashboard.putData("Pathfind to Scoring Pos", AutoBuilder.pathfindToPose(
+    //     new Pose2d(2.15, 3.0, Rotation2d.fromDegrees(180)),
+    //     new PathConstraints(
+    //         4.0, 4.0,
+    //         Units.degreesToRadians(360), Units.degreesToRadians(540)),
+    //     0));
 
     // Add a button to SmartDashboard that will create and follow an on-the-fly path
     // This example will simply move the robot 2m in the +X field direction

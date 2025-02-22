@@ -2,10 +2,16 @@
   "robotWidth": 0.75,
   "robotLength": 0.75,
   "holonomicMode": true,
-  "pathFolders": [],
+  "pathFolders": [
+    "Center Paths",
+    "Left (Processor) Paths",
+    "Right (Our Barge) Paths",
+    "Unused"
+  ],
   "autoFolders": [
-    "New Folder",
-    "New New Folder"
+    "Coral Cycles",
+    "Dumpster",
+    "Unused"
   ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,

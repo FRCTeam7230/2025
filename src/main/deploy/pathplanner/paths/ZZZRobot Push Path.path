@@ -3,45 +3,61 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.0979999999946,
-        "y": 6.530749999995353
+        "x": 6.078,
+        "y": 4.2
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.616192012967596,
-        "y": 6.467736550766331
+        "x": 6.743773580729388,
+        "y": 4.18043919747225
+      },
+      "isLocked": false,
+      "linkedName": "Scored for Reef 3 Top"
+    },
+    {
+      "anchor": {
+        "x": 7.211553216577827,
+        "y": 4.2
+      },
+      "prevControl": {
+        "x": 6.963507641475928,
+        "y": 4.025734275798188
+      },
+      "nextControl": {
+        "x": 7.678988701039914,
+        "y": 4.52839925962778
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.475250000000203,
-        "y": 6.023750000002809
+        "x": 7.825311721901915,
+        "y": 4.767229016971687
       },
       "prevControl": {
-        "x": 5.066323055881428,
-        "y": 6.376156950093387
+        "x": 7.5360325906641314,
+        "y": 4.6610434744721925
       },
       "nextControl": {
-        "x": 3.9970657097843945,
-        "y": 5.738649087992968
+        "x": 8.060000230387292,
+        "y": 4.853376007545412
       },
       "isLocked": false,
-      "linkedName": "Top Corner"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.015881147540983,
-        "y": 5.205788934426229
+        "x": 7.071585738495782,
+        "y": 5.438108660372315
       },
       "prevControl": {
-        "x": 5.170672152759366,
-        "y": 5.946822542834885
+        "x": 7.146592735436581,
+        "y": 4.577003767329639
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef 1, except 2"
+      "linkedName": "End of Pushing the Robot"
     }
   ],
   "rotationTargets": [],
@@ -58,7 +74,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -59.99999999999999
+    "rotation": 135.0
   },
   "reversed": false,
   "folder": "Unused",

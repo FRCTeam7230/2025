@@ -3,26 +3,24 @@
   "command": {
     "type": "sequential",
     "data": {
+<<<<<<< Updated upstream
+      "commands": []
+=======
       "commands": [
         {
           "type": "path",
           "data": {
-            "pathName": "Station to Coral 1 Left"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Lift the Elevator"
+            "pathName": "Coral 5 Cycle 1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Reef 1 to Coral Station"
+            "pathName": "Reef 5 to Station right"
           }
         }
       ]
+>>>>>>> Stashed changes
     }
   },
   "resetOdom": true,
