@@ -183,7 +183,7 @@ public class ElevatorSubsystem extends SubsystemBase
     current2_publisher.set(m_motor2.getOutputCurrent());
 
     //updateTelemetry();
-    if (false && m_motor1.getOutputCurrent() > Constants.ElevatorConstants.kResetCurrent) {
+    if (m_encoder.getVelocity() < 0.01 && m_motor1.getOutputCurrent() > Constants.ElevatorConstants.kResetCurrent) {
       if (m_motor1.getAppliedOutput() > 0) {
         m_encoder.setPosition(Constants.ElevatorConstants.kMaxRealElevatorHeightMeters);
       }

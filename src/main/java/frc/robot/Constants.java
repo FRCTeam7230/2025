@@ -163,7 +163,7 @@ public final class Constants {
 
     public static final double kGearRatio = 15 / 2; // Divided by 2 stages 
     public static final double kGearCircumference = Units.inchesToMeters(5.5); //inches - lemme double check with 
-    public static final double kResetCurrent = 60; //max current tbd TODO: Will need to tune these currents
+    public static final double kResetCurrent = 45; //max current tbd TODO: Will need to tune these currents
     public static final int kMaxCurrent   = 65;//In amps? TODO: Will need to tune these currents
 
     public static final double kElevatorKp = 4.5; //TODO: Will need to tune this, I lowered it to start 
