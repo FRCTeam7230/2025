@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.015881147540983,
-        "y": 2.84421106557377
+        "x": 3.7991100993377485,
+        "y": 2.441432119205299
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0638817211616707,
-        "y": 2.5003950442369485
+        "x": 2.847110672958436,
+        "y": 2.0976160978684772
       },
       "isLocked": false,
       "linkedName": "reef 5 right"
@@ -45,7 +45,7 @@
     "rotation": -125.37999999999998
   },
   "reversed": false,
-  "folder": "Left (Processor) Side Auto Paths",
+  "folder": "Left (Processor) Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 59.99999999999999

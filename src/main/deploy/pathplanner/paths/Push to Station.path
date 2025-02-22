@@ -20,7 +20,7 @@
         "y": 7.62275
       },
       "prevControl": {
-        "x": 1.9324662407402537,
+        "x": 1.9324662407402535,
         "y": 7.472542964621575
       },
       "nextControl": null,
@@ -45,7 +45,7 @@
     "rotation": 125.37999999999998
   },
   "reversed": false,
-  "folder": "Pushing Robots",
+  "folder": "Unused",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 135.0

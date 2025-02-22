@@ -19,7 +19,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 2.0
+            "waitTime": 1.0
           }
         },
         {
@@ -35,15 +35,15 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "Score for Reef 3 Bottom"
-          }
-        },
-        {
           "type": "wait",
           "data": {
             "waitTime": 1.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Score for Reef 3 Bottom"
           }
         },
         {
@@ -55,19 +55,19 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 2.0
+            "waitTime": 1.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Reef 3 Bottom to Station"
+            "pathName": "Push for Auto RP"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Run Intake"
+            "pathName": "Auto RP To Coral Station 1"
           }
         }
       ]

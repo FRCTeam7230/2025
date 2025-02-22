@@ -8,7 +8,7 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.847596952698353,
+        "x": 1.8475969526983527,
         "y": 6.939846299498477
       },
       "isLocked": false,
@@ -45,7 +45,7 @@
     "rotation": -59.99999999999999
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Right (Our Barge) Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 125.37999999999998

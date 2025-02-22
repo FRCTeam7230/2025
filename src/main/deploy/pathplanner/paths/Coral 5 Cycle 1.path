@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 4.015881147540983,
-        "y": 2.84421106557377
+        "x": 3.7991100993377485,
+        "y": 2.441432119205299
       },
       "prevControl": {
-        "x": 2.9815158231665992,
-        "y": 2.7474387238400912
+        "x": 2.7647447749633645,
+        "y": 2.34465977747162
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
     "rotation": 59.99999999999999
   },
   "reversed": false,
-  "folder": "Left (Processor) Side Auto Paths",
+  "folder": "Left (Processor) Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -125.37999999999998

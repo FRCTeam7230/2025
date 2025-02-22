@@ -99,22 +99,20 @@ public class RobotContainer {
 
     AutoElevatorCommand elevUp = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kMaxRealElevatorHeightMeters-0.01); // TODO: Replace with constants
     AutoElevatorCommand elevDown = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kMinRealElevatorHeightMeters);
-    //ProxyCommand a = new ProxyCommand(elevUp);//What if we use proxy?
     AutoElevatorCommand score = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kMaxRealElevatorHeightMeters-0.4);
-    //Command runintake = new RunCommand(null, null)
-    /*NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
-    NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
-    NamedCommands.registerCommand("print hello", Commands.print("hello"));
-    NamedCommands.registerCommand("Lift the Elevator",new WaitCommand(5));//We can add commands like this, and yes it works as long as you can bear the 5 second wait.
-    NamedCommands.registerCommand("Dance", Commands.print("This will not be a command where the robot will spin around itself."));
-*/
+    WaitCommand visionAlignAndScoreLeft  = new WaitCommand(1.5); //TODO Replace with set of commands to align, score and drive backwards
+    WaitCommand visionAlignAndScoreRight = new WaitCommand(1.5); //TODO Replace with set of commands to align, score and drive backwards
+
     NamedCommands.registerCommand("Raise Elevator",elevUp);
     NamedCommands.registerCommand("Lower Elevator",elevDown);
     NamedCommands.registerCommand("Score",score);
     NamedCommands.registerCommand("Run Intake", Commands.run(() -> intakeSystem.runIntakeRollerMotor()));//Is this how it's done?
+    NamedCommands.registerCommand("Stop Intake", Commands.run(() -> intakeSystem.stopIntakeRollerMotor()));//Is this how it's done?
+    NamedCommands.registerCommand("Vision Align And Score Left",visionAlignAndScoreLeft);
+    NamedCommands.registerCommand("Vision Align And Score Right",visionAlignAndScoreRight);
     // Use event markers as triggers
-    new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
-    new EventTrigger("Dance").onTrue(Commands.print("This will not be a command where the robot will spin around itself."));
+    // new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
+    // new EventTrigger("Dance").onTrue(Commands.print("This will not be a command where the robot will spin around itself."));
     // Configure the button bindings
     configureButtonBindings();
 
@@ -238,21 +236,13 @@ public class RobotContainer {
     // Add a button to run the example auto to SmartDashboard, this will also be in
     // the auto chooser built above
     // Add more paths here.
-    SequentialCommandGroup fullAuto = new SequentialCommandGroup();
-    fullAuto.addCommands(new PathPlannerAuto("COMP - Start Center to Left (Processor) Coral Station"));
-    fullAuto.addCommands(new PathPlannerAuto("COMP - Bottom Scoring"));
-     SmartDashboard.putData("COMP - Bottom Scoring", new PathPlannerAuto("COMP - Bottom Scoring"));
+    // SequentialCommandGroup fullAuto = new SequentialCommandGroup();
+    // fullAuto.addCommands(new PathPlannerAuto("COMP - Start Center to Left (Processor) Coral Station"));
+    // fullAuto.addCommands(new PathPlannerAuto("COMP - Bottom Scoring"));
      SmartDashboard.putData("COMP - Start Center to Left (Processor) Coral Station", new PathPlannerAuto("COMP - Start Center to Left (Processor) Coral Station"));
-     SmartDashboard.putData("COMP - Start Center to Right (Our Barge) Coral Station", new PathPlannerAuto("COMP - Start Center to Left (Processor) Coral Station"));
+     SmartDashboard.putData("COMP - Start Center to Right (Our Barge) Coral Station", new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"));
      SmartDashboard.putData("COMP - Start Right (Our Barge) Side", new PathPlannerAuto("COMP - Start Right (Our Barge) Side"));
-     SmartDashboard.putData("COMP - Top Scoring", new PathPlannerAuto("COMP - Top Scoring"));
-     SmartDashboard.putData("COMP - Our Autonomous", fullAuto);
-    // SmartDashboard.putData("Reef 3 to Station Top", new PathPlannerAuto("Reef 2 to Station Top"));
-    // SmartDashboard.putData("Reef 3 to Station Bottom", new PathPlannerAuto("Reef 2 to Station Bottom"));
-    // SmartDashboard.putData("Reef 5 to station right", new PathPlannerAuto("Reef 5 to station right"));
-    // SmartDashboard.putData("Reef 5 to station left", new PathPlannerAuto("Reef 5 to station left"));
-    // SmartDashboard.putData("Reef 6 to station right", new PathPlannerAuto("Reef 6 to station right"));
-    // SmartDashboard.putData("Reef 6 to station left", new PathPlannerAuto("Reef 6 to station left"));
+     SmartDashboard.putData("COMP - Start Left (Processor) Side", new PathPlannerAuto("COMP - Start Left (Processor) Side"));
     // // Add a button to run pathfinding commands to SmartDashboard
     // SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
     //     new Pose2d(14.0, 6.5, Rotation2d.fromDegrees(0)),

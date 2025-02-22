@@ -3,45 +3,61 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.078,
-        "y": 4.2
+        "x": 7.278600993377483,
+        "y": 5.194515728476819
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.073241595280027,
-        "y": 4.449954711066868
+        "x": 6.958981788079469,
+        "y": 4.867632450331125
       },
       "isLocked": false,
-      "linkedName": "Scored for Reef 3 Top"
+      "linkedName": "center left auto push end point"
     },
     {
       "anchor": {
-        "x": 6.286,
-        "y": 5.35
+        "x": 6.392384105960264,
+        "y": 4.155753311258277
       },
       "prevControl": {
-        "x": 6.490110335748213,
-        "y": 4.9711976923508265
+        "x": 6.699662123547768,
+        "y": 3.7148761555892507
       },
       "nextControl": {
-        "x": 5.976911930445577,
-        "y": 5.923627364752735
+        "x": 6.058236754966886,
+        "y": 4.635182119205297
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.4779655920983625,
-        "y": 6.251
+        "x": 5.956539735099337,
+        "y": 5.194515728476819
       },
       "prevControl": {
-        "x": 4.68136786447895,
-        "y": 6.105646927826022
+        "x": 6.097563933296514,
+        "y": 4.621017322474968
       },
       "nextControl": {
-        "x": 4.271187469520597,
-        "y": 6.398765484737595
+        "x": 5.847578642384105,
+        "y": 5.637624172185428
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.561837748344371,
+        "y": 7.068646523178808
+      },
+      "prevControl": {
+        "x": 5.201532952262151,
+        "y": 6.639984788594729
+      },
+      "nextControl": {
+        "x": 3.857222682119205,
+        "y": 7.540811258278145
       },
       "isLocked": false,
       "linkedName": null
@@ -52,8 +68,8 @@
         "y": 7.62275
       },
       "prevControl": {
-        "x": 2.0592997703165814,
-        "y": 7.498798946791995
+        "x": 2.4437309602649,
+        "y": 6.954455298013245
       },
       "nextControl": null,
       "isLocked": false,
@@ -77,10 +93,10 @@
     "rotation": 125.37999999999998
   },
   "reversed": false,
-  "folder": "Unused",
+  "folder": "Center Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 135.0
   },
   "useDefaultConstraints": true
 }

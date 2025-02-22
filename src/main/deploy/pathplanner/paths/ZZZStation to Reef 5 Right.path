@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1843097275323533,
-        "y": 2.194897094452806
+        "x": 1.6691219198270022,
+        "y": 1.4339500112644679
       },
       "isLocked": false,
       "linkedName": "Coral Station 2"
     },
     {
       "anchor": {
-        "x": 3.433,
-        "y": 2.607
+        "x": 3.7991100993377485,
+        "y": 2.441432119205299
       },
       "prevControl": {
-        "x": 3.2128442113066216,
-        "y": 2.3397060171374053
+        "x": 2.7574997065151106,
+        "y": 2.1922753866922546
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef 5 Left Before Scoring"
+      "linkedName": "reef 5 right"
     }
   ],
   "rotationTargets": [],
@@ -45,7 +45,7 @@
     "rotation": 59.99999999999999
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Unused",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -125.37999999999998
