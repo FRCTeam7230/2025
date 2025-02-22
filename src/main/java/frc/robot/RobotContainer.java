@@ -57,13 +57,6 @@ public class RobotContainer {
   // Declare the robot's subsystems
   DriveSubsystem m_robotDrive;
   ElevatorSubsystem m_elevator;
-/*<<<<<<< Updated upstream
-
-  // private final ElevatorSubsystemYAGSL m_elevator = new ElevatorSubsystemYAGSL();
-=======
-  private final Climber m_climber = new Climber();
-  //private final ElevatorSubsystemYAGSL m_elevator = new ElevatorSubsystemYAGSL();
->>>>>>> Stashed changes*/
 
   // The driver's controller
   // XboxController m_driverController = new
@@ -205,29 +198,14 @@ public class RobotContainer {
             () -> m_robotDrive.spinAngle(30)));
     
 
-
-      /*new JoystickButton(m_driverController, Constants.OperatorConstants.CLIMB)
-      .whileTrue(new RunCommand(
-        () -> m_climber.hook(),
-        m_elevator));*/
-
-
     // m_elevator.atHeight(5, 0.1).whileTrue(Commands.print("Elevator Command!"));
 
     // Add a button to run the example auto to SmartDashboard, this will also be in
     // the auto chooser built above
     // Add more paths here.
-
-    SmartDashboard.putData("Reef 1 to Coral Station Left", new PathPlannerAuto("Reef 1 to Coral Station Left"));
-    SmartDashboard.putData("Reef 1 to Station Right", new PathPlannerAuto("Reef 1 to Station Right"));
-    SmartDashboard.putData("Reef 2 to Station Right", new PathPlannerAuto("Reef 2 to Station Right"));
-    SmartDashboard.putData("Reef 2 to Station Left", new PathPlannerAuto("Reef 2 to Station Left"));
-    SmartDashboard.putData("Reef 3 to Station Top", new PathPlannerAuto("Reef 2 to Station Top"));
-    SmartDashboard.putData("Reef 3 to Station Bottom", new PathPlannerAuto("Reef 2 to Station Bottom"));
-    SmartDashboard.putData("Reef 5 to station right", new PathPlannerAuto("Reef 5 to station right"));
-    SmartDashboard.putData("Reef 5 to station left", new PathPlannerAuto("Reef 5 to station left"));
-    SmartDashboard.putData("Reef 6 to station right", new PathPlannerAuto("Reef 6 to station right"));
-    SmartDashboard.putData("Reef 6 to station left", new PathPlannerAuto("Reef 6 to station left"));
+    SmartDashboard.putData("Example Auto", new PathPlannerAuto("Example Auto"));
+    SmartDashboard.putData("Path to Knock off Algaes", new PathPlannerAuto("Path to Knock off Algaes"));
+    SmartDashboard.putData("Coral 1 Cycle", new PathPlannerAuto("Coral 1 Cycle"));
     // Add a button to run pathfinding commands to SmartDashboard
     SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
         new Pose2d(14.0, 6.5, Rotation2d.fromDegrees(0)),
