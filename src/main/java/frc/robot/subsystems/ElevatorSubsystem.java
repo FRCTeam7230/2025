@@ -44,6 +44,7 @@ public class ElevatorSubsystem extends SubsystemBase
   private final RelativeEncoder           m_encoder2      = m_motor2.getEncoder();
   private final SparkMaxConfig            m_config_motor1 = new SparkMaxConfig();
   private final SparkMaxConfig            m_config_motor2 = new SparkMaxConfig();
+  double m_desiredHeight;
 
   ElevatorFeedforward m_feedforward =
       new ElevatorFeedforward(
@@ -56,8 +57,12 @@ public class ElevatorSubsystem extends SubsystemBase
   // Set up publishers to Advatage Scope
   DoublePublisher encoder1_publisher = NetworkTableInstance.getDefault().getDoubleTopic("Elevator/encoder1value").publish();
   DoublePublisher encoder2_publisher = NetworkTableInstance.getDefault().getDoubleTopic("Elevator/encoder2value").publish();
-  DoublePublisher volt1_publisher = NetworkTableInstance.getDefault().getDoubleTopic("Elevator/outputMotor1").publish();
-  DoublePublisher volt2_publisher = NetworkTableInstance.getDefault().getDoubleTopic("Elevator/outputMotor2").publish();
+  DoublePublisher velocity_publisher = NetworkTableInstance.getDefault().getDoubleTopic("Elevator/velocity").publish();
+  DoublePublisher output1_publisher = NetworkTableInstance.getDefault().getDoubleTopic("Elevator/outputMotor1").publish();
+  DoublePublisher output2_publisher = NetworkTableInstance.getDefault().getDoubleTopic("Elevator/outputMotor2").publish();
+  DoublePublisher heightError_publisher = NetworkTableInstance.getDefault().getDoubleTopic("Elevator/heightError").publish();
+  DoublePublisher current1_publisher = NetworkTableInstance.getDefault().getDoubleTopic("Elevator/currentMotor1").publish();
+  DoublePublisher current2_publisher = NetworkTableInstance.getDefault().getDoubleTopic("Elevator/currentMotor2").publish();
   
   // Constructor
   public ElevatorSubsystem()
@@ -69,21 +74,27 @@ public class ElevatorSubsystem extends SubsystemBase
     m_config_motor1.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .pid(ElevatorConstants.kElevatorKp, ElevatorConstants.kElevatorKi, ElevatorConstants.kElevatorKd)//Change PID with these constants.
-        .maxMotion
+        .outputRange(-1, 1);
+    m_config_motor1.closedLoop.maxMotion
         .maxVelocity(ElevatorConstants.kElevatorMaxVelocity)
         .maxAcceleration(ElevatorConstants.kElevatorMaxAcceleration)
-        .positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal)
         .allowedClosedLoopError(Units.inchesToMeters(0.1)); // TODO: Tune this as we go -see what's reasonable
     m_config_motor1.idleMode(SparkBaseConfig.IdleMode.kBrake);
     m_config_motor2.idleMode(SparkBaseConfig.IdleMode.kBrake);
     m_config_motor1.smartCurrentLimit(Constants.ElevatorConstants.kMaxCurrent);
-    m_config_motor2.smartCurrentLimit(Constants.ElevatorConstants.kMaxCurrent);    
+    m_config_motor2.smartCurrentLimit(Constants.ElevatorConstants.kMaxCurrent);
+    m_config_motor1.closedLoopRampRate(Constants.ElevatorConstants.kElevatorRampRate);
+    m_config_motor2.closedLoopRampRate(Constants.ElevatorConstants.kElevatorRampRate);
+
 
     //Configure motors
     m_config_motor1.disableFollowerMode();
     m_motor1.configure(m_config_motor1, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     m_config_motor2.follow(m_motor1,true);
     m_motor2.configure(m_config_motor2, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+
+    // desired height
+    m_desiredHeight = 0;
 
   }
 
@@ -102,8 +113,9 @@ public class ElevatorSubsystem extends SubsystemBase
    */
   public void reachGoal(double goal)
   {
+    m_desiredHeight = goal;
     m_controller.setReference(goal,
-                              ControlType.kMAXMotionPositionControl,
+                              ControlType.kPosition,
                               ClosedLoopSlot.kSlot0,
                               m_feedforward.calculate(m_encoder.getVelocity()));
 
@@ -149,6 +161,10 @@ public class ElevatorSubsystem extends SubsystemBase
     m_motor1.set(0.2);
   }
 
+  public void HoverElevator(){
+    m_motor1.setVoltage(ElevatorConstants.kElevatorkG);
+  }
+  
   public void ManualElevatorDown(){
     m_motor1.set(-0.15);
   }
@@ -159,9 +175,13 @@ public class ElevatorSubsystem extends SubsystemBase
     // Add useful info to dashboard(s)
     encoder1_publisher.set(m_encoder.getPosition());
     encoder2_publisher.set(m_encoder2.getPosition());
-    volt1_publisher.set(m_motor1.getAppliedOutput());
-    volt2_publisher.set(m_motor2.getAppliedOutput());
-    
+    output1_publisher.set(m_motor1.getAppliedOutput());
+    output2_publisher.set(m_motor2.getAppliedOutput());
+    heightError_publisher.set(m_desiredHeight - getHeight());
+    velocity_publisher.set(m_encoder.getVelocity());
+    current1_publisher.set(m_motor1.getOutputCurrent());
+    current2_publisher.set(m_motor2.getOutputCurrent());
+
     //updateTelemetry();
     if (false && m_motor1.getOutputCurrent() > Constants.ElevatorConstants.kResetCurrent) {
       if (m_motor1.getAppliedOutput() > 0) {

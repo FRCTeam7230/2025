@@ -179,19 +179,26 @@ public class RobotContainer {
                               () -> m_elevator.motorStop(), 
                               m_elevator));
 
-    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_ONETHIRD_BUTTON)
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_MINHEIGHT)
         .whileTrue(new RunCommand(
-            () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxRealElevatorHeightMeters/3),
+            () -> m_elevator.reachGoal(0.01),
             m_elevator));
                       
-    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_TWOTHIRDS_BUTTON)
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_MAXHEIGHT)
         .whileTrue(new RunCommand(
-            () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxRealElevatorHeightMeters * 2/3),
+            () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxRealElevatorHeightMeters - 0.01),
+            m_elevator));
+
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SCORINGHEIGHT)
+        .whileTrue(new RunCommand(
+            () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxRealElevatorHeightMeters - 0.4),
             m_elevator));
                                   
-    new JoystickButton(m_driverController, Constants.OperatorConstants.SPIN_0)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.spinAngle(0)));
+    // new JoystickButton(m_driverController, Constants.OperatorConstants.SPIN_0)
+    //     .whileTrue(Commands.startEnd(
+    //         () -> m_elevator.HoverElevator(), 
+    //         () -> m_elevator.motorStop(), 
+    //         m_elevator));
 
     new JoystickButton(m_driverController, Constants.OperatorConstants.SPIN_30)
         .whileTrue(new RunCommand(
