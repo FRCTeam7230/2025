@@ -198,7 +198,7 @@ public final class Constants {
     public static final double kMinElevatorHeightMeters = 0.0;
     //public static final double kMaxElevatorHeightMeters = 10.25;
     public static final double kMaxElevatorHeightMeters = 1.27;
-    public static final double kScoreElevatorHeightMeters = 1.17;//What is the height for this?
+
     public static final double kRotationToMeters = kElevatorDrumRadius * 2 * Math.PI;
     public static final double kRPMtoMPS = (kElevatorDrumRadius * 2 * Math.PI) / 60;
     public static final double kElevatorMaxVelocity = 3.5;
