@@ -1,0 +1,63 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Score"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.0
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Scoring for Reef 5 Left"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Reef 5 to Station left"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Lower Elevator"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Run Intake"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Unused",
+  "choreoAuto": false
+}

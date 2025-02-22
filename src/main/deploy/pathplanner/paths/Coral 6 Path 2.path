@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.187,
+        "y": 2.468
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.305269903803875,
+        "y": 2.193769253609593
+      },
+      "isLocked": false,
+      "linkedName": "Reef 6 After Score"
+    },
+    {
+      "anchor": {
+        "x": 1.3186475409836067,
+        "y": 0.5665471311475403
+      },
+      "prevControl": {
+        "x": 2.0539709074913737,
+        "y": 0.9671699243884379
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -127.77404311707322
+  },
+  "reversed": false,
+  "folder": "Left (Processor) Paths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 119.99999999999999
+  },
+  "useDefaultConstraints": true
+}

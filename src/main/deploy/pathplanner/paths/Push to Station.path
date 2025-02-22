@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.071585738495782,
+        "y": 5.438108660372315
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.701001457586119,
+        "y": 5.970875115791779
+      },
+      "isLocked": false,
+      "linkedName": "End of Pushing the Robot"
+    },
+    {
+      "anchor": {
+        "x": 1.5502500000000001,
+        "y": 7.62275
+      },
+      "prevControl": {
+        "x": 1.9324662407402535,
+        "y": 7.472542964621575
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Coral Station"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 125.37999999999998
+  },
+  "reversed": false,
+  "folder": "Unused",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 135.0
+  },
+  "useDefaultConstraints": true
+}

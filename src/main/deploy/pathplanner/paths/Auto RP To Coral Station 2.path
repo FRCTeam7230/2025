@@ -1,0 +1,102 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.278600993377483,
+        "y": 5.194515728476819
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.958981788079469,
+        "y": 4.867632450331125
+      },
+      "isLocked": false,
+      "linkedName": "center left auto push end point"
+    },
+    {
+      "anchor": {
+        "x": 6.20351821192053,
+        "y": 4.003207781456953
+      },
+      "prevControl": {
+        "x": 6.419205983714907,
+        "y": 4.495418337603093
+      },
+      "nextControl": {
+        "x": 5.920219370860926,
+        "y": 3.3567052980132455
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.0146523178807945,
+        "y": 2.0637003311258275
+      },
+      "prevControl": {
+        "x": 6.281135132593254,
+        "y": 2.5907441202238
+      },
+      "nextControl": {
+        "x": 5.687769039735098,
+        "y": 1.4171978476821185
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.1841059602649,
+        "y": 0.5665471311475403
+      },
+      "prevControl": {
+        "x": 4.968625827814569,
+        "y": 0.5810752768429064
+      },
+      "nextControl": {
+        "x": 3.4381884595709096,
+        "y": 0.5527338440976498
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.3186475409836067,
+        "y": 0.5665471311475403
+      },
+      "prevControl": {
+        "x": 2.63344472641407,
+        "y": 0.59560342253827
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Coral Station 2"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -125.37999999999998
+  },
+  "reversed": false,
+  "folder": "Center Paths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 135.0
+  },
+  "useDefaultConstraints": true
+}

@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Station to Coral 1 Left"
+            "pathName": "Eary Game Top"
           }
         },
         {
@@ -19,13 +19,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Reef 1 to Coral Station"
+            "pathName": "Reef 2 to Coral Station"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Coral Cycles",
+  "folder": "Unused",
   "choreoAuto": false
 }

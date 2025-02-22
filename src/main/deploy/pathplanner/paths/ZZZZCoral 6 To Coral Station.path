@@ -1,0 +1,70 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.9868852459016395,
+        "y": 2.868186475409835
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.155777356733476,
+        "y": 2.2058025635999856
+      },
+      "isLocked": false,
+      "linkedName": "Reef 6, 2"
+    },
+    {
+      "anchor": {
+        "x": 4.494749999996693,
+        "y": 2.4845000000011805
+      },
+      "prevControl": {
+        "x": 4.874404982840892,
+        "y": 2.6406577843178054
+      },
+      "nextControl": {
+        "x": 3.788213065350135,
+        "y": 2.193890769942574
+      },
+      "isLocked": false,
+      "linkedName": "Bottom Corner"
+    },
+    {
+      "anchor": {
+        "x": 1.3186475409836067,
+        "y": 0.5665471311475403
+      },
+      "prevControl": {
+        "x": 1.7675747065798666,
+        "y": 0.6473445600206582
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Coral Station 2"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -125.37999999999998
+  },
+  "reversed": false,
+  "folder": "Unused",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 119.99999999999999
+  },
+  "useDefaultConstraints": true
+}

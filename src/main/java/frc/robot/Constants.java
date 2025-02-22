@@ -23,7 +23,7 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
 
-  public static final double slowSpeedMode = 0.2;
+  public static final double slowSpeedMode = 0.1;
   public static final double movementDivider = 2;
   public static final double rotateDivider = 5;
   
@@ -50,12 +50,12 @@ public final class Constants {
     public static final int SLOW_MODE_RIGHT = kButton4;  
     public static final int SLOW_MODE_FORWARD = kButton5;
     public static final int SLOW_MODE_BACKWARD = kButton6;          
-    public static final int ELEVATOR_SLOW_UP_BUTTON = kButton7;
-    public static final int ELEVATOR_SLOW_DOWN_BUTTON = kButton8;    
-    public static final int ELEVATOR_ONETHIRD_BUTTON = kButton9;
-    public static final int ELEVATOR_TWOTHIRDS_BUTTON = kButton10;
-    public static final int SPIN_0 = kButton11;
-    public static final int SPIN_30 = kButton12;   
+    public static final int INTAKE_BUTTON = kButton7;
+    public static final int ELEVATOR_MAXHEIGHT = kButton8;
+    public static final int ROBOT_RELATIVE = kButton9;   
+    public static final int ELEVATOR_SCORINGHEIGHT = kButton10;
+    public static final int ELEVATOR_SLOW_DOWN_BUTTON = kButton11;    
+    public static final int ELEVATOR_MINHEIGHT = kButton12; 
     
   }
 
@@ -119,7 +119,7 @@ public final class Constants {
 
     // Calculations required for driving motor conversion factors and feed forward
     public static final double kDrivingMotorFreeSpeedRps = NeoMotorConstants.kFreeSpeedRpm / 60;
-    public static final double kWheelDiameterMeters = 0.0762;
+    public static final double kWheelDiameterMeters = 0.079;
     public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
     // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
     // teeth on the bevel pinion
@@ -132,7 +132,7 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   
     // Original value: public static final double kDriveDeadband = 0.05;
-    public static final double kDriveDeadband = 0.3;
+    public static final double kDriveDeadband = 0.1;
   }
 
   public static final class AutoConstants {
@@ -156,67 +156,51 @@ public final class Constants {
     public static final double kFreeSpeedRpm = 5676;
   }
 
-  public static final class ElevatorSimConstants {
-    public static final int kMotorPort = 0;
-    public static final int kEncoderAChannel = 0;
-    public static final int kEncoderBChannel = 1;
-    public static final int kJoystickPort = 0;
-  
-    public static final double kElevatorKp = 0.75;
-    public static final double kElevatorKi = 0;
-    public static final double kElevatorKd = 0;
-  
-    public static final double kElevatorMaxV = 10.0; // volts (V)
-    public static final double kElevatorkS = 0.0; // volts (V)
-    public static final double kElevatorkG = 0.62; // volts (V)
-    public static final double kElevatorkV = 3.9; // volts (V)
-    public static final double kElevatorkA = 0.06; // volts (V)
-  
-    public static final double kElevatorGearing = 5.0;
-    public static final double kElevatorDrumRadius = Units.inchesToMeters(1.0);
-    public static final double kCarriageMass = Units.lbsToKilograms(12); // kg
-  
-    public static final double kSetpointMeters = Units.inchesToMeters(42.875);
-    public static final double kLowerkSetpointMeters = Units.inchesToMeters(15);
-    // Encoder is reset to measure 0 at the bottom, so minimum height is 0.
-    public static final double kMinElevatorHeightMeters = 0.0;
-    public static final double kMaxElevatorHeightMeters = Units.inchesToMeters(50);
-  
-    // distance per pulse = (distance per revolution) / (pulses per revolution)
-    //  = (Pi * D) / ppr
-    public static final double kElevatorEncoderDistPerPulse =
-        2.0 * Math.PI * kElevatorDrumRadius / 4096;
-  }
-
   public static class ElevatorConstants
   {
-    public static final int kElevMotor1 = 1;
-    public static final int kElevMotor2 = 3;
+    public static final int kElevMotor1 = 3;
+    public static final int kElevMotor2 = 1;
 
-    public static final double kGearRatio = 15; 
-    public static final double kGearRadius = Units.inchesToMeters(5.5/(2*Math.PI)); //inches - lemme double check with 
-    public static final double kResetCurrent = 60; //max current tbd TODO: Will need to tune these currents
+    public static final double kGearRatio = 15 / 2; // Divided by 2 stages 
+    public static final double kGearCircumference = Units.inchesToMeters(5.5); //inches - lemme double check with 
+    public static final double kResetCurrent = 45; //max current tbd TODO: Will need to tune these currents
     public static final int kMaxCurrent   = 65;//In amps? TODO: Will need to tune these currents
 
-    public static final double kElevatorKp = 0.5; //TODO: Will need to tune this, I lowered it to start 
+    public static final double kElevatorKp = 4.5; //TODO: Will need to tune this, I lowered it to start 
     public static final double kElevatorKi = 0;
-    public static final double kElevatorKd = 0;
+    public static final double kElevatorKd = 1;
+    public static final double kElevatorRampRate = 0.2;
+
+    //elevator score slow
+    public static final double kSlowElevatorKp = 4.5; //TODO: Will need to tune this, I lowered it to start 
+    public static final double kSlowElevatorKi = 0;
+    public static final double kSlowElevatorKd = 1;
+    public static final double kSlowElevatorRampRate = 0.2;
 
     // Note: All of these should be 0.0 except kG - which we will need to determine empirically
     public static final double kElevatorkS = 0.0; // volts (V)
-    public static final double kElevatorkG = 0.0; // volts (V) //TODO: Will need to tune
+    public static final double kElevatorkG = 0.35; // volts (V) //TODO: Will need to tune
     public static final double kElevatorkV = 0.0; // volt per velocity (V/(m/s))
     public static final double kElevatorkA = 0.0; // volt per acceleration (V/(m/s²))
 
     public static final double kCarriageMass = 4.0; // kg
 
     // Encoder is reset to measure 0 at the bottom, so minimum height is 0.
-    public static final double kMinRealElevatorHeightMeters = Units.inchesToMeters(0);
-    public static final double kMaxRealElevatorHeightMeters = Units.inchesToMeters(66.264);
+    public static final double kMinRealElevatorHeightMeters = 0;    // m
+    public static final double kMaxRealElevatorHeightMeters = 1.575; // m
+    
+    public static final double kL4PreScoringHeightMeters = kMaxRealElevatorHeightMeters-0.01;
+    public static final double kL4PostScoringHeightMeters = kMaxRealElevatorHeightMeters-0.4;
 
-    public static final double kRotationToMeters = kGearRadius * 2 * Math.PI / kGearRatio;// Revolutions to Output units conversion factor
-    public static final double kElevatorMaxVelocity = Units.inchesToMeters(10); // TODO: Need a good inches per sec max, start slow (10?)
-    public static final double kElevatorMaxAcceleration = Units.inchesToMeters(10); // TODO: Need a good inches per sec per sec max, start slow (10?)
+    public static final double kIntakeElevatorHeightMeters = 0.01;    // m
+
+    public static final double kRotationToMeters = kGearCircumference / kGearRatio;// Revolutions to Output units conversion factor
+    public static final double kElevatorMaxVelocity = 4000; // Motor RPM - does not get affected by conversion factor TODO: Need a good inches per sec max, start slow (10?)
+    public static final double kElevatorMaxAcceleration = 4000; // Motor RPM - does not get affected by conversion factor TODO: Need a good inches per sec per sec max, start slow (10?)
+  }
+  
+  public static class IntakeConstants{
+    public static final int intakeRollerMotorID = 2;
   }
   public static class LimelightConstants
   {

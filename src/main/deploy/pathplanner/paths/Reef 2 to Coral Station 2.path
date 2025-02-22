@@ -1,0 +1,70 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.184133152039351,
+        "y": 5.540235785157506
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.843735907639781,
+        "y": 5.827063894814097
+      },
+      "isLocked": false,
+      "linkedName": "Reef 2 Left After Score"
+    },
+    {
+      "anchor": {
+        "x": 4.53375,
+        "y": 6.0432500000000005
+      },
+      "prevControl": {
+        "x": 4.782389492765997,
+        "y": 5.989556545092735
+      },
+      "nextControl": {
+        "x": 4.289382979529336,
+        "y": 6.096020818700202
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.5502500000000001,
+        "y": 7.62275
+      },
+      "prevControl": {
+        "x": 2.8024593250028804,
+        "y": 7.268102194476081
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Coral Station"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 125.37999999999998
+  },
+  "reversed": false,
+  "folder": "Right (Our Barge) Paths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -119.99999999999999
+  },
+  "useDefaultConstraints": true
+}
