@@ -13,11 +13,11 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants;
 import frc.robot.Constants.OperatorConstants;
@@ -26,11 +26,10 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+//import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.ElevatorSubsystemYAGSL;
 import frc.robot.subsystems.IntakeSubsystem;
-import frc.robot.subsystems.ElevatorSubsystemSim;
 import frc.robot.subsystems.SwerveSubsystemSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -51,7 +50,6 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -59,13 +57,10 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems
 
+  // Declare the robot's subsystems
   DriveSubsystem m_robotDrive;
-
-  private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
-
-  // private final ElevatorSubsystemYAGSL m_elevator = new ElevatorSubsystemYAGSL();
+  ElevatorSubsystem m_elevator;
 
   // The driver's controller
   // XboxController m_driverController = new
@@ -84,23 +79,28 @@ public class RobotContainer {
 
   public RobotContainer() {
     
+    //Set up Subsystems
     if (RobotBase.isReal()) {
       m_robotDrive = new DriveSubsystem();
+      m_elevator = new ElevatorSubsystem();
     } else {
       m_robotDrive = new SwerveSubsystemSim();
+      m_elevator = new ElevatorSubsystem();
     }
 
-    m_elevator.setGoal(0);
+
+    // Zero/Reset sensors
     m_robotDrive.zeroHeading();
+    m_elevator.resetEncoder();
 
     // Register named commands
     //TODO: Use parallel commands to speed things up if applicible.
     IntakeSubsystem intakeSystem = new IntakeSubsystem();
 
-    AutoElevatorCommand elevUp = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kMaxElevatorHeightMeters);
-    AutoElevatorCommand elevDown = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kMinElevatorHeightMeters);
+    AutoElevatorCommand elevUp = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kMaxRealElevatorHeightMeters-0.01); // TODO: Replace with constants
+    AutoElevatorCommand elevDown = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kMinRealElevatorHeightMeters);
     //ProxyCommand a = new ProxyCommand(elevUp);//What if we use proxy?
-    AutoElevatorCommand score = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kScoreElevatorHeightMeters);
+    AutoElevatorCommand score = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kMaxRealElevatorHeightMeters-0.4);
     //Command runintake = new RunCommand(null, null)
     /*NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
     NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
@@ -160,46 +160,68 @@ public class RobotContainer {
             () -> m_robotDrive.setX(),
             m_robotDrive));
 
-    new JoystickButton(m_driverController, 7)
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ZERO_HEADING_BUTTON)
         .whileTrue(new RunCommand(
             () -> m_robotDrive.zeroHeading()));
 
-    new JoystickButton(m_driverController, 3)
+    new JoystickButton(m_driverController, Constants.OperatorConstants.SLOW_MODE_LEFT)
         .whileTrue(new RunCommand(
             () -> m_robotDrive.drive(0, Constants.slowSpeedMode, 0, false, m_driverController.getThrottle()),
             m_robotDrive));
 
-    new JoystickButton(m_driverController, 4)
+    new JoystickButton(m_driverController, Constants.OperatorConstants.SLOW_MODE_RIGHT)
         .whileTrue(new RunCommand(
             () -> m_robotDrive.drive(0, -Constants.slowSpeedMode, 0, false, m_driverController.getThrottle()),
             m_robotDrive));
-    new JoystickButton(m_driverController, 12)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.spinAngle(30)));
 
-    new JoystickButton(m_driverController, 11)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.spinAngle(0)));
-
-    new JoystickButton(m_driverController, 5)
+    new JoystickButton(m_driverController, Constants.OperatorConstants.SLOW_MODE_FORWARD)
         .whileTrue(new RunCommand(
             () -> m_robotDrive.drive(Constants.slowSpeedMode, 0, 0, false, m_driverController.getThrottle()),
             m_robotDrive));
 
-    new JoystickButton(m_driverController, 6)
+    new JoystickButton(m_driverController, Constants.OperatorConstants.SLOW_MODE_BACKWARD)
         .whileTrue(new RunCommand(
             () -> m_robotDrive.drive(-Constants.slowSpeedMode, 0, 0, false, m_driverController.getThrottle()),
             m_robotDrive));
 
-    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_UP_BUTTON)
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SLOW_UP_BUTTON)
+        .whileTrue(Commands.startEnd(
+                              () -> m_elevator.ManualElevatorUp(), 
+                              () -> m_elevator.motorStop(), 
+                              m_elevator));
+      
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SLOW_DOWN_BUTTON)
+        .whileTrue(Commands.startEnd(
+                              () -> m_elevator.ManualElevatorDown(), 
+                              () -> m_elevator.motorStop(), 
+                              m_elevator));
+
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_MINHEIGHT)
         .whileTrue(new RunCommand(
-            () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMaxElevatorHeightMeters),
+            () -> m_elevator.reachGoal(0.01),
+            m_elevator));
+                      
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_MAXHEIGHT)
+        .whileTrue(new RunCommand(
+            () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxRealElevatorHeightMeters - 0.01),
             m_elevator));
 
-    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_DOWN_BUTTON)
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SCORINGHEIGHT)
         .whileTrue(new RunCommand(
-            () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMinElevatorHeightMeters),
+            () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxRealElevatorHeightMeters - 0.4),
             m_elevator));
+                                  
+    // new JoystickButton(m_driverController, Constants.OperatorConstants.SPIN_0)
+    //     .whileTrue(Commands.startEnd(
+    //         () -> m_elevator.HoverElevator(), 
+    //         () -> m_elevator.motorStop(), 
+    //         m_elevator));
+
+    new JoystickButton(m_driverController, Constants.OperatorConstants.SPIN_30)
+        .whileTrue(new RunCommand(
+            () -> m_robotDrive.spinAngle(30)));
+    
+
     // m_elevator.atHeight(5, 0.1).whileTrue(Commands.print("Elevator Command!"));
 
     /*
@@ -277,8 +299,8 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    m_elevator.resetEncoder();//Resets encoder.
     return autoChooser.getSelected();
-
     // Autos auto = new Autos(m_robotDriveSim);
     // return auto.getAutonomousCommand();
     /*
