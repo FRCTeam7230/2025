@@ -25,7 +25,7 @@ public class AutoElevatorCommand extends Command {
     }
     @Override 
     public boolean isFinished(){
-        if(Math.abs(m_elev.getHeight()-finGoal)<0.1){
+        if(Math.abs(m_elev.getHeight()-finGoal)<0.02){
             return true;
         } else {
             return false;
