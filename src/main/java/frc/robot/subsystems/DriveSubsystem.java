@@ -195,8 +195,8 @@ public class DriveSubsystem extends SubsystemBase {
   }
   
 
-  private static final double WHEEL_RADIUS_RAMP_RATE = 0.1;
-  private static final double WHEEL_RADIUS_MAX_VELOCITY = 0.5;
+  private static final double WHEEL_RADIUS_RAMP_RATE = 0.01;
+  private static final double WHEEL_RADIUS_MAX_VELOCITY = 0.1;
 
   double driveBaseRadius = Math.hypot(DriveConstants.kTrackWidth / 2.0, DriveConstants.kWheelBase / 2.0);
 
@@ -301,9 +301,9 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     // Convert the commanded speeds into the correct units for the drivetrain
-    double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond / Constants.movementDivider;
-    double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond / Constants.movementDivider;
-    double rotDelivered = rot * DriveConstants.kMaxAngularSpeed / Constants.rotateDivider;
+    double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond;
+    double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond;
+    double rotDelivered = rot * DriveConstants.kMaxAngularSpeed;
 
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative

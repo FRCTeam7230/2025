@@ -47,6 +47,9 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.DoubleArrayPublisher;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -69,6 +72,8 @@ public class RobotContainer {
 
   // Logitech joystick controller.
   Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort);
+  BooleanPublisher mode_publisher = NetworkTableInstance.getDefault().getBooleanTopic("Is Field Relative").publish();
+
 
   private final SendableChooser<Command> autoChooser;
 
@@ -117,9 +122,9 @@ public class RobotContainer {
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> m_robotDrive.drive(
-                -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(Math.pow(m_driverController.getY(), 2) * Math.signum(m_driverController.getY()), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(Math.pow(m_driverController.getX(), 2) * Math.signum(m_driverController.getX()), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(Math.pow(m_driverController.getZ(), 2) * Math.signum(m_driverController.getZ()), OIConstants.kDriveDeadband),
                 fieldRelative),
             m_robotDrive));
   }
@@ -171,7 +176,7 @@ public class RobotContainer {
     //                           () -> m_elevator.motorStop(), 
     //                           m_elevator));
     
-    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SLOW_UP_BUTTON).whileTrue(
+    new JoystickButton(m_driverController, Constants.OperatorConstants.WHEEL_CHARACTERIZATION).whileTrue(
                         m_robotDrive.wheelRadiusCharacterization());
 
                               
@@ -208,9 +213,10 @@ public class RobotContainer {
     
 
     new JoystickButton(m_driverController, Constants.OperatorConstants.ROBOT_RELATIVE)
-        .whileTrue(new InstantCommand(
-            () -> fieldRelative = !fieldRelative, 
-            m_robotDrive));
+        .whileTrue(Commands.sequence(
+           new InstantCommand(() -> fieldRelative = !fieldRelative, m_robotDrive),
+           new InstantCommand(() -> mode_publisher.set(fieldRelative)))
+        );
 
     // m_elevator.atHeight(5, 0.1).whileTrue(Commands.print("Elevator Command!"));
 

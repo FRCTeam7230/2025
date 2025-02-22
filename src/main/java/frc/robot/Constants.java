@@ -23,7 +23,7 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
 
-  public static final double slowSpeedMode = 0.2;
+  public static final double slowSpeedMode = 0.1;
   public static final double movementDivider = 2;
   public static final double rotateDivider = 5;
   
@@ -50,7 +50,7 @@ public final class Constants {
     public static final int SLOW_MODE_RIGHT = kButton4;  
     public static final int SLOW_MODE_FORWARD = kButton5;
     public static final int SLOW_MODE_BACKWARD = kButton6;          
-    public static final int ELEVATOR_SLOW_UP_BUTTON = kButton7;
+    public static final int WHEEL_CHARACTERIZATION = kButton7;
     public static final int ELEVATOR_MAXHEIGHT = kButton8;
     public static final int ROBOT_RELATIVE = kButton9;   
     public static final int ELEVATOR_SCORINGHEIGHT = kButton10;
@@ -132,7 +132,7 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   
     // Original value: public static final double kDriveDeadband = 0.05;
-    public static final double kDriveDeadband = 0.3;
+    public static final double kDriveDeadband = 0.1;
   }
 
   public static final class AutoConstants {
