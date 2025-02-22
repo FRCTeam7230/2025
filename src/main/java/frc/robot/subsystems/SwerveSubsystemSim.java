@@ -44,6 +44,7 @@ public class SwerveSubsystemSim extends DriveSubsystem {
   public static final double maxModuleSpeed = 4.5; // M/S
   
   public SwerveSubsystemSim() {
+    super(null);
     gyro = new SimGyro();
     modules = new SimSwerveModule[]{
       new SimSwerveModule(),

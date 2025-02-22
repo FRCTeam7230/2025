@@ -40,6 +40,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.utils.PPHolonomicDriveControllerCustom;
+import frc.robot.subsystems.LimelightSubsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -79,6 +80,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   StructPublisher<Pose2d> odomPublisher = NetworkTableInstance.getDefault().getStructTopic("Pose", Pose2d.struct).publish();  
   
+  LimelightSubsystem m_limelight;
   public double getFieldAngle(){
     return -m_gyro.getAngle();
   }
@@ -105,7 +107,7 @@ public class DriveSubsystem extends SubsystemBase {
       });
 
   /** Creates a new DriveSubsystem. */
-  public DriveSubsystem() {
+  public DriveSubsystem(LimelightSubsystem limelight) {
     // Usage reporting for MAXSwerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_MaxSwerve);
 
@@ -121,6 +123,8 @@ public class DriveSubsystem extends SubsystemBase {
     xController = autoDriveController.getXController();
     yController = autoDriveController.getYController();
     rotController = autoDriveController.getRotationController();
+
+    m_limelight = limelight;
 
     try {
       RobotConfig config = RobotConfig.fromGUISettings();
@@ -154,9 +158,19 @@ public class DriveSubsystem extends SubsystemBase {
     PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
     SmartDashboard.putData("Field", field);
   }
-
   @Override
   public void periodic() {
+    //check for limelight megatag updates
+    if(m_limelight!=null&&m_limelight.isTV())
+    {
+      Pose2d pose = m_limelight.getPose2d();
+      if(pose!=null)
+      {
+        resetOdometry(pose);
+      }
+    }
+
+
     // Update the odometry in the periodic block
     currentPose = m_odometry.update(
         Rotation2d.fromDegrees(getFieldAngle()),

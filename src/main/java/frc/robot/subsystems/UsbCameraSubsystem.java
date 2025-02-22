@@ -8,6 +8,7 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.CvSink;
 import edu.wpi.first.cscore.CvSource;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -19,7 +20,7 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import edu.wpi.first.wpilibj2.command.Command;
 import org.opencv.core.Core;
-
+import org.opencv.core.CvType;
 import org.opencv.core.Rect;
 
 /*
@@ -160,6 +161,13 @@ private void StartCamera(int dev)
         // Setup a CvSource. This will send images back to the Dashboard
         
         CvSource outputStream = CameraServer.putVideo("Processed Feed", (displayWidth), (displayHeight));
+        CvSource indicatorStream = CameraServer.putVideo("Indicator",1,1);
+        Mat unAligned = new Mat(1,1,CvType.CV_8UC3,new Scalar(0,0,255,0));
+        Mat aligned = new Mat(1,1,CvType.CV_8UC3,new Scalar(0,255,0,0));
+        Mat black = new Mat(1,1,CvType.CV_8UC3,new Scalar(0,0,0,0));
+
+
+         camera.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
 
         // Mats are very memory expensive. Lets reuse this Mat.
         Mat mat = new Mat();
@@ -167,8 +175,9 @@ private void StartCamera(int dev)
         // This cannot be 'true'. The program will never exit if it is. This
         // lets the robot stop this thread when restarting robot code or
         // deploying.
+        long startTime = System.currentTimeMillis();
+
         while (!Thread.interrupted()) {
-          long startTime = System.currentTimeMillis();
 
           // Tell the CvSink to grab a frame from the camera and put it
           // in the source mat.  If there is an error notify the output.
@@ -197,8 +206,24 @@ private void StartCamera(int dev)
           {
             simpleProcess(mat);
           }
-        
+          if(isReady)
+          {
+            long time = System.currentTimeMillis()-startTime;
+            if((startTime-time)%500<250)
+            {
+              indicatorStream.putFrame(aligned);
 
+            }
+            else
+            {
+              indicatorStream.putFrame(black);
+            }
+
+          }
+          else
+          {
+            indicatorStream.putFrame(unAligned);
+          }
           // Give the output stream a new image to display 
 
           outputStream.putFrame(mat);
@@ -208,8 +233,6 @@ private void StartCamera(int dev)
 
           }
           latestMat = mat;
-          long time = System.currentTimeMillis()-startTime;
-          SmartDashboard.putNumber("Vision FPS: ",((int)1000.00/time));
           
         }
       });

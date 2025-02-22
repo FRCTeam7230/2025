@@ -88,16 +88,16 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    m_limelight = new LimelightSubsystem();
 
     //Set up Subsystems
     if (RobotBase.isReal()) {
-      m_robotDrive = new DriveSubsystem();
+      m_robotDrive = new DriveSubsystem(m_limelight);
       m_elevator = new ElevatorSubsystem();
     } else {
       m_robotDrive = new SwerveSubsystemSim();
       m_elevator = new ElevatorSubsystem();
     }
-    m_limelight = new LimelightSubsystem();
     m_UsbCamera = new UsbCameraSubsystem();
     m_visionSubsystem = new VisionSubsystem(m_UsbCamera);
 
