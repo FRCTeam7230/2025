@@ -61,7 +61,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.0
+                  "waitTime": 2.0
                 }
               }
             ]
@@ -89,7 +89,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Vision Align And Score Right"
+            "name": "Vision Align And Score Left"
           }
         },
         {
@@ -124,7 +124,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.0
+                  "waitTime": 2.0
                 }
               }
             ]
@@ -152,7 +152,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Vision Align And Score Left"
+            "name": "Vision Align And Score Right"
           }
         }
       ]
