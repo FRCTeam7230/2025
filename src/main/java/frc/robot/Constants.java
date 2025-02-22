@@ -171,6 +171,12 @@ public final class Constants {
     public static final double kElevatorKd = 1;
     public static final double kElevatorRampRate = 0.2;
 
+    //elevator score slow
+    public static final double kSlowElevatorKp = 4.5; //TODO: Will need to tune this, I lowered it to start 
+    public static final double kSlowElevatorKi = 0;
+    public static final double kSlowElevatorKd = 1;
+    public static final double kSlowElevatorRampRate = 0.2;
+
     // Note: All of these should be 0.0 except kG - which we will need to determine empirically
     public static final double kElevatorkS = 0.0; // volts (V)
     public static final double kElevatorkG = 0.35; // volts (V) //TODO: Will need to tune

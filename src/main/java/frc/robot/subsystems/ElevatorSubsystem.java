@@ -73,8 +73,10 @@ public class ElevatorSubsystem extends SubsystemBase
         .velocityConversionFactor(ElevatorConstants.kRotationToMeters / 60); // Converts RPM to MPS
     m_config_motor1.closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pid(ElevatorConstants.kElevatorKp, ElevatorConstants.kElevatorKi, ElevatorConstants.kElevatorKd)//Change PID with these constants.
-        .outputRange(-1, 1);
+        .pid(ElevatorConstants.kElevatorKp, ElevatorConstants.kElevatorKi, ElevatorConstants.kElevatorKd, ClosedLoopSlot.kSlot0)//Change PID with these constants.
+        .pid(ElevatorConstants.kSlowElevatorKp, ElevatorConstants.kSlowElevatorKi, ElevatorConstants.kSlowElevatorKd, ClosedLoopSlot.kSlot1)
+        .outputRange(-1, 1, ClosedLoopSlot.kSlot0)
+        .outputRange(-0.3, 0.3, ClosedLoopSlot.kSlot1);
     m_config_motor1.closedLoop.maxMotion
         .maxVelocity(ElevatorConstants.kElevatorMaxVelocity)
         .maxAcceleration(ElevatorConstants.kElevatorMaxAcceleration)
@@ -114,10 +116,19 @@ public class ElevatorSubsystem extends SubsystemBase
   public void reachGoal(double goal)
   {
     m_desiredHeight = goal;
-    m_controller.setReference(goal,
+    if (m_desiredHeight == Constants.ElevatorConstants.kL4PostScoringHeightMeters) {
+      m_controller.setReference(goal,
+                              ControlType.kPosition,
+                              ClosedLoopSlot.kSlot1,
+                              m_feedforward.calculate(m_encoder.getVelocity()));
+    }
+
+    else {
+      m_controller.setReference(goal,
                               ControlType.kPosition,
                               ClosedLoopSlot.kSlot0,
                               m_feedforward.calculate(m_encoder.getVelocity()));
+    }
 
   }
 
