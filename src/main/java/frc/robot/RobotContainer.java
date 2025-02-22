@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants;
 import frc.robot.Constants.OperatorConstants;
@@ -201,12 +202,12 @@ public class RobotContainer {
     //         () -> m_elevator.motorStop(), 
     //         m_elevator));
 
-    new JoystickButton(m_driverController, Constants.OperatorConstants.SPIN_30)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.spinAngle(30)));
+    // new JoystickButton(m_driverController, Constants.OperatorConstants.SPIN_30)
+    //     .whileTrue(new RunCommand(
+    //         () -> m_robotDrive.spinAngle(30)));
     
 
-    new JoystickButton(m_driverController, 14)
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ROBOT_RELATIVE)
         .whileTrue(new InstantCommand(
             () -> fieldRelative = !fieldRelative, 
             m_robotDrive));

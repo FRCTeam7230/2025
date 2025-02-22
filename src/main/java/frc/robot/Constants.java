@@ -51,11 +51,11 @@ public final class Constants {
     public static final int SLOW_MODE_FORWARD = kButton5;
     public static final int SLOW_MODE_BACKWARD = kButton6;          
     public static final int ELEVATOR_SLOW_UP_BUTTON = kButton7;
-    public static final int ELEVATOR_SLOW_DOWN_BUTTON = kButton8;    
-    public static final int ELEVATOR_MINHEIGHT = kButton9;
-    public static final int ELEVATOR_MAXHEIGHT = kButton10;
-    public static final int ELEVATOR_SCORINGHEIGHT = kButton11;
-    public static final int SPIN_30 = kButton12;   
+    public static final int ELEVATOR_MAXHEIGHT = kButton8;
+    public static final int ROBOT_RELATIVE = kButton9;   
+    public static final int ELEVATOR_SCORINGHEIGHT = kButton10;
+    public static final int ELEVATOR_SLOW_DOWN_BUTTON = kButton11;    
+    public static final int ELEVATOR_MINHEIGHT = kButton12; 
     
   }
 
