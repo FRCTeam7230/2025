@@ -1,0 +1,25 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Early Game Top for Reef 1!"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef 1 to Coral Station"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Reef 1 paths",
+  "choreoAuto": false
+}
