@@ -8,7 +8,7 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.CvSink;
 import edu.wpi.first.cscore.CvSource;
 import edu.wpi.first.cscore.UsbCamera;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import org.opencv.core.Mat;
@@ -50,11 +50,11 @@ public class UsbCameraSubsystem extends SubsystemBase {
 
       private int displayWidth = 160;
       private int displayHeight = 120;
-      private int ticksPerRefresh = 20;
+      private int ticksPerRefresh = 10;
       private int refreshTickCount = 0;
       //Constructor that creates the image processing thread.
   public UsbCameraSubsystem() {
-//StartCamera(0);
+StartCamera(0);
 cameraStarted = false;
   }
   //A few commands for the blur effect just for testing purposes.
@@ -77,10 +77,11 @@ private void processVideoFeed(Mat inputMat)
       color = new Scalar(0,255,0);
     }
     Imgproc.rectangle(inputMat, targetBox,color,2);
-
+    
 
 
   } 
+
   //reef pipe visualizer
   //Imgproc.rectangle( inputMat, new Point(280, 180), new Point(360, 480), new Scalar(225, 20, 250), 5);
   Imgproc.putText(inputMat, "Processed Camera Feed", new Point(20,50), 0, 1, new Scalar(0,0,0),3);
@@ -111,18 +112,6 @@ public Command Refresh()
 }
 
 //toggles overlay such as reef pipe detection indicators
-public Command toggleOverlay()
-{
-  return   runOnce(()->
-  {overlay = !overlay;}
-  );
-}
-public Command toggleFlip()
-{
-  return runOnce(()->
-  {flip = !flip;}
-  );
-}
 // returns latest unprocessed video frame
 public Mat getLatestFrame()
 {
@@ -150,13 +139,14 @@ private void StartCamera(int dev)
   new Thread(
 
       () -> {
-        UsbCamera camera = CameraServer.startAutomaticCapture(dev);
+        UsbCamera camera = new UsbCamera("USB_Cam", dev);
 
         // Set the resolution
         camera.setResolution(640, 480);
 
         // Get a CvSink. This will capture Mats from the camera
-        CvSink cvSink = CameraServer.getVideo();
+        CvSink cvSink = new CvSink("Sink");
+        cvSink.setSource(camera);
         // Setup a CvSource. This will send images back to the Dashboard
         
         CvSource outputStream = CameraServer.putVideo("Processed Feed", (displayWidth), (displayHeight));
@@ -168,7 +158,7 @@ private void StartCamera(int dev)
         // lets the robot stop this thread when restarting robot code or
         // deploying.
         while (!Thread.interrupted()) {
-          long startTime = System.currentTimeMillis();
+          //long startTime = System.currentTimeMillis();
 
           // Tell the CvSink to grab a frame from the camera and put it
           // in the source mat.  If there is an error notify the output.
@@ -208,10 +198,11 @@ private void StartCamera(int dev)
 
           }
           latestMat = mat;
-          long time = System.currentTimeMillis()-startTime;
-          SmartDashboard.putNumber("Vision FPS: ",((int)1000.00/time));
-          
+          //long time = System.currentTimeMillis()-startTime;
+          //SmartDashboard.putNumber("Vision FPS: ",((int)1000.00/time));
+
         }
+        cvSink.close();
       });
 visionThread.setDaemon(true);
 visionThread.start();
@@ -223,7 +214,6 @@ public void periodic()
   {
       refreshRequested = true;
       refreshTickCount = 0;
-
   }
   refreshTickCount++;
 }

@@ -13,7 +13,7 @@ import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.imgproc.Imgproc;
-import org.opencv.core.Scalar;
+//import org.opencv.core.Scalar;
 
 public class VisionSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
@@ -22,7 +22,7 @@ public class VisionSubsystem extends SubsystemBase {
   //This value is for the reeef pipe detection of width. It is the amount of extra pixels blocked from the camera view above the second-highest pipe.
   
   //Adjust this if the robot does not detect a pipe.
-  private static int safetyPixels = 10;
+  //private static int safetyPixels = 20;
 
   private static boolean isTargetValid;
 
@@ -81,13 +81,24 @@ public class VisionSubsystem extends SubsystemBase {
       largestBox = bound;
     }
   }
+
+  if(Math.abs(largestBox.height-secondLargest.height)<50)
+  {
+    if(largestBox.width<secondLargest.width)
+    {
+      Rect temp = largestBox;
+      largestBox = secondLargest;
+      secondLargest = temp;
+    }
+  }
   double br = largestBox.br().y;
+  /* 
   //chop off bottom of frame
   if(secondLargest.area()>0)
   {
     Mat copied = new Mat();
     latest.copyTo(copied);
-    int h = (int)(480-secondLargest.tl().y)+safetyPixels;
+    int h = (int)(480-secondLargest.tl().y)-safetyPixels;
     //inefficient chopping code - draws a really thick line across bottom of frame. 
     Imgproc.rectangle(copied, new Rect(new Point(0,480),new Point(640,479)), new Scalar(0,0,0),h*2);
   
@@ -107,6 +118,7 @@ public class VisionSubsystem extends SubsystemBase {
       }
     }
   }
+    */
   Rect result = new Rect(largestBox.tl(),new Point(largestBox.br().x,br));
   isTargetValid = true;
   return result;
