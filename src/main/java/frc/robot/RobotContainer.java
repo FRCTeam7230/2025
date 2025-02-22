@@ -105,7 +105,6 @@ public class RobotContainer {
 
     // Register named commands
     //TODO: Use parallel commands to speed things up if applicible.
-    IntakeSubsystem intakeSystem = new IntakeSubsystem();
 
     AutoElevatorCommand elevUp = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PreScoringHeightMeters); // TODO: Replace with constants
     AutoElevatorCommand elevDown = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kIntakeElevatorHeightMeters);
@@ -116,8 +115,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Raise Elevator",elevUp);
     NamedCommands.registerCommand("Lower Elevator",elevDown);
     NamedCommands.registerCommand("Score",score);
-    NamedCommands.registerCommand("Run Intake", Commands.run(() -> intakeSystem.runIntakeRollerMotor()));//Is this how it's done?
-    NamedCommands.registerCommand("Stop Intake", Commands.run(() -> intakeSystem.stopIntakeRollerMotor()));//Is this how it's done?
+    NamedCommands.registerCommand("Run Intake", Commands.run(() -> m_intake.runIntakeRollerMotor()));//Is this how it's done?
+    NamedCommands.registerCommand("Stop Intake", Commands.run(() -> m_intake.stopIntakeRollerMotor()));//Is this how it's done?
     NamedCommands.registerCommand("Vision Align And Score Left",visionAlignAndScoreLeft);
     NamedCommands.registerCommand("Vision Align And Score Right",visionAlignAndScoreRight);
     // Use event markers as triggers

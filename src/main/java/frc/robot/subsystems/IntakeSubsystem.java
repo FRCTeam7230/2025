@@ -22,7 +22,7 @@ public class IntakeSubsystem extends SubsystemBase {
     }  
     
     public void runIntakeRollerMotor(){
-        intakeRollerMotor.set(1);
+        intakeRollerMotor.set(-0.3);
     
     }
     
