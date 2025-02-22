@@ -23,7 +23,7 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
 
-  public static final double slowSpeedMode = 0.2;
+  public static final double slowSpeedMode = 0.1;
   public static final double movementDivider = 2;
   public static final double rotateDivider = 5;
   
@@ -50,12 +50,12 @@ public final class Constants {
     public static final int SLOW_MODE_RIGHT = kButton4;  
     public static final int SLOW_MODE_FORWARD = kButton5;
     public static final int SLOW_MODE_BACKWARD = kButton6;          
-    public static final int ELEVATOR_SLOW_UP_BUTTON = kButton7;
-    public static final int ELEVATOR_SLOW_DOWN_BUTTON = kButton8;    
-    public static final int ELEVATOR_MINHEIGHT = kButton9;
-    public static final int ELEVATOR_MAXHEIGHT = kButton10;
-    public static final int ELEVATOR_SCORINGHEIGHT = kButton11;
-    public static final int SPIN_30 = kButton12;   
+    public static final int WHEEL_CHARACTERIZATION = kButton7;
+    public static final int ELEVATOR_MAXHEIGHT = kButton8;
+    public static final int ROBOT_RELATIVE = kButton9;   
+    public static final int ELEVATOR_SCORINGHEIGHT = kButton10;
+    public static final int ELEVATOR_SLOW_DOWN_BUTTON = kButton11;    
+    public static final int ELEVATOR_MINHEIGHT = kButton12; 
     
   }
 
@@ -119,7 +119,7 @@ public final class Constants {
 
     // Calculations required for driving motor conversion factors and feed forward
     public static final double kDrivingMotorFreeSpeedRps = NeoMotorConstants.kFreeSpeedRpm / 60;
-    public static final double kWheelDiameterMeters = 0.0762;
+    public static final double kWheelDiameterMeters = 0.079;
     public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
     // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
     // teeth on the bevel pinion
@@ -132,7 +132,7 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   
     // Original value: public static final double kDriveDeadband = 0.05;
-    public static final double kDriveDeadband = 0.3;
+    public static final double kDriveDeadband = 0.1;
   }
 
   public static final class AutoConstants {

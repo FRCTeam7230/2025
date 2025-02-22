@@ -33,7 +33,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystemSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ProxyCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -49,6 +49,9 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.DoubleArrayPublisher;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -57,10 +60,13 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-
-  // Declare the robot's subsystems
+  
+  // The robot's subsystems
   DriveSubsystem m_robotDrive;
   ElevatorSubsystem m_elevator;
+
+  private Boolean fieldRelative = true;
+
 
   // The driver's controller
   // XboxController m_driverController = new
@@ -68,6 +74,8 @@ public class RobotContainer {
 
   // Logitech joystick controller.
   Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort);
+  BooleanPublisher mode_publisher = NetworkTableInstance.getDefault().getBooleanTopic("Is Field Relative").publish();
+
 
   private final SendableChooser<Command> autoChooser;
 
@@ -129,17 +137,13 @@ public class RobotContainer {
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
-
-    new RunCommand(
-        () -> m_robotDrive.drive(
-            -MathUtil.applyDeadband(m_driverController.getY(), OIConstants.kDriveDeadband),
-            -MathUtil.applyDeadband(m_driverController.getX(), OIConstants.kDriveDeadband),
-            -MathUtil.applyDeadband(m_driverController.getZ(), OIConstants.kDriveDeadband),
-            true,
-            m_driverController.getThrottle()),
-        m_robotDrive));
-        
-    
+        new RunCommand(
+            () -> m_robotDrive.drive(
+                -MathUtil.applyDeadband(Math.pow(m_driverController.getY(), 2) * Math.signum(m_driverController.getY()), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(Math.pow(m_driverController.getX(), 2) * Math.signum(m_driverController.getX()), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(Math.pow(m_driverController.getZ(), 2) * Math.signum(m_driverController.getZ()), OIConstants.kDriveDeadband),
+                fieldRelative),
+            m_robotDrive));
   }
 
   /**
@@ -162,32 +166,37 @@ public class RobotContainer {
         .whileTrue(new RunCommand(
             () -> m_robotDrive.zeroHeading()));
 
+
     new JoystickButton(m_driverController, Constants.OperatorConstants.SLOW_MODE_LEFT)
         .whileTrue(new RunCommand(
-            () -> m_robotDrive.drive(0, Constants.slowSpeedMode, 0, false, m_driverController.getThrottle()),
+            () -> m_robotDrive.drive(0, Constants.slowSpeedMode, 0, false),
             m_robotDrive));
 
     new JoystickButton(m_driverController, Constants.OperatorConstants.SLOW_MODE_RIGHT)
         .whileTrue(new RunCommand(
-            () -> m_robotDrive.drive(0, -Constants.slowSpeedMode, 0, false, m_driverController.getThrottle()),
+            () -> m_robotDrive.drive(0, -Constants.slowSpeedMode, 0, false),
             m_robotDrive));
 
     new JoystickButton(m_driverController, Constants.OperatorConstants.SLOW_MODE_FORWARD)
         .whileTrue(new RunCommand(
-            () -> m_robotDrive.drive(Constants.slowSpeedMode, 0, 0, false, m_driverController.getThrottle()),
+            () -> m_robotDrive.drive(Constants.slowSpeedMode, 0, 0, false),
             m_robotDrive));
 
     new JoystickButton(m_driverController, Constants.OperatorConstants.SLOW_MODE_BACKWARD)
         .whileTrue(new RunCommand(
-            () -> m_robotDrive.drive(-Constants.slowSpeedMode, 0, 0, false, m_driverController.getThrottle()),
+            () -> m_robotDrive.drive(-Constants.slowSpeedMode, 0, 0, false),
             m_robotDrive));
 
-    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SLOW_UP_BUTTON)
-        .whileTrue(Commands.startEnd(
-                              () -> m_elevator.ManualElevatorUp(), 
-                              () -> m_elevator.motorStop(), 
-                              m_elevator));
-      
+    // new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SLOW_UP_BUTTON)
+    //     .whileTrue(Commands.startEnd(
+    //                           () -> m_elevator.ManualElevatorUp(), 
+    //                           () -> m_elevator.motorStop(), 
+    //                           m_elevator));
+    
+    new JoystickButton(m_driverController, Constants.OperatorConstants.WHEEL_CHARACTERIZATION).whileTrue(
+                        m_robotDrive.wheelRadiusCharacterization());
+
+                              
     new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SLOW_DOWN_BUTTON)
         .whileTrue(Commands.startEnd(
                               () -> m_elevator.ManualElevatorDown(), 
@@ -215,10 +224,16 @@ public class RobotContainer {
     //         () -> m_elevator.motorStop(), 
     //         m_elevator));
 
-    new JoystickButton(m_driverController, Constants.OperatorConstants.SPIN_30)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.spinAngle(30)));
+    // new JoystickButton(m_driverController, Constants.OperatorConstants.SPIN_30)
+    //     .whileTrue(new RunCommand(
+    //         () -> m_robotDrive.spinAngle(30)));
     
+
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ROBOT_RELATIVE)
+        .whileTrue(Commands.sequence(
+           new InstantCommand(() -> fieldRelative = !fieldRelative, m_robotDrive),
+           new InstantCommand(() -> mode_publisher.set(fieldRelative)))
+        );
 
     // m_elevator.atHeight(5, 0.1).whileTrue(Commands.print("Elevator Command!"));
 
@@ -260,27 +275,50 @@ public class RobotContainer {
     // Add a button to SmartDashboard that will create and follow an on-the-fly path
     // This example will simply move the robot 2m in the +X field direction
     SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
-      Pose2d currentPose = m_robotDrive.getPose();
+        Pose2d currentPose = m_robotDrive.getPose();
+  
+        // The rotation component in these poses represents the direction of travel
+        Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
+        Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(1, -1)), new Rotation2d());
+  
+        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPos, endPos);
+        PathPlannerPath path = new PathPlannerPath(
+            waypoints,
+            new PathConstraints(
+                1.0, 1.0,
+                Units.degreesToRadians(360), Units.degreesToRadians(540)),
+            null, // Ideal starting state can be null for on-the-fly paths
+            new GoalEndState(0.0, currentPose.getRotation()));
+  
+        // Prevent this path from being flipped on the red alliance, since the given
+        // positions are already correct
+        path.preventFlipping = true;
+  
+        AutoBuilder.followPath(path).schedule();
+      }));
 
-      // The rotation component in these poses represents the direction of travel
-      Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
-      Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(-0.5, 0.5)), new Rotation2d());
-
-      List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPos, endPos);
-      PathPlannerPath path = new PathPlannerPath(
-          waypoints,
-          new PathConstraints(
-              1.0, 1.0,
-              Units.degreesToRadians(360), Units.degreesToRadians(540)),
-          null, // Ideal starting state can be null for on-the-fly paths
-          new GoalEndState(0.0, currentPose.getRotation()));
-
-      // Prevent this path from being flipped on the red alliance, since the given
-      // positions are already correct
-      path.preventFlipping = true;
-
-      AutoBuilder.followPath(path).schedule();
-    }));
+    SmartDashboard.putData("On-the-fly path 2", Commands.runOnce(() -> {
+        Pose2d currentPose = m_robotDrive.getPose();
+  
+        // The rotation component in these poses represents the direction of travel
+        Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
+        Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(-1, 1)), new Rotation2d());
+  
+        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPos, endPos);
+        PathPlannerPath path = new PathPlannerPath(
+            waypoints,
+            new PathConstraints(
+                1.0, 1.0,
+                Units.degreesToRadians(360), Units.degreesToRadians(540)),
+            null, // Ideal starting state can be null for on-the-fly paths
+            new GoalEndState(0.0, currentPose.getRotation()));
+  
+        // Prevent this path from being flipped on the red alliance, since the given
+        // positions are already correct
+        path.preventFlipping = true;
+  
+        AutoBuilder.followPath(path).schedule();
+      }));
   }
 
   /**
