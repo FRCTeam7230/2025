@@ -98,8 +98,8 @@ private void RefreshData()
   VisionSubsystem.RefreshVisionData();
   target = VisionSubsystem.getReeftargetCenter();
   targetBox = VisionSubsystem.lastRect;
-  SmartDashboard.putNumber("EstimatedDistanceFromPipe:",0.01*(int)(VisionSubsystem.getReefPipeDistance()*100));
-  SmartDashboard.putNumber("Estimated horizontal offset",0.01*(int)(VisionSubsystem.getReefTargetOffset()*100));
+  //SmartDashboard.putNumber("EstimatedDistanceFromPipe:",0.01*(int)(VisionSubsystem.getReefPipeDistance()*100));
+  //SmartDashboard.putNumber("Estimated horizontal offset",0.01*(int)(VisionSubsystem.getReefTargetOffset()*100));
   isReady = VisionSubsystem.isReady();
 }
 public Command Refresh()
