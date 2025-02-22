@@ -40,6 +40,8 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -220,16 +222,15 @@ public class RobotContainer {
     /*SequentialCommandGroup fullAuto = new SequentialCommandGroup();
     fullAuto.addCommands(new PathPlannerAuto("COMP - Start Center to Left (Processor) Coral Station"));
     fullAuto.addCommands(new PathPlannerAuto("COMP - Bottom Scoring"));*/
-
-    SequentialCommandGroup fullAuto = new AddAutoSubsystem().configurePaths();//Should adapt to the list using this.
-    
-
+    ArrayList<PathPlannerAuto> pathArray1 = new ArrayList<PathPlannerAuto>();
+    AddAutoSubsystem fullAuto = new AddAutoSubsystem(pathArray1);//Should adapt to the list using this.
+    fullAuto.configurePaths();
      SmartDashboard.putData("COMP - Bottom Scoring", new PathPlannerAuto("COMP - Bottom Scoring"));
      SmartDashboard.putData("COMP - Start Center to Left (Processor) Coral Station", new PathPlannerAuto("COMP - Start Center to Left (Processor) Coral Station"));
      SmartDashboard.putData("COMP - Start Center to Right (Our Barge) Coral Station", new PathPlannerAuto("COMP - Start Center to Left (Processor) Coral Station"));
      SmartDashboard.putData("COMP - Start Right (Our Barge) Side", new PathPlannerAuto("COMP - Start Right (Our Barge) Side"));
      SmartDashboard.putData("COMP - Top Scoring", new PathPlannerAuto("COMP - Top Scoring"));
-     SmartDashboard.putData("COMP - Our Autonomous", fullAuto);
+    // SmartDashboard.putData("COMP - Our Autonomous", fullAuto);
     // SmartDashboard.putData("Reef 3 to Station Top", new PathPlannerAuto("Reef 2 to Station Top"));
     // SmartDashboard.putData("Reef 3 to Station Bottom", new PathPlannerAuto("Reef 2 to Station Bottom"));
     // SmartDashboard.putData("Reef 5 to station right", new PathPlannerAuto("Reef 5 to station right"));
