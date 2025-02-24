@@ -133,7 +133,7 @@ public class AlignWithLimelight extends Command {
         return targetingExtendedPosition;
      }
      //or if the target becomes invalid, something went wrong.
-     if(!m_limelight.isTV()) return true; //TODO Remove
+     if(!m_limelight.isTV()) return true; //TODO Remove when it works, replace with teleop driving while not tracking
 
     return false;
   }

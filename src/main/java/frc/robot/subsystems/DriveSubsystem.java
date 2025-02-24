@@ -395,6 +395,10 @@ public class DriveSubsystem extends SubsystemBase {
     m_gyro.reset();
   }
 
+  public void addAngleGyro(double angle) {
+    m_gyro.setAngleAdjustment(angle);
+  }
+
   /**
    * Returns the heading of the robot.
    *

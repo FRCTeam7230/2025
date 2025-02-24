@@ -88,6 +88,7 @@ public class RobotContainer {
 
   // Logitech joystick controller.
   Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort);
+  Joystick m_testController   = new Joystick(OIConstants.kTestControllerPort);
   BooleanPublisher mode_publisher = NetworkTableInstance.getDefault().getBooleanTopic("Is Field Relative").publish();
 
 
@@ -122,11 +123,10 @@ public class RobotContainer {
 
     // Zero/Reset sensors
     m_robotDrive.zeroHeading();
+    m_robotDrive.addAngleGyro(180);
     m_elevator.resetEncoder();
 
     // Register named commands
-    //TODO: Use parallel commands to speed things up if applicible.
-
     AutoElevatorCommand elevUp = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PreScoringHeightMeters); // TODO: Replace with constants
     AutoElevatorCommand elevDown = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kIntakeElevatorHeightMeters);
     AutoElevatorCommand score = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PostScoringHeightMeters);
@@ -159,11 +159,18 @@ public class RobotContainer {
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
+        // new RunCommand(
+        //     () -> m_robotDrive.drive(
+        //         -MathUtil.applyDeadband(Math.pow(m_driverController.getY(), 2) * Math.signum(m_driverController.getY()), OIConstants.kDriveDeadband),
+        //         -MathUtil.applyDeadband(Math.pow(m_driverController.getX(), 2) * Math.signum(m_driverController.getX()), OIConstants.kDriveDeadband),
+        //         -MathUtil.applyDeadband(Math.pow(m_driverController.getZ(), 2) * Math.signum(m_driverController.getZ()), OIConstants.kDriveDeadband),
+        //         fieldRelative),
+        //     m_robotDrive));
         new RunCommand(
             () -> m_robotDrive.drive(
-                -MathUtil.applyDeadband(Math.pow(m_driverController.getY(), 2) * Math.signum(m_driverController.getY()), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(Math.pow(m_driverController.getX(), 2) * Math.signum(m_driverController.getX()), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(Math.pow(m_driverController.getZ(), 2) * Math.signum(m_driverController.getZ()), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(Math.pow(m_driverController.getY()+m_testController.getY(), 2) * Math.signum(m_driverController.getY()+m_testController.getY()), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(Math.pow(m_driverController.getX()+m_testController.getX(), 2) * Math.signum(m_driverController.getX()+m_testController.getX()), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(Math.pow(m_driverController.getZ()+m_testController.getZ(), 2) * Math.signum(m_driverController.getZ()+m_testController.getZ()), OIConstants.kDriveDeadband),
                 fieldRelative),
             m_robotDrive));
   }
@@ -179,6 +186,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
+    ////// DRIVER CONTROLLER /////
     new JoystickButton(m_driverController, Constants.OperatorConstants.BRAKE_BUTTON)
         .whileTrue(new RunCommand(
             () -> m_robotDrive.setX(),
@@ -187,7 +195,6 @@ public class RobotContainer {
     new JoystickButton(m_driverController, Constants.OperatorConstants.ZERO_HEADING_BUTTON)
         .whileTrue(new RunCommand(
             () -> m_robotDrive.zeroHeading()));
-
 
     new JoystickButton(m_driverController, Constants.OperatorConstants.SLOW_MODE_LEFT)
         .whileTrue(new RunCommand(
@@ -199,34 +206,17 @@ public class RobotContainer {
             () -> m_robotDrive.drive(0, -Constants.slowSpeedMode, 0, false),
             m_robotDrive));
 
-    // new JoystickButton(m_driverController, Constants.OperatorConstants.SLOW_MODE_FORWARD)
-    //     .whileTrue(new AlignWithLimelight(m_robotDrive, m_limelight, m_elevator, reefAlignSide.Left);
+    new JoystickButton(m_driverController, Constants.OperatorConstants.SCORE_LEFT)
+        .whileTrue(new AlignWithLimelight(m_robotDrive, m_limelight, m_elevator, reefAlignSide.Left));
 
-    // new JoystickButton(m_driverController, Constants.OperatorConstants.SLOW_MODE_BACKWARD)
-    //     .whileTrue(new AlignWithLimelight(m_robotDrive, m_limelight, m_elevator, reefAlignSide.Right));
-
-    // new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SLOW_UP_BUTTON)
-    //     .whileTrue(Commands.startEnd(
-    //                           () -> m_elevator.ManualElevatorUp(), 
-    //                           () -> m_elevator.motorStop(), 
-    //                           m_elevator));
-    
-    // new JoystickButton(m_driverController, Constants.OperatorConstants.WHEEL_CHARACTERIZATION).whileTrue(
-    //                     m_robotDrive.wheelRadiusCharacterization());
-
+    new JoystickButton(m_driverController, Constants.OperatorConstants.SCORE_RIGHT)
+        .whileTrue(new AlignWithLimelight(m_robotDrive, m_limelight, m_elevator, reefAlignSide.Right));
                               
     new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SLOW_DOWN_BUTTON)
         .whileTrue(Commands.startEnd(
                               () -> m_elevator.ManualElevatorDown(), 
                               () -> m_elevator.motorStop(), 
                               m_elevator));
-
-    new JoystickButton(m_driverController, Constants.OperatorConstants.ROBOT_RELATIVE)
-    .whileTrue(Commands.startEnd(
-                        () -> m_elevator.ManualElevatorUp(), 
-                        () -> m_elevator.motorStop(), 
-                        m_elevator));
-                      
 
     new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_MINHEIGHT)
         .whileTrue(new RunCommand(
@@ -249,25 +239,43 @@ public class RobotContainer {
         () -> m_intake.stopIntakeRollerMotor(),
         m_intake));
 
-                                  
-    // new JoystickButton(m_driverController, Constants.OperatorConstants.SPIN_0)
-    //     .whileTrue(Commands.startEnd(
-    //         () -> m_elevator.HoverElevator(), 
-    //         () -> m_elevator.motorStop(), 
-    //         m_elevator));
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ROBOT_RELATIVE)
+        .whileTrue(Commands.sequence(
+           new InstantCommand(() -> fieldRelative = !fieldRelative, m_robotDrive),
+           new InstantCommand(() -> mode_publisher.set(fieldRelative)))
+        );
 
-    // new JoystickButton(m_driverController, Constants.OperatorConstants.SPIN_30)
-    //     .whileTrue(new RunCommand(
-    //         () -> m_robotDrive.spinAngle(30)));
+    //////// TESTING CONTROLLER //////////////
+    new JoystickButton(m_testController, Constants.OperatorConstants.MANUAL_UP)
+        .whileTrue(Commands.startEnd(
+            () -> m_elevator.ManualElevatorUp(), 
+            () -> m_elevator.motorStop(), 
+            m_elevator));
+
+    new JoystickButton(m_testController, Constants.OperatorConstants.HOVER_ELEVATOR)
+        .whileTrue(Commands.startEnd(
+            () -> m_elevator.HoverElevator(), 
+            () -> m_elevator.motorStop(), 
+            m_elevator));
+
+    new JoystickButton(m_testController, Constants.OperatorConstants.MANUAL_DOWN)
+        .whileTrue(Commands.startEnd(
+            () -> m_elevator.ManualElevatorDown(), 
+            () -> m_elevator.motorStop(), 
+            m_elevator));
+
+    new JoystickButton(m_testController, Constants.OperatorConstants.INTAKE_BUTTON)
+    .whileTrue(new StartEndCommand(
+        () -> m_intake.runIntakeRollerMotor(), 
+        () -> m_intake.stopIntakeRollerMotor(),
+        m_intake));
     
-
-    // new JoystickButton(m_driverController, Constants.OperatorConstants.ROBOT_RELATIVE)
-    //     .whileTrue(Commands.sequence(
-    //        new InstantCommand(() -> fieldRelative = !fieldRelative, m_robotDrive),
-    //        new InstantCommand(() -> mode_publisher.set(fieldRelative)))
-    //     );
-
-    // m_elevator.atHeight(5, 0.1).whileTrue(Commands.print("Elevator Command!"));
+    new JoystickButton(m_testController, Constants.OperatorConstants.SPIN_0)
+        .whileTrue(new RunCommand(
+            () -> m_robotDrive.spinAngle(30)));
+    
+    new JoystickButton(m_testController, Constants.OperatorConstants.WHEEL_CHARACTERIZATION).whileTrue(
+                        m_robotDrive.wheelRadiusCharacterization());
 
     /*
      * Discrete paths split into parts incase this is needed:

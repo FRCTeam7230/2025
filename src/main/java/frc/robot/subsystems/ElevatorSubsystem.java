@@ -22,6 +22,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
@@ -63,6 +64,7 @@ public class ElevatorSubsystem extends SubsystemBase
   DoublePublisher heightError_publisher = NetworkTableInstance.getDefault().getDoubleTopic("Elevator/heightError").publish();
   DoublePublisher current1_publisher = NetworkTableInstance.getDefault().getDoubleTopic("Elevator/currentMotor1").publish();
   DoublePublisher current2_publisher = NetworkTableInstance.getDefault().getDoubleTopic("Elevator/currentMotor2").publish();
+  BooleanPublisher elevReset_publisher = NetworkTableInstance.getDefault().getBooleanTopic("Elevator/resetElev").publish();
   
   // Constructor
   public ElevatorSubsystem()
@@ -213,7 +215,7 @@ public class ElevatorSubsystem extends SubsystemBase
     current1_publisher.set(m_motor1.getOutputCurrent());
     current2_publisher.set(m_motor2.getOutputCurrent());
 
-    //updateTelemetry();
+    boolean reset = false;
     if (m_encoder.getVelocity() < 0.01 && m_motor1.getOutputCurrent() > Constants.ElevatorConstants.kResetCurrent) {
       if (m_motor1.getAppliedOutput() > 0) {
         m_encoder.setPosition(Constants.ElevatorConstants.kMaxRealElevatorHeightMeters);
@@ -222,8 +224,10 @@ public class ElevatorSubsystem extends SubsystemBase
         m_encoder.setPosition(Constants.ElevatorConstants.kMinRealElevatorHeightMeters);
       }
       m_motor1.set(0);
+      reset = true;
     }  
     SmartDashboard.putNumber("Elevator Position (Meters)", m_encoder.getPosition());
-  }
+    elevReset_publisher.set(reset);
+  }  
 
 }

@@ -65,7 +65,7 @@ public class VisionSubsystem extends SubsystemBase {
     return new Rect(0,0,0,0);
   }
 
-  reefDetection.process(latest);
+  // reefDetection.process(latest);
   ArrayList<MatOfPoint> contoursResult = reefDetection.filterContoursOutput();
   //find largest contours
   Rect largestBox = new Rect(0,0,0,0);

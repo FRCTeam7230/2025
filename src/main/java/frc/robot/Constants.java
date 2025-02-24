@@ -56,7 +56,20 @@ public final class Constants {
     public static final int ELEVATOR_SCORINGHEIGHT = kButton10;
     public static final int ELEVATOR_SLOW_DOWN_BUTTON = kButton11;    
     public static final int ELEVATOR_MINHEIGHT = kButton12; 
-    
+
+    public static final int NOT_USED_1 = kButton1;
+    public static final int NOT_USED_2 = kButton2;
+    public static final int NOT_USED_3 = kButton3;
+    public static final int NOT_USED_4 = kButton4;  
+    public static final int NOT_USED_5 = kButton5;
+    public static final int NOT_USED_6 = kButton6;
+    public static final int SPIN_30= kButton7;
+    public static final int MANUAL_UP = kButton8;
+    public static final int SPIN_0 = kButton9;
+    public static final int HOVER_ELEVATOR = kButton10;
+    public static final int WHEEL_CHARACTERIZATION = kButton11;
+    public static final int MANUAL_DOWN = kButton12;
+
   }
 
   public static final class DriveConstants {
@@ -130,6 +143,7 @@ public final class Constants {
 
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int kTestControllerPort = 1;
   
     // Original value: public static final double kDriveDeadband = 0.05;
     public static final double kDriveDeadband = 0.1;
@@ -189,10 +203,10 @@ public final class Constants {
     public static final double kMinRealElevatorHeightMeters = 0;    // m
     public static final double kMaxRealElevatorHeightMeters = 1.575; // m
     
-    public static final double kL4PreScoringHeightMeters = kMaxRealElevatorHeightMeters-0.01;
+    public static final double kL4PreScoringHeightMeters = kMaxRealElevatorHeightMeters-0.07;
     public static final double kL4PostScoringHeightMeters = kMaxRealElevatorHeightMeters-0.4;
 
-    public static final double kIntakeElevatorHeightMeters = 0.01;    // m
+    public static final double kIntakeElevatorHeightMeters = 0.08;    // m
 
     public static final double kRotationToMeters = kGearCircumference / kGearRatio;// Revolutions to Output units conversion factor
     public static final double kElevatorMaxVelocity = 4000; // Motor RPM - does not get affected by conversion factor TODO: Need a good inches per sec max, start slow (10?)
@@ -206,15 +220,15 @@ public final class Constants {
   {
     public static final String kLimelightName = "limelight";
 
-    public static final double kDriveKp = 0;
-    public static final double kRotationKp = 0;
+    public static final double kDriveKp = .4; //output = -1 to 1, .1 m off want .1 m/s, 0.1 m/s = 0.04 % output, .04 = kp*0.1, kp = .4
+    public static final double kRotationKp = 0.06; //output = -1 to 1, 15 deg off want 60 deg/sec, 60 deg/sec = 1.0 % output, 1.0 = kp*15deg, kp = 0.06
 
-    public static final double kHorizontalOffset = 0;
-    public static final double kForwardExtendedOffset = 0;
-    public static final double kForwardUnextendedOffset = 0;
+    public static final double kHorizontalOffset = 0.27;
+    public static final double kForwardExtendedOffset = -0.95;
+    public static final double kForwardUnextendedOffset = -0.95;
 
-    public static final double kPositionErrorThreshold = 0.025;
-    public static final double kRotationErrorThreshold = .5; // deg
+    public static final double kPositionErrorThreshold = 0.05;
+    public static final double kRotationErrorThreshold = 1; // deg
     public static final double kElevatorTolerance = 0.02; //m
 
     public enum reefAlignSide
