@@ -185,7 +185,7 @@ public static Point getReeftargetCenter()
 public static double getPipePixelOffset()
 {
   double pix = getReeftargetCenter().x;
-  double offset = pix-320;
+  double offset = pix-160;
   return offset;
 }
 public static double getReefTargetOffset()
