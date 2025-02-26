@@ -7,25 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Station to reef 4"
+            "pathName": "Robot Start"
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Lift the Elevator"
+            "waitTime": 0.5
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Reef 4 to station"
+            "pathName": "New Path"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Coral Cycles",
+  "folder": null,
   "choreoAuto": false
 }

@@ -51,7 +51,7 @@ public class UsbCameraSubsystem extends SubsystemBase {
 
       private int displayWidth = 160;
       private int displayHeight = 120;
-      private int ticksPerRefresh = 10;
+      private int ticksPerRefresh = 20;
       private int refreshTickCount = 0;
       //Constructor that creates the image processing thread.
   public UsbCameraSubsystem() {
@@ -69,9 +69,9 @@ private void processVideoFeed(Mat inputMat)
   
   if(target.x != 0&&target.y != 0)
   {
-    //Imgproc.putText(inputMat, "TARGET", new Point(target.x-25,target.y+8), 0, 0.4, new Scalar(0,0,0,0));
+    Imgproc.putText(inputMat, "TARGET", new Point(target.x-25,target.y+8), 0, 0.4, new Scalar(0,0,0,0));
 
-    //Imgproc.circle(inputMat, target,30, new Scalar(0,0,0),3); 
+    Imgproc.circle(inputMat, target,30, new Scalar(0,0,0),3); 
     Scalar color =  new Scalar(225,20,250);
     if(isReady)
     {
@@ -84,7 +84,7 @@ private void processVideoFeed(Mat inputMat)
   } 
   //reef pipe visualizer
   //Imgproc.rectangle( inputMat, new Point(280, 180), new Point(360, 480), new Scalar(225, 20, 250), 5);
-  //Imgproc.putText(inputMat, "Processed Camera Feed", new Point(20,50), 0, 1, new Scalar(0,0,0),3);
+  Imgproc.putText(inputMat, "Processed Camera Feed", new Point(20,50), 0, 1, new Scalar(0,0,0),3);
   Imgproc.resize(inputMat,inputMat,new Size(displayWidth,displayHeight));
 
 
@@ -112,6 +112,18 @@ public Command Refresh()
 }
 
 //toggles overlay such as reef pipe detection indicators
+public Command toggleOverlay()
+{
+  return   runOnce(()->
+  {overlay = !overlay;}
+  );
+}
+public Command toggleFlip()
+{
+  return runOnce(()->
+  {flip = !flip;}
+  );
+}
 // returns latest unprocessed video frame
 public Mat getLatestFrame()
 {
@@ -142,7 +154,7 @@ private void StartCamera(int dev)
         UsbCamera camera = CameraServer.startAutomaticCapture(dev);
 
         // Set the resolution
-        camera.setResolution(320, 240);
+        camera.setResolution(640, 480);
 
         // Get a CvSink. This will capture Mats from the camera
         CvSink cvSink = CameraServer.getVideo();

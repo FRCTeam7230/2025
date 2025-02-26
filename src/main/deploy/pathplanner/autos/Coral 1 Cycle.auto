@@ -7,25 +7,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Station to Coral 1 Left"
+            "pathName": "Coral 1"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Lift the Elevator"
+            "name": "marker1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Reef 1 to Coral Station"
+            "pathName": "Coral 1 Return"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Coral Cycles",
+  "folder": null,
   "choreoAuto": false
 }

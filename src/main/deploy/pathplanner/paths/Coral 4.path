@@ -3,45 +3,61 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.184133152039351,
-        "y": 5.540235785157506
+        "x": 2.0,
+        "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.843735907639781,
-        "y": 5.827063894814097
-      },
-      "isLocked": false,
-      "linkedName": "Reef 2 Left After Score"
-    },
-    {
-      "anchor": {
-        "x": 4.53375,
-        "y": 6.0432500000000005
-      },
-      "prevControl": {
-        "x": 4.782389492765997,
-        "y": 5.989556545092735
-      },
-      "nextControl": {
-        "x": 4.289382979529336,
-        "y": 6.096020818700202
+        "x": 3.2086113965751437,
+        "y": 6.340711760270127
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.5502500000000001,
-        "y": 7.62275
+        "x": 5.46,
+        "y": 5.32175
       },
       "prevControl": {
-        "x": 2.8024593250028804,
-        "y": 7.268102194476081
+        "x": 4.177038703675442,
+        "y": 6.20783672401971
+      },
+      "nextControl": {
+        "x": 5.688571310080975,
+        "y": 5.163885531340839
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.908499999999999,
+        "y": 4.0445
+      },
+      "prevControl": {
+        "x": 5.90628769724565,
+        "y": 4.294490211241407
+      },
+      "nextControl": {
+        "x": 5.9182500000000005,
+        "y": 2.94275
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.2065,
+        "y": 2.7184999999999993
+      },
+      "prevControl": {
+        "x": 5.38404535529703,
+        "y": 3.0406072760178113
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Coral Station"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -58,13 +74,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 125.37999999999998
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Right (Our Barge) Paths",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -119.99999999999999
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }
