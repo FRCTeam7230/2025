@@ -3,45 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 7.0
+        "x": 3.433,
+        "y": 2.607
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.235658445422849,
-        "y": 6.916542842722232
+        "x": 2.49529341822012,
+        "y": 2.1320450867956953
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Reef 5 Left Before Scoring"
     },
     {
       "anchor": {
-        "x": 3.1102499999999997,
-        "y": 3.3424999999999994
+        "x": 1.3186475409836067,
+        "y": 0.5665471311475403
       },
       "prevControl": {
-        "x": 2.916197234515877,
-        "y": 3.5001182864009244
-      },
-      "nextControl": {
-        "x": 3.3043027654841226,
-        "y": 3.184881713599074
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 3.83175,
-        "y": 2.7965
-      },
-      "prevControl": {
-        "x": 3.489311993931723,
-        "y": 3.0803129234262467
+        "x": 2.285200610288925,
+        "y": 1.5522957675801643
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Coral Station 2"
     }
   ],
   "rotationTargets": [],
@@ -58,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -125.37999999999998
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Left (Processor) Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 59.99999999999999
   },
   "useDefaultConstraints": true
 }

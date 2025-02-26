@@ -7,19 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Station to Coral 1 Left"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Lift the Elevator"
+            "pathName": "Station to Coral 1 Right"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Reef 1 to Coral Station"
+            "pathName": "Reef 1 to Coral Station 2"
           }
         }
       ]

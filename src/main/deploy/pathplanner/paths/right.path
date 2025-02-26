@@ -3,54 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4267285779652068,
-        "y": 1.8797673373522068
+        "x": 2.0,
+        "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.820494796624656,
-        "y": 1.2776543621065766
+        "x": 2.0147472489776415,
+        "y": 6.750435341749695
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.726886294559709,
-        "y": 0.8077125277685265
+        "x": 2.0,
+        "y": 5.829149590163934
       },
       "prevControl": {
-        "x": 5.891321406971974,
-        "y": 0.8077125277685268
+        "x": 2.001946721311475,
+        "y": 6.104866803278688
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "game piece 1"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "Example Marker",
-      "waypointRelativePos": 0.5,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "marker1"
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -64,10 +45,10 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Unused",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

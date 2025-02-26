@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.5745591439381257,
+        "y": 5.4351529686085245
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.6866606563883884,
+        "y": 5.79066503972368
+      },
+      "isLocked": false,
+      "linkedName": "Reef 1"
+    },
+    {
+      "anchor": {
+        "x": 1.5502500000000001,
+        "y": 7.62275
+      },
+      "prevControl": {
+        "x": 2.6137786417752995,
+        "y": 6.4980375608091245
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Coral Station"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 125.37999999999998
+  },
+  "reversed": false,
+  "folder": "Right (Our Barge) Paths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -59.99999999999999
+  },
+  "useDefaultConstraints": true
+}
