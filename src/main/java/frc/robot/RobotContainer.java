@@ -110,6 +110,7 @@ public class RobotContainer {
     } else {
       m_robotDrive = new SwerveSubsystemSim();
       m_elevator = new ElevatorSubsystem();
+      m_intake = new IntakeSubsystem();
     }
     m_limelight = new LimelightSubsystem();
     m_UsbCamera = new UsbCameraSubsystem();
@@ -145,12 +146,37 @@ public class RobotContainer {
     // new EventTrigger("Dance").onTrue(Commands.print("This will not be a command where the robot will spin around itself."));
     // Configure the button bindings
     configureButtonBindings();
+    SmartDashboard.putData("COMP - Start Center to Left (Processor) Coral Station", new PathPlannerAuto("COMP - Start Center to Left (Processor) Coral Station"));
+    SmartDashboard.putData("COMP - Start Center to Right (Our Barge) Coral Station", new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"));
+    SmartDashboard.putData("COMP - Start Right (Our Barge) Side", new PathPlannerAuto("COMP - Start Right (Our Barge) Side"));
+    SmartDashboard.putData("COMP - Start Left (Processor) Side", new PathPlannerAuto("COMP - Start Left (Processor) Side"));
+    
+    PathPlannerAuto[][] listOfAutos = {
+        {
+            //Add pathplannerauto here.
+        },
+        {
+            //Add pathplannerauto here.        
+        },
+    };
+    int autoCount = listOfAutos.length;
+    SequentialCommandGroup[] autos = new SequentialCommandGroup[autoCount];
+    for (int i = 0; i < listOfAutos.length; i++){
+        autos[i] = new SequentialCommandGroup();
+        for (int j = 0; j < listOfAutos[i].length; j++){
+            autos[i].addCommands(listOfAutos[i][j]);
+        }
+        SmartDashboard.putData("COMP - Auto "+Integer.toString(i),autos[i]);
+    }
 
     autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
         (stream) -> isCompetition
-            ? stream.filter(auto -> auto.getName().startsWith("COMP"))
+            ? stream.filter(auto -> auto.getName().startsWith("COMP") || auto.getName().startsWith("SequentialCommandGroup"))
             : stream
         );
+    autoChooser.onChange((Command current) -> {
+        autoChooser.getSelected().schedule();
+    });
     //autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
     SmartDashboard.putData("Auto Mode", autoChooser);
 
@@ -294,10 +320,15 @@ public class RobotContainer {
     // SequentialCommandGroup fullAuto = new SequentialCommandGroup();
     // fullAuto.addCommands(new PathPlannerAuto("COMP - Start Center to Left (Processor) Coral Station"));
     // fullAuto.addCommands(new PathPlannerAuto("COMP - Bottom Scoring"));
-     SmartDashboard.putData("COMP - Start Center to Left (Processor) Coral Station", new PathPlannerAuto("COMP - Start Center to Left (Processor) Coral Station"));
+     
+    
+    /*SmartDashboard.putData("COMP - Start Center to Left (Processor) Coral Station", new PathPlannerAuto("COMP - Start Center to Left (Processor) Coral Station"));
      SmartDashboard.putData("COMP - Start Center to Right (Our Barge) Coral Station", new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"));
      SmartDashboard.putData("COMP - Start Right (Our Barge) Side", new PathPlannerAuto("COMP - Start Right (Our Barge) Side"));
      SmartDashboard.putData("COMP - Start Left (Processor) Side", new PathPlannerAuto("COMP - Start Left (Processor) Side"));
+    */
+    
+    
     // // Add a button to run pathfinding commands to SmartDashboard
     // SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
     //     new Pose2d(14.0, 6.5, Rotation2d.fromDegrees(0)),
