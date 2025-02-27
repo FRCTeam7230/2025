@@ -24,7 +24,7 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
 
   public static final double slowSpeedMode = 0.1;
-  public static final double movementDivider = 2;
+  public static final double movementDivider = 4;
   public static final double rotateDivider = 5;
   
   public static class OperatorConstants {
@@ -43,20 +43,20 @@ public final class Constants {
     public static final int kButton12 = 12;
 
     // Drive Stick Buttons
-    //testing buttons: 2, 7-12
     public static final int BRAKE_BUTTON = kButton1;
-    public static final int ZERO_HEADING_BUTTON = kButton2;
+    public static final int INTAKE_BUTTON = kButton2;
     public static final int SLOW_MODE_LEFT = kButton3;
     public static final int SLOW_MODE_RIGHT = kButton4;  
     public static final int SCORE_LEFT = kButton5;
     public static final int SCORE_RIGHT = kButton6;          
-    public static final int INTAKE_BUTTON = kButton7;
-    public static final int ELEVATOR_MAXHEIGHT = kButton8;
-    public static final int ROBOT_RELATIVE = kButton9;   
-    public static final int ELEVATOR_SCORINGHEIGHT = kButton10;
-    public static final int ELEVATOR_SLOW_DOWN_BUTTON = kButton11;    
-    public static final int ELEVATOR_MINHEIGHT = kButton12; 
+    public static final int MANUAL_ELEVATOR_DOWN = kButton7;
+    public static final int ZERO_HEADING_BUTTON = kButton8;
+    public static final int DRIVENOTUSED_9 = kButton9;   
+    public static final int DRIVENOTUSED_10 = kButton10;
+    public static final int ELEVATOR_INCREMENT_DOWN = kButton11;    
+    public static final int ELEVATOR_MAXHEIGHT = kButton12; 
 
+  //test joystick buttons
     public static final int NOT_USED_1 = kButton1;
     public static final int NOT_USED_2 = kButton2;
     public static final int NOT_USED_3 = kButton3;
@@ -220,12 +220,12 @@ public final class Constants {
   {
     public static final String kLimelightName = "limelight";
 
-    public static final double kDriveKp = .4; //output = -1 to 1, .1 m off want .1 m/s, 0.1 m/s = 0.04 % output, .04 = kp*0.1, kp = .4
+    public static final double kDriveKp = 1.2; //output = -1 to 1, .1 m off want .1 m/s, 0.1 m/s = 0.04 % output, .04 = kp*0.1, kp = .4
     public static final double kRotationKp = 0.06; //output = -1 to 1, 15 deg off want 60 deg/sec, 60 deg/sec = 1.0 % output, 1.0 = kp*15deg, kp = 0.06
 
     public static final double kHorizontalOffset = 0.27;
-    public static final double kForwardExtendedOffset = -0.95;
-    public static final double kForwardUnextendedOffset = -0.95;
+    public static final double kForwardExtendedOffset = -0.6;
+    public static final double kForwardUnextendedOffset = -0.8;
 
     public static final double kPositionErrorThreshold = 0.05;
     public static final double kRotationErrorThreshold = 1; // deg

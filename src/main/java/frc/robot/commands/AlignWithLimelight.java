@@ -103,9 +103,12 @@ public class AlignWithLimelight extends Command {
       
   
       //drive x,z,yaw values
-      m_drive.driveTagRelative(-zValue,-xValue,yawValue,-yaw);
+      m_drive.driveTagRelative(zValue,-xValue,-yawValue,-yaw);
   
       
+    }
+    else{
+      m_drive.drive(0,0 ,0, false, true);
     }
 
     
@@ -115,7 +118,7 @@ public class AlignWithLimelight extends Command {
   @Override
   public void end(boolean interrupted) {
     //disable drive system
-    m_drive.drive(0, 0, 0, false);
+    m_drive.drive(0, 0, 0, false, false);
     //maybe trigger scoring
 
   }
@@ -133,7 +136,7 @@ public class AlignWithLimelight extends Command {
         return targetingExtendedPosition;
      }
      //or if the target becomes invalid, something went wrong.
-     if(!m_limelight.isTV()) return true; //TODO Remove when it works, replace with teleop driving while not tracking
+     //if(!m_limelight.isTV()) return true; //TODO Remove when it works, replace with teleop driving while not tracking
 
     return false;
   }

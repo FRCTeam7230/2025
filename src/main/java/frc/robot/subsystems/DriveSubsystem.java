@@ -7,23 +7,18 @@ package frc.robot.subsystems;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.studica.frc.AHRS;
-import java.lang.Math;
-import java.text.DecimalFormat;
 
-import edu.wpi.first.math.controller.HolonomicDriveController;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.Kinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -31,21 +26,17 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
-import edu.wpi.first.wpilibj.ADIS16470_IMU;
-import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants;
-import frc.robot.Constants.DriveConstants;
-import frc.robot.utils.PPHolonomicDriveControllerCustom;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.utils.PPHolonomicDriveControllerCustom;
 
 public class DriveSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
@@ -71,10 +62,27 @@ public class DriveSubsystem extends SubsystemBase {
 
   Pose2d currentPose;
   private Field2d field = new Field2d();
+  PPHolonomicDriveControllerCustom autoDriveController;
 
   PIDController xController;
   PIDController yController;
   PIDController rotController;
+  // Denominator is how long to get to max speed
+  double rateTranslationLimit = Constants.DriveConstants.kMaxSpeedMetersPerSecond / 0.5;
+  double rotRateLimit = Constants.DriveConstants.kMaxAngularSpeed / 0.5; 
+  double slowTranslationRateLimit = Constants.DriveConstants.kMaxSpeedMetersPerSecond / 2.5;
+  double slowRotRateLimit = Constants.DriveConstants.kMaxAngularSpeed / 5;
+  SlewRateLimiter driveLimitX = new SlewRateLimiter(rateTranslationLimit);
+  SlewRateLimiter driveLimitY = new SlewRateLimiter(rateTranslationLimit);  
+  SlewRateLimiter driveLimitRot = new SlewRateLimiter(rotRateLimit);  
+  SlewRateLimiter slowdriveLimitX = new SlewRateLimiter(slowTranslationRateLimit);  
+  SlewRateLimiter slowdriveLimitY = new SlewRateLimiter(slowTranslationRateLimit);  
+  SlewRateLimiter slowdriveLimitRot = new SlewRateLimiter(slowRotRateLimit);  
+  boolean isElevUp = false;
+
+  boolean allianceInitialized = false;
+
+  
 
   // The gyro sensor
   private final AHRS m_gyro = new AHRS(AHRS.NavXComType.kMXP_SPI, AHRS.NavXUpdateRate.k50Hz);
@@ -118,7 +126,7 @@ public class DriveSubsystem extends SubsystemBase {
     double rotI = 0.0;
     double rotD = 0.0;
 
-    PPHolonomicDriveControllerCustom autoDriveController = new PPHolonomicDriveControllerCustom(
+    autoDriveController = new PPHolonomicDriveControllerCustom(
       new PIDConstants(5.0, 0.0, 0.0),
       new PIDConstants(rotP, rotI, rotD)
     );
@@ -127,6 +135,7 @@ public class DriveSubsystem extends SubsystemBase {
     yController = autoDriveController.getYController();
     rotController = autoDriveController.getRotationController();
 
+    // TODO: This needs to happen after alliance specified!!
     try {
       RobotConfig config = RobotConfig.fromGUISettings();
 
@@ -162,6 +171,37 @@ public class DriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if(!allianceInitialized) {
+      var alliance = DriverStation.getAlliance();
+      if (alliance.isPresent()) {
+        //Do alliance init here
+        // try {
+        //   RobotConfig config = RobotConfig.fromGUISettings();
+    
+        //   // Configure AutoBuilder
+        //   AutoBuilder.configure(
+        //     this::getPose, 
+        //     this::resetOdometry, 
+        //     this::getSpeeds, 
+        //     this::driveRobotRelative, 
+        //     autoDriveController,
+        //     config,
+        //     () -> {
+        //         // Boolean supplier that controls when the path will be mirrored for the red alliance
+        //         // This will flip the path being followed to the red side of the field.
+        //         // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+        //             return alliance.get() == DriverStation.Alliance.Red;
+        //     },
+        //     this
+        //   );
+        // } catch(Exception e){
+        //   DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", e.getStackTrace());
+        // }
+        allianceInitialized = true;
+      }
+
+    }
+
     // Update the odometry in the periodic block
     currentPose = m_odometry.update(
         Rotation2d.fromDegrees(getFieldAngle()),
@@ -214,7 +254,7 @@ public class DriveSubsystem extends SubsystemBase {
         Commands.run(
           () -> {
             double speed = limiter.calculate(WHEEL_RADIUS_MAX_VELOCITY);
-            drive(0.0, 0.0, speed, false);
+            drive(0.0, 0.0, speed, false, false);
           }
         )),
       
@@ -299,11 +339,24 @@ public class DriveSubsystem extends SubsystemBase {
    * @param fieldRelative Whether the provided x and y speeds are relative to the
    *                      field.
    */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean useLimiter) {
     // Convert the commanded speeds into the correct units for the drivetrain
     double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond;
     double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond;
     double rotDelivered = rot * DriveConstants.kMaxAngularSpeed;
+
+    if(useLimiter) {
+      if(isElevUp) {
+        xSpeedDelivered = slowdriveLimitX.calculate(xSpeedDelivered);
+        ySpeedDelivered = slowdriveLimitY.calculate(ySpeedDelivered);
+        rotDelivered = slowdriveLimitRot.calculate(rotDelivered/Constants.rotateDivider);  
+      }
+      else {
+        xSpeedDelivered = driveLimitX.calculate(xSpeedDelivered);
+        ySpeedDelivered = driveLimitY.calculate(ySpeedDelivered);
+        rotDelivered = driveLimitRot.calculate(rotDelivered);
+      }
+    }
 
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
@@ -397,6 +450,14 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void addAngleGyro(double angle) {
     m_gyro.setAngleAdjustment(angle);
+  }
+
+  public void elevUpAccelerationLimiter() {
+    isElevUp = true;    
+  }
+
+  public void elevDownAccelerationLimiter() {
+    isElevUp = false;    
   }
 
   /**

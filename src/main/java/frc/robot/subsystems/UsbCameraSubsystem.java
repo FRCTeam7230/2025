@@ -55,7 +55,6 @@ public class UsbCameraSubsystem extends SubsystemBase {
       //Constructor that creates the image processing thread.
   public UsbCameraSubsystem() {
 StartCamera(0);
-cameraStarted = false;
   }
   //A few commands for the blur effect just for testing purposes.
 
@@ -63,6 +62,7 @@ cameraStarted = false;
  * This is the main method for applying video effects.
  * Alter the inputMat in any way you need, after this method runs the mat will then be uploaded to the cameraServer. 
  */
+public int getCameraWidth(){return displayWidth;}
 private void processVideoFeed(Mat inputMat)
 {
   
@@ -84,14 +84,14 @@ private void processVideoFeed(Mat inputMat)
 
   //reef pipe visualizer
   //Imgproc.rectangle( inputMat, new Point(280, 180), new Point(360, 480), new Scalar(225, 20, 250), 5);
-  Imgproc.putText(inputMat, "Processed Camera Feed", new Point(20,50), 0, 1, new Scalar(0,0,0),3);
-  Imgproc.resize(inputMat,inputMat,new Size(displayWidth,displayHeight));
+  //Imgproc.putText(inputMat, "Processed Camera Feed", new Point(20,50), 0, 1, new Scalar(0,0,0),3);
+  //Imgproc.resize(inputMat,inputMat,new Size(displayWidth,displayHeight));
 
 
 }
 private void simpleProcess(Mat inputMat)
 {
-  Imgproc.resize(inputMat,inputMat,new Size(displayWidth,displayHeight));
+  //Imgproc.resize(inputMat,inputMat,new Size(displayWidth,displayHeight));
 
 }
 private void RefreshData()
@@ -142,7 +142,7 @@ private void StartCamera(int dev)
         UsbCamera camera = new UsbCamera("USB_Cam", dev);
 
         // Set the resolution
-        camera.setResolution(640, 480);
+        camera.setResolution(displayWidth, displayHeight);
 
         // Get a CvSink. This will capture Mats from the camera
         CvSink cvSink = new CvSink("Sink");

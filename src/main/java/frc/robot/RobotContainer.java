@@ -10,6 +10,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
@@ -26,6 +27,7 @@ import frc.robot.commands.AlignWithLimelight;
 import frc.robot.commands.AutoElevatorCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OIConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 //import frc.robot.subsystems.Climber;
@@ -45,6 +47,8 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -90,7 +94,7 @@ public class RobotContainer {
   Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort);
   Joystick m_testController   = new Joystick(OIConstants.kTestControllerPort);
   BooleanPublisher mode_publisher = NetworkTableInstance.getDefault().getBooleanTopic("Is Field Relative").publish();
-
+  Command visionAlignAndScoreLeft;
 
   private final SendableChooser<Command> autoChooser;
 
@@ -110,6 +114,7 @@ public class RobotContainer {
     } else {
       m_robotDrive = new SwerveSubsystemSim();
       m_elevator = new ElevatorSubsystem();
+      m_intake = new IntakeSubsystem();
     }
     m_limelight = new LimelightSubsystem();
     m_UsbCamera = new UsbCameraSubsystem();
@@ -127,10 +132,24 @@ public class RobotContainer {
     m_elevator.resetEncoder();
 
     // Register named commands
-    AutoElevatorCommand elevUp = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PreScoringHeightMeters); // TODO: Replace with constants
+    AutoElevatorCommand elevUp = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PreScoringHeightMeters); 
     AutoElevatorCommand elevDown = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kIntakeElevatorHeightMeters);
     AutoElevatorCommand score = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PostScoringHeightMeters);
-    WaitCommand visionAlignAndScoreLeft  = new WaitCommand(1.5); //TODO Replace with set of commands to align, score and drive backwards
+    // Command visionAlignAndScoreLeft  = // NB: This is Alex's version, do not use. Use Graham's below.
+    //             new RunCommand(() -> m_elevator.reachGoal(Constants.ElevatorConstants.kL4PreScoringHeightMeters), m_elevator)
+    //             .andThen(new AlignWithLimelight(m_robotDrive, m_limelight, m_elevator, reefAlignSide.Left)
+                // .andThen(new RunCommand(() -> m_robotDrive.drive(Constants.slowSpeedMode, 0, 0, false), m_robotDrive)
+                //         .raceWith(score))
+                // .andThen(new RunCommand(() -> m_robotDrive.drive(-Constants.slowSpeedMode, 0, 0, false), m_robotDrive).withTimeout(0.5))
+                // .andThen(new RunCommand(() -> m_elevator.reachGoal(Constants.ElevatorConstants.kIntakeElevatorHeightMeters), m_elevator))
+                // );
+    visionAlignAndScoreLeft  = m_eleva
+    tor.setGoal(ElevatorConstants.kL4PreScoringHeightMeters) //TODO: Elevator set goals should probably be changed to Instance Commands
+        .andThen(new AlignWithLimelight(m_robotDrive, m_limelight, m_elevator, reefAlignSide.Left));
+        // .andThen(score.deadlineFor(new RunCommand(() -> m_robotDrive.drive(Constants.slowSpeedMode, 0, 0, false, true),m_robotDrive))) //lower for scoring
+        // .andThen(new RunCommand(() -> m_robotDrive.drive(-1*Constants.slowSpeedMode, 0, 0, false, true),m_robotDrive).withTimeout(1))
+        // .andThen(m_elevator.setGoal(ElevatorConstants.kIntakeElevatorHeightMeters))
+        // .andThen(new InstantCommand(()->m_robotDrive.driveRobotRelative(new ChassisSpeeds(0,0,0))));    
     WaitCommand visionAlignAndScoreRight = new WaitCommand(1.5); //TODO Replace with set of commands to align, score and drive backwards
 
     NamedCommands.registerCommand("Raise Elevator",elevUp);
@@ -146,13 +165,31 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
+    // TODO: This needs to wait until alliance specified! (Trigger?)
     autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
         (stream) -> isCompetition
             ? stream.filter(auto -> auto.getName().startsWith("COMP"))
             : stream
         );
+
     //autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
     SmartDashboard.putData("Auto Mode", autoChooser);
+
+
+    // new Trigger(() -> m_driveTrain.hasAlliance())
+    //     .whileTrue(new InstantCommand(
+    //     () -> { SmartDashboard.putData("COMP - Start Center to Left (Processor) Coral Station", new PathPlannerAuto("COMP - Start Center to Left (Processor) Coral Station"));
+    //             SmartDashboard.putData("COMP - Start Center to Right (Our Barge) Coral Station", new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"));
+    //             SmartDashboard.putData("COMP - Start Right (Our Barge) Side", new PathPlannerAuto("COMP - Start Right (Our Barge) Side"));
+    //             SmartDashboard.putData("COMP - Start Left (Processor) Side", new PathPlannerAuto("COMP - Start Left (Processor) Side"));
+    //             autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
+    //                 (stream) -> isCompetition
+    //                     ? stream.filter(auto -> auto.getName().startsWith("COMP"))
+    //                     : stream);
+    //             SmartDashboard.putData("Auto Mode", autoChooser);
+    //         }
+    //     )
+    // );
 
     // Configure default commands
 
@@ -171,7 +208,7 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(Math.pow(m_driverController.getY()+m_testController.getY(), 2) * Math.signum(m_driverController.getY()+m_testController.getY()), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(Math.pow(m_driverController.getX()+m_testController.getX(), 2) * Math.signum(m_driverController.getX()+m_testController.getX()), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(Math.pow(m_driverController.getZ()+m_testController.getZ(), 2) * Math.signum(m_driverController.getZ()+m_testController.getZ()), OIConstants.kDriveDeadband),
-                fieldRelative),
+                fieldRelative, true),
             m_robotDrive));
   }
 
@@ -198,39 +235,35 @@ public class RobotContainer {
 
     new JoystickButton(m_driverController, Constants.OperatorConstants.SLOW_MODE_LEFT)
         .whileTrue(new RunCommand(
-            () -> m_robotDrive.drive(0, Constants.slowSpeedMode, 0, false),
+            () -> m_robotDrive.drive(0, Constants.slowSpeedMode, 0, false, true),
             m_robotDrive));
 
     new JoystickButton(m_driverController, Constants.OperatorConstants.SLOW_MODE_RIGHT)
         .whileTrue(new RunCommand(
-            () -> m_robotDrive.drive(0, -Constants.slowSpeedMode, 0, false),
+
+            () -> m_robotDrive.drive(0, -Constants.slowSpeedMode, 0, false, true),
             m_robotDrive));
 
     new JoystickButton(m_driverController, Constants.OperatorConstants.SCORE_LEFT)
-        .whileTrue(new AlignWithLimelight(m_robotDrive, m_limelight, m_elevator, reefAlignSide.Left));
+        .whileTrue(visionAlignAndScoreLeft);
 
     new JoystickButton(m_driverController, Constants.OperatorConstants.SCORE_RIGHT)
         .whileTrue(new AlignWithLimelight(m_robotDrive, m_limelight, m_elevator, reefAlignSide.Right));
                               
-    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SLOW_DOWN_BUTTON)
+    new JoystickButton(m_driverController, Constants.OperatorConstants.MANUAL_ELEVATOR_DOWN)
         .whileTrue(Commands.startEnd(
                               () -> m_elevator.ManualElevatorDown(), 
                               () -> m_elevator.motorStop(), 
                               m_elevator));
 
-    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_MINHEIGHT)
-        .whileTrue(new RunCommand(
-            () -> m_elevator.reachGoal(Constants.ElevatorConstants.kIntakeElevatorHeightMeters),
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_INCREMENT_DOWN)
+        .whileTrue(new InstantCommand(
+            () -> m_elevator.ElevatorIncrementDown(),
             m_elevator));
                       
     new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_MAXHEIGHT)
-        .whileTrue(new RunCommand(
+        .whileTrue(new InstantCommand(
             () -> m_elevator.reachGoal(Constants.ElevatorConstants.kL4PreScoringHeightMeters),
-            m_elevator));
-
-    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SCORINGHEIGHT)
-        .whileTrue(new RunCommand(
-            () -> m_elevator.reachGoal(Constants.ElevatorConstants.kL4PostScoringHeightMeters),
             m_elevator));
     
     new JoystickButton(m_driverController, Constants.OperatorConstants.INTAKE_BUTTON)
@@ -239,11 +272,28 @@ public class RobotContainer {
         () -> m_intake.stopIntakeRollerMotor(),
         m_intake));
 
-    new JoystickButton(m_driverController, Constants.OperatorConstants.ROBOT_RELATIVE)
+    new Trigger(() -> m_driverController.getThrottle() < -0.75)
         .whileTrue(Commands.sequence(
-           new InstantCommand(() -> fieldRelative = !fieldRelative, m_robotDrive),
-           new InstantCommand(() -> mode_publisher.set(fieldRelative)))
-        );
+            new InstantCommand(() -> fieldRelative = false, m_robotDrive),
+            new InstantCommand(() -> mode_publisher.set(fieldRelative))
+        ));
+
+    new Trigger(() -> m_driverController.getThrottle() > 0.75)
+    .whileTrue(Commands.sequence(
+            new InstantCommand(() -> fieldRelative = true, m_robotDrive),
+            new InstantCommand(() -> mode_publisher.set(fieldRelative))
+        ));
+
+    new Trigger(() -> m_elevator.getHeight() > Constants.ElevatorConstants.kMaxRealElevatorHeightMeters/2)
+    .whileTrue(new InstantCommand(
+        () -> m_robotDrive.elevUpAccelerationLimiter()
+        ));
+
+    new Trigger(() -> m_elevator.getHeight() < Constants.ElevatorConstants.kMaxRealElevatorHeightMeters/2)
+    .whileTrue(new InstantCommand(
+        () -> m_robotDrive.elevDownAccelerationLimiter()
+        ));
+    
 
     //////// TESTING CONTROLLER //////////////
     new JoystickButton(m_testController, Constants.OperatorConstants.MANUAL_UP)
@@ -294,6 +344,8 @@ public class RobotContainer {
     // SequentialCommandGroup fullAuto = new SequentialCommandGroup();
     // fullAuto.addCommands(new PathPlannerAuto("COMP - Start Center to Left (Processor) Coral Station"));
     // fullAuto.addCommands(new PathPlannerAuto("COMP - Bottom Scoring"));
+
+    //TODO: This needs to wait until alliance specified!!
      SmartDashboard.putData("COMP - Start Center to Left (Processor) Coral Station", new PathPlannerAuto("COMP - Start Center to Left (Processor) Coral Station"));
      SmartDashboard.putData("COMP - Start Center to Right (Our Barge) Coral Station", new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"));
      SmartDashboard.putData("COMP - Start Right (Our Barge) Side", new PathPlannerAuto("COMP - Start Right (Our Barge) Side"));
@@ -314,51 +366,52 @@ public class RobotContainer {
 
     // Add a button to SmartDashboard that will create and follow an on-the-fly path
     // This example will simply move the robot 2m in the +X field direction
-    SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
-        Pose2d currentPose = m_robotDrive.getPose();
+    //Comment out??
+    // SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
+    //     Pose2d currentPose = m_robotDrive.getPose();
   
-        // The rotation component in these poses represents the direction of travel
-        Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
-        Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(1, -1)), new Rotation2d());
+    //     // The rotation component in these poses represents the direction of travel
+    //     Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
+    //     Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(1, -1)), new Rotation2d());
   
-        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPos, endPos);
-        PathPlannerPath path = new PathPlannerPath(
-            waypoints,
-            new PathConstraints(
-                1.0, 1.0,
-                Units.degreesToRadians(360), Units.degreesToRadians(540)),
-            null, // Ideal starting state can be null for on-the-fly paths
-            new GoalEndState(0.0, currentPose.getRotation()));
+    //     List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPos, endPos);
+    //     PathPlannerPath path = new PathPlannerPath(
+    //         waypoints,
+    //         new PathConstraints(
+    //             1.0, 1.0,
+    //             Units.degreesToRadians(360), Units.degreesToRadians(540)),
+    //         null, // Ideal starting state can be null for on-the-fly paths
+    //         new GoalEndState(0.0, currentPose.getRotation()));
   
-        // Prevent this path from being flipped on the red alliance, since the given
-        // positions are already correct
-        path.preventFlipping = true;
+    //     // Prevent this path from being flipped on the red alliance, since the given
+    //     // positions are already correct
+    //     path.preventFlipping = true;
   
-        AutoBuilder.followPath(path).schedule();
-      }));
+    //     AutoBuilder.followPath(path).schedule();
+    //   }));
 
-    SmartDashboard.putData("On-the-fly path 2", Commands.runOnce(() -> {
-        Pose2d currentPose = m_robotDrive.getPose();
+    // SmartDashboard.putData("On-the-fly path 2", Commands.runOnce(() -> {
+    //     Pose2d currentPose = m_robotDrive.getPose();
   
-        // The rotation component in these poses represents the direction of travel
-        Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
-        Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(-1, 1)), new Rotation2d());
+    //     // The rotation component in these poses represents the direction of travel
+    //     Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
+    //     Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(-1, 1)), new Rotation2d());
   
-        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPos, endPos);
-        PathPlannerPath path = new PathPlannerPath(
-            waypoints,
-            new PathConstraints(
-                1.0, 1.0,
-                Units.degreesToRadians(360), Units.degreesToRadians(540)),
-            null, // Ideal starting state can be null for on-the-fly paths
-            new GoalEndState(0.0, currentPose.getRotation()));
+    //     List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPos, endPos);
+    //     PathPlannerPath path = new PathPlannerPath(
+    //         waypoints,
+    //         new PathConstraints(
+    //             1.0, 1.0,
+    //             Units.degreesToRadians(360), Units.degreesToRadians(540)),
+    //         null, // Ideal starting state can be null for on-the-fly paths
+    //         new GoalEndState(0.0, currentPose.getRotation()));
   
-        // Prevent this path from being flipped on the red alliance, since the given
-        // positions are already correct
-        path.preventFlipping = true;
+    //     // Prevent this path from being flipped on the red alliance, since the given
+    //     // positions are already correct
+    //     path.preventFlipping = true;
   
-        AutoBuilder.followPath(path).schedule();
-      }));
+    //     AutoBuilder.followPath(path).schedule();
+    //   }));
   }
 
   /**

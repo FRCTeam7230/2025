@@ -69,7 +69,7 @@ public class ReefDetectionPipeline {
 
 		// Step Filter_Contours0:
 		ArrayList<MatOfPoint> filterContoursContours = convexHullsOutput;
-		double filterContoursMinArea = 1000.0;
+		double filterContoursMinArea = 100.0;
 		double filterContoursMinPerimeter = 0.0;
 		double filterContoursMinWidth = 25.0;
 		double filterContoursMaxWidth = 1000.0;

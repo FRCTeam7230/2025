@@ -77,7 +77,7 @@ public class ElevatorSubsystem extends SubsystemBase
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .pid(ElevatorConstants.kElevatorKp, ElevatorConstants.kElevatorKi, ElevatorConstants.kElevatorKd, ClosedLoopSlot.kSlot0)//Change PID with these constants.
         .pid(ElevatorConstants.kSlowElevatorKp, ElevatorConstants.kSlowElevatorKi, ElevatorConstants.kSlowElevatorKd, ClosedLoopSlot.kSlot1)
-        .outputRange(-1, 1, ClosedLoopSlot.kSlot0)
+        .outputRange(-0.7, 0.7, ClosedLoopSlot.kSlot0) //TODO: RESET TO -1 to 1!!!!!
         .outputRange(-0.3, 0.3, ClosedLoopSlot.kSlot1);
     m_config_motor1.closedLoop.maxMotion
         .maxVelocity(ElevatorConstants.kElevatorMaxVelocity)
@@ -191,6 +191,16 @@ public class ElevatorSubsystem extends SubsystemBase
   
   public void ManualElevatorDown(){
     m_motor1.set(-0.15);
+  }
+
+  public void ElevatorIncrementDown() {
+    if (m_desiredHeight > Constants.ElevatorConstants.kL4PostScoringHeightMeters) {
+      reachGoal(Constants.ElevatorConstants.kL4PostScoringHeightMeters);
+    }
+    else {
+      reachGoal(Constants.ElevatorConstants.kIntakeElevatorHeightMeters);
+    }
+    
   }
   /**
    * Update telemetry, including the mechanism visualization.

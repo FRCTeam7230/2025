@@ -29,7 +29,7 @@ public class VisionSubsystem extends SubsystemBase {
   private static double cameraOffsetInches = 0;
   private static double lastPixelValue;
 
-  public static double AcceptableError = 0.5; // inches
+  public static double AcceptableError = 50; // pixels
 
   public static Rect lastRect;
 
@@ -222,11 +222,15 @@ public static double getReefTargetOffset()
 
   public static  boolean isReady()
   {
+    /*
     if(Math.abs(getReefTargetOffset())<AcceptableError)
     {
       return true;
     }
-    return false;
+     */
+    if(Math.abs(getCenter(lastRect).x-cameraSubsystem.getCameraWidth()/2)<AcceptableError)
+    return true;
+    else return false;
   }
 
   
