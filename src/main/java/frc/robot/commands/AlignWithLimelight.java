@@ -10,6 +10,8 @@ import frc.robot.Constants.LimelightConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -38,8 +40,8 @@ public class AlignWithLimelight extends Command {
 
     alignSide = side;
 
-    xController = new PIDController(LimelightConstants.kDriveKp,0,0);
-    forwardController = new PIDController(LimelightConstants.kDriveKp,0,0);
+    xController = new PIDController(LimelightConstants.kDriveHorizontalKp,0,0);
+    forwardController = new PIDController(LimelightConstants.kDriveForwardKp,0,0);
     yawController = new PIDController(LimelightConstants.kRotationKp,0,0);
     targetingExtendedPosition = false;
   }
@@ -90,16 +92,24 @@ public class AlignWithLimelight extends Command {
     }
     double[] targetData = m_limelight.getPose();
     //ensures valid targetdata
-    if(m_limelight.isTV())
+    if(m_limelight.isTV() && targetData.length>=5)
     {
 
       double tx = targetData[0];
       double tz = targetData[2];
       double yaw = targetData[4];
+      if(Math.abs(yaw)<5)
+      {
+        //yaw = -((m_drive.getFieldAngle()+30)%60 - 30);
+      }
   
       double xValue = xController.calculate(tx);
       double zValue = forwardController.calculate(tz);
       double yawValue = yawController.calculate(yaw);
+
+      SmartDashboard.putNumber("X Error",xController.getError());
+      SmartDashboard.putNumber("z Error",forwardController.getError());
+      SmartDashboard.putNumber("Yaw Error",yawController.getError());
       
   
       //drive x,z,yaw values

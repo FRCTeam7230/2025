@@ -48,7 +48,7 @@ public class ReefDetectionPipeline {
 
 		// Step HSV_Threshold0:
 		Mat hsvThresholdInput = blurOutput;
-		double[] hsvThresholdHue = {120.33898305084747, 168.77005347593584};
+		double[] hsvThresholdHue = {120.33898305084747, 180};
 		double[] hsvThresholdSaturation = {45.62146892655367, 159.54545454545456};
 		double[] hsvThresholdValue = {62.42937853107344, 255.0};
 		hsvThreshold(hsvThresholdInput, hsvThresholdHue, hsvThresholdSaturation, hsvThresholdValue, hsvThresholdOutput);

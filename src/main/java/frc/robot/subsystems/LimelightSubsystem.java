@@ -33,7 +33,7 @@ public class LimelightSubsystem extends SubsystemBase {
   public void periodic()
   {
     RefreshData();
-    if(targetValid)
+    if(targetValid && targetData.length>=5)
     {
       SmartDashboard.putNumberArray("Apriltag data",targetData);
       SmartDashboard.putNumber("tx",targetData[0]);
