@@ -204,6 +204,7 @@ public final class Constants {
     public static final double kMaxRealElevatorHeightMeters = 1.575; // m
     
     public static final double kL4PreScoringHeightMeters = 1.558;
+    public static final double kL4PostScoringHeightNoAlgeaMeters = kL4PreScoringHeightMeters-0.3;
     public static final double kL4PostScoringHeightMeters = kL4PreScoringHeightMeters-0.4;
 
     public static final double kIntakeElevatorHeightMeters = 0.08;    // m
@@ -221,12 +222,12 @@ public final class Constants {
     public static final String kLimelightName = "limelight";
 
     public static final double kDriveForwardKp = 2.4;
-    public static final double kDriveHorizontalKp = 1.2; //output = -1 to 1, .1 m off want .1 m/s, 0.1 m/s = 0.04 % output, .04 = kp*0.1, kp = .4
+    public static final double kDriveHorizontalKp = 1.5; //output = -1 to 1, .1 m off want .1 m/s, 0.1 m/s = 0.04 % output, .04 = kp*0.1, kp = .4
     public static final double kRotationKp = 0.06; //output = -1 to 1, 15 deg off want 60 deg/sec, 60 deg/sec = 1.0 % output, 1.0 = kp*15deg, kp = 0.06
 
-    public static final double kHorizontalOffset = 0.18;
+    public static final double kHorizontalOffset = 0.17;
     public static final double kForwardExtendedOffset = -0.47;
-    public static final double kForwardUnextendedOffset = -0.8;
+    public static final double kForwardUnextendedOffset = -0.7;
 
     public static final double kPositionErrorThreshold = 0.05;
     public static final double kRotationErrorThreshold = 1; // deg

@@ -145,26 +145,27 @@ public class RobotContainer {
                 // .andThen(new RunCommand(() -> m_robotDrive.drive(-Constants.slowSpeedMode, 0, 0, false), m_robotDrive).withTimeout(0.5))
                 // .andThen(new RunCommand(() -> m_elevator.reachGoal(Constants.ElevatorConstants.kIntakeElevatorHeightMeters), m_elevator))
                 // );
-    visionAlignAndScoreLeft  = //new WaitUntilCommand(()->m_limelight.isTV()).andThen(
-    new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kL4PreScoringHeightMeters)) //TODO: Elevator set goals should probably be changed to Instance Commands
+    visionAlignAndScoreLeft  = new WaitUntilCommand(()->m_limelight.isTV()).andThen(
+        new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kL4PreScoringHeightMeters))) //TODO: Elevator set goals should probably be changed to Instance Commands
         .andThen(new AlignWithLimelight(m_robotDrive, m_limelight, m_elevator, reefAlignSide.Left))
         .andThen(new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PostScoringHeightMeters)) //lower for scoring
-         .andThen(new RunCommand(() -> m_robotDrive.drive(-1*Constants.slowSpeedMode, 0, 0, false, true),m_robotDrive).withTimeout(1))
-         .andThen(m_elevator.setGoal(ElevatorConstants.kIntakeElevatorHeightMeters))
+         .andThen(new RunCommand(() -> m_robotDrive.drive(-2*Constants.slowSpeedMode, 0, 0, false, true),m_robotDrive).withTimeout(0.5))
+         .andThen(new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kIntakeElevatorHeightMeters)))
         .andThen(new InstantCommand(()->m_robotDrive.drive(0, 0, 0, false, false), m_robotDrive));    
-    visionAlignAndScoreRight = new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kL4PreScoringHeightMeters)) //TODO: Elevator set goals should probably be changed to Instance Commands
+    visionAlignAndScoreRight = 
+        new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kL4PreScoringHeightMeters)) //TODO: Elevator set goals should probably be changed to Instance Commands
         .andThen(new AlignWithLimelight(m_robotDrive, m_limelight, m_elevator, reefAlignSide.Right)) //TODO Replace with set of commands to align, score and drive backwards
         .andThen(new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PostScoringHeightMeters)) //lower for scoring
-         .andThen(new RunCommand(() -> m_robotDrive.drive(-1*Constants.slowSpeedMode, 0, 0, false, true),m_robotDrive).withTimeout(1))
-         .andThen(m_elevator.setGoal(ElevatorConstants.kIntakeElevatorHeightMeters))
+         .andThen(new RunCommand(() -> m_robotDrive.drive(-2*Constants.slowSpeedMode, 0, 0, false, true),m_robotDrive).withTimeout(0.5))
+         .andThen(new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kIntakeElevatorHeightMeters)))
         .andThen(new InstantCommand(()->m_robotDrive.drive(0, 0, 0, false, false), m_robotDrive));       
          //lower for scoring
         //.andThen(new RunCommand(() -> m_robotDrive.drive(-1*Constants.slowSpeedMode, 0, 0, false, true),m_robotDrive).withTimeout(1));
     NamedCommands.registerCommand("Raise Elevator",elevUp);
     NamedCommands.registerCommand("Lower Elevator",elevDown);
     NamedCommands.registerCommand("Score",score);
-    NamedCommands.registerCommand("Run Intake", Commands.run(() -> m_intake.runIntakeRollerMotor()));//Is this how it's done?
-    NamedCommands.registerCommand("Stop Intake", Commands.run(() -> m_intake.stopIntakeRollerMotor()));//Is this how it's done?
+    NamedCommands.registerCommand("Run Intake", new InstantCommand(() -> m_intake.runIntakeRollerMotor()));//Is this how it's done?
+    NamedCommands.registerCommand("Stop Intake", new InstantCommand(() -> m_intake.stopIntakeRollerMotor()));//Is this how it's done?
     NamedCommands.registerCommand("Vision Align And Score Left",visionAlignAndScoreLeft);
     NamedCommands.registerCommand("Vision Align And Score Right",visionAlignAndScoreRight);
     // Use event markers as triggers
@@ -482,5 +483,10 @@ public class RobotContainer {
     new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PostScoringHeightMeters)
     .andThen(m_elevator.setGoal(ElevatorConstants.kIntakeElevatorHeightMeters))
     .andThen(new InstantCommand(()->m_robotDrive.driveRobotRelative(new ChassisSpeeds(0,0,0)))); 
+  }
+  public void ForceCancelScoreCommands()
+  {
+    visionAlignAndScoreLeft.cancel();
+    visionAlignAndScoreRight.cancel();
   }
 }

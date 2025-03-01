@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.subsystems.DriveSubsystem;
@@ -29,6 +30,7 @@ public class AlignWithLimelight extends Command {
   PIDController forwardController;
   PIDController yawController;
   private boolean targetingExtendedPosition = false;
+  LinearFilter filter= LinearFilter.movingAverage(5);
 
   /** Creates a new AlignWithLimelight. */
   public AlignWithLimelight(DriveSubsystem drive, LimelightSubsystem limelight, ElevatorSubsystem elevator,LimelightConstants.reefAlignSide side) {
@@ -98,10 +100,11 @@ public class AlignWithLimelight extends Command {
       double tx = targetData[0];
       double tz = targetData[2];
       double yaw = targetData[4];
-      if(Math.abs(yaw)<5)
-      {
-        //yaw = -((m_drive.getFieldAngle()+30)%60 - 30);
-      }
+      yaw = filter.calculate(yaw);
+      // if(Math.abs(yaw)<5)
+      // {
+      //   yaw = -(((m_drive.getFieldAngle()+30)%60) - 30);
+      // }
   
       double xValue = xController.calculate(tx);
       double zValue = forwardController.calculate(tz);
