@@ -205,7 +205,7 @@ public final class Constants {
     
     public static final double kL4PreScoringHeightMeters = 1.558;
     public static final double kL4PostScoringHeightNoAlgeaMeters = kL4PreScoringHeightMeters-0.3;
-    public static final double kL4PostScoringHeightMeters = kL4PreScoringHeightMeters-0.4;
+    public static final double kL4PostScoringHeightMeters = kL4PreScoringHeightMeters-0.43;
 
     public static final double kIntakeElevatorHeightMeters = 0.08;    // m
 
