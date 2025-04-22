@@ -64,6 +64,7 @@ cameraStarted = false;
  * This is the main method for applying video effects.
  * Alter the inputMat in any way you need, after this method runs the mat will then be uploaded to the cameraServer. 
  */
+public int getResolutionWidth() {return displayWidth;}
 private void processVideoFeed(Mat inputMat)
 {
   
@@ -154,7 +155,11 @@ private void StartCamera(int dev)
         UsbCamera camera = CameraServer.startAutomaticCapture(dev);
 
         // Set the resolution
+<<<<<<< Updated upstream
         camera.setResolution(640, 480);
+=======
+        camera.setResolution(displayWidth, displayHeight);
+>>>>>>> Stashed changes
 
         // Get a CvSink. This will capture Mats from the camera
         CvSink cvSink = CameraServer.getVideo();
