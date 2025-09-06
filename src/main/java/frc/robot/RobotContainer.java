@@ -10,6 +10,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
@@ -21,24 +22,34 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.LimelightConstants.reefAlignSide;
+import frc.robot.commands.AlignWithLimelight;
 import frc.robot.commands.AutoElevatorCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OIConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 //import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
+
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SwerveSubsystemSim;
+import frc.robot.subsystems.UsbCameraSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -54,6 +65,8 @@ import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+
+import edu.wpi.first.net.PortForwarder;
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -61,6 +74,11 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+
+  // The robot's subsystems
+  private final UsbCameraSubsystem m_UsbCamera;
+  private final VisionSubsystem m_visionSubsystem;
+  private final LimelightSubsystem m_limelight;
   
   // The robot's subsystems
   DriveSubsystem m_robotDrive;
@@ -75,8 +93,10 @@ public class RobotContainer {
 
   // Logitech joystick controller.
   Joystick m_driverController = new Joystick(OIConstants.kDriverControllerPort);
+  Joystick m_testController   = new Joystick(OIConstants.kTestControllerPort);
   BooleanPublisher mode_publisher = NetworkTableInstance.getDefault().getBooleanTopic("Is Field Relative").publish();
-
+  Command visionAlignAndScoreLeft;
+  Command visionAlignAndScoreRight;
 
   private final SendableChooser<Command> autoChooser;
 
@@ -96,27 +116,56 @@ public class RobotContainer {
     } else {
       m_robotDrive = new SwerveSubsystemSim();
       m_elevator = new ElevatorSubsystem();
+      m_intake = new IntakeSubsystem();
+    }
+    m_limelight = new LimelightSubsystem();
+    m_UsbCamera = new UsbCameraSubsystem();
+    m_visionSubsystem = new VisionSubsystem(m_UsbCamera);
+
+    for(int port = 5800; port<=5809; port++)
+    {
+      PortForwarder.add(port, "limelight.local",port);
     }
 
 
     // Zero/Reset sensors
     m_robotDrive.zeroHeading();
+    m_robotDrive.addAngleGyro(180);
     m_elevator.resetEncoder();
 
     // Register named commands
-    //TODO: Use parallel commands to speed things up if applicible.
-
-    AutoElevatorCommand elevUp = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PreScoringHeightMeters); // TODO: Replace with constants
+    AutoElevatorCommand elevUp = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PreScoringHeightMeters); 
     AutoElevatorCommand elevDown = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kIntakeElevatorHeightMeters);
     AutoElevatorCommand score = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PostScoringHeightMeters);
-    WaitCommand visionAlignAndScoreLeft  = new WaitCommand(1.5); //TODO Replace with set of commands to align, score and drive backwards
-    WaitCommand visionAlignAndScoreRight = new WaitCommand(1.5); //TODO Replace with set of commands to align, score and drive backwards
-
+    // Command visionAlignAndScoreLeft  = // NB: This is Alex's version, do not use. Use Graham's below.
+    //             new RunCommand(() -> m_elevator.reachGoal(Constants.ElevatorConstants.kL4PreScoringHeightMeters), m_elevator)
+    //             .andThen(new AlignWithLimelight(m_robotDrive, m_limelight, m_elevator, reefAlignSide.Left)
+                // .andThen(new RunCommand(() -> m_robotDrive.drive(Constants.slowSpeedMode, 0, 0, false), m_robotDrive)
+                //         .raceWith(score))
+                // .andThen(new RunCommand(() -> m_robotDrive.drive(-Constants.slowSpeedMode, 0, 0, false), m_robotDrive).withTimeout(0.5))
+                // .andThen(new RunCommand(() -> m_elevator.reachGoal(Constants.ElevatorConstants.kIntakeElevatorHeightMeters), m_elevator))
+                // );
+    visionAlignAndScoreLeft  = new WaitUntilCommand(()->m_limelight.isTV()).andThen(
+        new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kL4PreScoringHeightMeters))) //TODO: Elevator set goals should probably be changed to Instance Commands
+        .andThen(new AlignWithLimelight(m_robotDrive, m_limelight, m_elevator, reefAlignSide.Left))
+        .andThen(new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PostScoringHeightMeters)) //lower for scoring
+         .andThen(new RunCommand(() -> m_robotDrive.drive(-2*Constants.slowSpeedMode, 0, 0, false, true),m_robotDrive).withTimeout(0.5))
+         .andThen(new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kIntakeElevatorHeightMeters)))
+        .andThen(new InstantCommand(()->m_robotDrive.drive(0, 0, 0, false, false), m_robotDrive));    
+    visionAlignAndScoreRight = 
+        new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kL4PreScoringHeightMeters)) //TODO: Elevator set goals should probably be changed to Instance Commands
+        .andThen(new AlignWithLimelight(m_robotDrive, m_limelight, m_elevator, reefAlignSide.Right)) //TODO Replace with set of commands to align, score and drive backwards
+        .andThen(new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PostScoringHeightMeters)) //lower for scoring
+         .andThen(new RunCommand(() -> m_robotDrive.drive(-2*Constants.slowSpeedMode, 0, 0, false, true),m_robotDrive).withTimeout(0.5))
+         .andThen(new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kIntakeElevatorHeightMeters)))
+        .andThen(new InstantCommand(()->m_robotDrive.drive(0, 0, 0, false, false), m_robotDrive));       
+         //lower for scoring
+        //.andThen(new RunCommand(() -> m_robotDrive.drive(-1*Constants.slowSpeedMode, 0, 0, false, true),m_robotDrive).withTimeout(1));
     NamedCommands.registerCommand("Raise Elevator",elevUp);
     NamedCommands.registerCommand("Lower Elevator",elevDown);
     NamedCommands.registerCommand("Score",score);
-    NamedCommands.registerCommand("Run Intake", Commands.run(() -> m_intake.runIntakeRollerMotor()));//Is this how it's done?
-    NamedCommands.registerCommand("Stop Intake", Commands.run(() -> m_intake.stopIntakeRollerMotor()));//Is this how it's done?
+    NamedCommands.registerCommand("Run Intake", new InstantCommand(() -> m_intake.runIntakeRollerMotor()));//Is this how it's done?
+    NamedCommands.registerCommand("Stop Intake", new InstantCommand(() -> m_intake.stopIntakeRollerMotor()));//Is this how it's done?
     NamedCommands.registerCommand("Vision Align And Score Left",visionAlignAndScoreLeft);
     NamedCommands.registerCommand("Vision Align And Score Right",visionAlignAndScoreRight);
     // Use event markers as triggers
@@ -125,25 +174,50 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
+    // TODO: This needs to wait until alliance specified! (Trigger?)
     autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
         (stream) -> isCompetition
             ? stream.filter(auto -> auto.getName().startsWith("COMP"))
             : stream
         );
+
     //autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
     SmartDashboard.putData("Auto Mode", autoChooser);
+
+
+    // new Trigger(() -> m_driveTrain.hasAlliance())
+    //     .whileTrue(new InstantCommand(
+    //     () -> { SmartDashboard.putData("COMP - Start Center to Left (Processor) Coral Station", new PathPlannerAuto("COMP - Start Center to Left (Processor) Coral Station"));
+    //             SmartDashboard.putData("COMP - Start Center to Right (Our Barge) Coral Station", new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"));
+    //             SmartDashboard.putData("COMP - Start Right (Our Barge) Side", new PathPlannerAuto("COMP - Start Right (Our Barge) Side"));
+    //             SmartDashboard.putData("COMP - Start Left (Processor) Side", new PathPlannerAuto("COMP - Start Left (Processor) Side"));
+    //             autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
+    //                 (stream) -> isCompetition
+    //                     ? stream.filter(auto -> auto.getName().startsWith("COMP"))
+    //                     : stream);
+    //             SmartDashboard.putData("Auto Mode", autoChooser);
+    //         }
+    //     )
+    // );
 
     // Configure default commands
 
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
+        // new RunCommand(
+        //     () -> m_robotDrive.drive(
+        //         -MathUtil.applyDeadband(Math.pow(m_driverController.getY(), 2) * Math.signum(m_driverController.getY()), OIConstants.kDriveDeadband),
+        //         -MathUtil.applyDeadband(Math.pow(m_driverController.getX(), 2) * Math.signum(m_driverController.getX()), OIConstants.kDriveDeadband),
+        //         -MathUtil.applyDeadband(Math.pow(m_driverController.getZ(), 2) * Math.signum(m_driverController.getZ()), OIConstants.kDriveDeadband),
+        //         fieldRelative),
+        //     m_robotDrive));
         new RunCommand(
             () -> m_robotDrive.drive(
-                -MathUtil.applyDeadband(Math.pow(m_driverController.getY(), 2) * Math.signum(m_driverController.getY()), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(Math.pow(m_driverController.getX(), 2) * Math.signum(m_driverController.getX()), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(Math.pow(m_driverController.getZ(), 2) * Math.signum(m_driverController.getZ()), OIConstants.kDriveDeadband),
-                fieldRelative),
+                -MathUtil.applyDeadband(Math.pow(m_driverController.getY()+m_testController.getY(), 2) * Math.signum(m_driverController.getY()+m_testController.getY()), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(Math.pow(m_driverController.getX()+m_testController.getX(), 2) * Math.signum(m_driverController.getX()+m_testController.getX()), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(Math.pow(m_driverController.getZ()+m_testController.getZ(), 2) * Math.signum(m_driverController.getZ()+m_testController.getZ()), OIConstants.kDriveDeadband),
+                fieldRelative, true),
             m_robotDrive));
   }
 
@@ -158,6 +232,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
+    ////// DRIVER CONTROLLER /////
     new JoystickButton(m_driverController, Constants.OperatorConstants.BRAKE_BUTTON)
         .whileTrue(new RunCommand(
             () -> m_robotDrive.setX(),
@@ -167,56 +242,37 @@ public class RobotContainer {
         .whileTrue(new RunCommand(
             () -> m_robotDrive.zeroHeading()));
 
-
     new JoystickButton(m_driverController, Constants.OperatorConstants.SLOW_MODE_LEFT)
         .whileTrue(new RunCommand(
-            () -> m_robotDrive.drive(0, Constants.slowSpeedMode, 0, false),
+            () -> m_robotDrive.drive(0, Constants.slowSpeedMode, 0, false, true),
             m_robotDrive));
 
     new JoystickButton(m_driverController, Constants.OperatorConstants.SLOW_MODE_RIGHT)
         .whileTrue(new RunCommand(
-            () -> m_robotDrive.drive(0, -Constants.slowSpeedMode, 0, false),
+
+            () -> m_robotDrive.drive(0, -Constants.slowSpeedMode, 0, false, true),
             m_robotDrive));
 
-    new JoystickButton(m_driverController, Constants.OperatorConstants.SLOW_MODE_FORWARD)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.drive(Constants.slowSpeedMode, 0, 0, false),
-            m_robotDrive));
+    new JoystickButton(m_driverController, Constants.OperatorConstants.SCORE_LEFT)
+        .whileTrue(visionAlignAndScoreLeft);
 
-    new JoystickButton(m_driverController, Constants.OperatorConstants.SLOW_MODE_BACKWARD)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.drive(-Constants.slowSpeedMode, 0, 0, false),
-            m_robotDrive));
-
-    // new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SLOW_UP_BUTTON)
-    //     .whileTrue(Commands.startEnd(
-    //                           () -> m_elevator.ManualElevatorUp(), 
-    //                           () -> m_elevator.motorStop(), 
-    //                           m_elevator));
-    
-    // new JoystickButton(m_driverController, Constants.OperatorConstants.WHEEL_CHARACTERIZATION).whileTrue(
-    //                     m_robotDrive.wheelRadiusCharacterization());
-
+    new JoystickButton(m_driverController, Constants.OperatorConstants.SCORE_RIGHT)
+        .whileTrue(visionAlignAndScoreRight);
                               
-    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SLOW_DOWN_BUTTON)
+    new JoystickButton(m_driverController, Constants.OperatorConstants.MANUAL_ELEVATOR_DOWN)
         .whileTrue(Commands.startEnd(
                               () -> m_elevator.ManualElevatorDown(), 
                               () -> m_elevator.motorStop(), 
                               m_elevator));
 
-    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_MINHEIGHT)
-        .whileTrue(new RunCommand(
-            () -> m_elevator.reachGoal(Constants.ElevatorConstants.kIntakeElevatorHeightMeters),
+    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_INCREMENT_DOWN)
+        .whileTrue(new InstantCommand(
+            () -> m_elevator.ElevatorIncrementDown(),
             m_elevator));
                       
     new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_MAXHEIGHT)
-        .whileTrue(new RunCommand(
+        .whileTrue(new InstantCommand(
             () -> m_elevator.reachGoal(Constants.ElevatorConstants.kL4PreScoringHeightMeters),
-            m_elevator));
-
-    new JoystickButton(m_driverController, Constants.OperatorConstants.ELEVATOR_SCORINGHEIGHT)
-        .whileTrue(new RunCommand(
-            () -> m_elevator.reachGoal(Constants.ElevatorConstants.kL4PostScoringHeightMeters),
             m_elevator));
     
     new JoystickButton(m_driverController, Constants.OperatorConstants.INTAKE_BUTTON)
@@ -225,25 +281,60 @@ public class RobotContainer {
         () -> m_intake.stopIntakeRollerMotor(),
         m_intake));
 
-                                  
-    // new JoystickButton(m_driverController, Constants.OperatorConstants.SPIN_0)
-    //     .whileTrue(Commands.startEnd(
-    //         () -> m_elevator.HoverElevator(), 
-    //         () -> m_elevator.motorStop(), 
-    //         m_elevator));
+    new Trigger(() -> m_driverController.getThrottle() < -0.75)
+        .whileTrue(Commands.sequence(
+            new InstantCommand(() -> fieldRelative = false, m_robotDrive),
+            new InstantCommand(() -> mode_publisher.set(fieldRelative))
+        ));
 
-    // new JoystickButton(m_driverController, Constants.OperatorConstants.SPIN_30)
-    //     .whileTrue(new RunCommand(
-    //         () -> m_robotDrive.spinAngle(30)));
+    new Trigger(() -> m_driverController.getThrottle() > 0.75)
+    .whileTrue(Commands.sequence(
+            new InstantCommand(() -> fieldRelative = true, m_robotDrive),
+            new InstantCommand(() -> mode_publisher.set(fieldRelative))
+        ));
+
+    new Trigger(() -> m_elevator.getHeight() > Constants.ElevatorConstants.kMaxRealElevatorHeightMeters/2)
+    .whileTrue(new InstantCommand(
+        () -> m_robotDrive.elevUpAccelerationLimiter()
+        ));
+
+    new Trigger(() -> m_elevator.getHeight() < Constants.ElevatorConstants.kMaxRealElevatorHeightMeters/2)
+    .whileTrue(new InstantCommand(
+        () -> m_robotDrive.elevDownAccelerationLimiter()
+        ));
     
 
-    new JoystickButton(m_driverController, Constants.OperatorConstants.ROBOT_RELATIVE)
-        .whileTrue(Commands.sequence(
-           new InstantCommand(() -> fieldRelative = !fieldRelative, m_robotDrive),
-           new InstantCommand(() -> mode_publisher.set(fieldRelative)))
-        );
+    //////// TESTING CONTROLLER //////////////
+    new JoystickButton(m_testController, Constants.OperatorConstants.MANUAL_UP)
+        .whileTrue(Commands.startEnd(
+            () -> m_elevator.ManualElevatorUp(), 
+            () -> m_elevator.motorStop(), 
+            m_elevator));
 
-    // m_elevator.atHeight(5, 0.1).whileTrue(Commands.print("Elevator Command!"));
+    new JoystickButton(m_testController, Constants.OperatorConstants.HOVER_ELEVATOR)
+        .whileTrue(Commands.startEnd(
+            () -> m_elevator.HoverElevator(), 
+            () -> m_elevator.motorStop(), 
+            m_elevator));
+
+    new JoystickButton(m_testController, Constants.OperatorConstants.MANUAL_DOWN)
+        .whileTrue(Commands.startEnd(
+            () -> m_elevator.ManualElevatorDown(), 
+            () -> m_elevator.motorStop(), 
+            m_elevator));
+
+    new JoystickButton(m_testController, Constants.OperatorConstants.INTAKE_BUTTON)
+    .whileTrue(new StartEndCommand(
+        () -> m_intake.runIntakeRollerMotor(), 
+        () -> m_intake.stopIntakeRollerMotor(),
+        m_intake));
+    
+    new JoystickButton(m_testController, Constants.OperatorConstants.SPIN_0)
+        .whileTrue(new RunCommand(
+            () -> m_robotDrive.spinAngle(30)));
+    
+    new JoystickButton(m_testController, Constants.OperatorConstants.WHEEL_CHARACTERIZATION).whileTrue(
+                        m_robotDrive.wheelRadiusCharacterization());
 
     /*
      * Discrete paths split into parts incase this is needed:
@@ -262,6 +353,8 @@ public class RobotContainer {
     // SequentialCommandGroup fullAuto = new SequentialCommandGroup();
     // fullAuto.addCommands(new PathPlannerAuto("COMP - Start Center to Left (Processor) Coral Station"));
     // fullAuto.addCommands(new PathPlannerAuto("COMP - Bottom Scoring"));
+
+    //TODO: This needs to wait until alliance specified!!
      SmartDashboard.putData("COMP - Start Center to Left (Processor) Coral Station", new PathPlannerAuto("COMP - Start Center to Left (Processor) Coral Station"));
      SmartDashboard.putData("COMP - Start Center to Right (Our Barge) Coral Station", new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"));
      SmartDashboard.putData("COMP - Start Right (Our Barge) Side", new PathPlannerAuto("COMP - Start Right (Our Barge) Side"));
@@ -282,51 +375,52 @@ public class RobotContainer {
 
     // Add a button to SmartDashboard that will create and follow an on-the-fly path
     // This example will simply move the robot 2m in the +X field direction
-    SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
-        Pose2d currentPose = m_robotDrive.getPose();
+    //Comment out??
+    // SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
+    //     Pose2d currentPose = m_robotDrive.getPose();
   
-        // The rotation component in these poses represents the direction of travel
-        Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
-        Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(1, -1)), new Rotation2d());
+    //     // The rotation component in these poses represents the direction of travel
+    //     Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
+    //     Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(1, -1)), new Rotation2d());
   
-        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPos, endPos);
-        PathPlannerPath path = new PathPlannerPath(
-            waypoints,
-            new PathConstraints(
-                1.0, 1.0,
-                Units.degreesToRadians(360), Units.degreesToRadians(540)),
-            null, // Ideal starting state can be null for on-the-fly paths
-            new GoalEndState(0.0, currentPose.getRotation()));
+    //     List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPos, endPos);
+    //     PathPlannerPath path = new PathPlannerPath(
+    //         waypoints,
+    //         new PathConstraints(
+    //             1.0, 1.0,
+    //             Units.degreesToRadians(360), Units.degreesToRadians(540)),
+    //         null, // Ideal starting state can be null for on-the-fly paths
+    //         new GoalEndState(0.0, currentPose.getRotation()));
   
-        // Prevent this path from being flipped on the red alliance, since the given
-        // positions are already correct
-        path.preventFlipping = true;
+    //     // Prevent this path from being flipped on the red alliance, since the given
+    //     // positions are already correct
+    //     path.preventFlipping = true;
   
-        AutoBuilder.followPath(path).schedule();
-      }));
+    //     AutoBuilder.followPath(path).schedule();
+    //   }));
 
-    SmartDashboard.putData("On-the-fly path 2", Commands.runOnce(() -> {
-        Pose2d currentPose = m_robotDrive.getPose();
+    // SmartDashboard.putData("On-the-fly path 2", Commands.runOnce(() -> {
+    //     Pose2d currentPose = m_robotDrive.getPose();
   
-        // The rotation component in these poses represents the direction of travel
-        Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
-        Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(-1, 1)), new Rotation2d());
+    //     // The rotation component in these poses represents the direction of travel
+    //     Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
+    //     Pose2d endPos = new Pose2d(currentPose.getTranslation().plus(new Translation2d(-1, 1)), new Rotation2d());
   
-        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPos, endPos);
-        PathPlannerPath path = new PathPlannerPath(
-            waypoints,
-            new PathConstraints(
-                1.0, 1.0,
-                Units.degreesToRadians(360), Units.degreesToRadians(540)),
-            null, // Ideal starting state can be null for on-the-fly paths
-            new GoalEndState(0.0, currentPose.getRotation()));
+    //     List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPos, endPos);
+    //     PathPlannerPath path = new PathPlannerPath(
+    //         waypoints,
+    //         new PathConstraints(
+    //             1.0, 1.0,
+    //             Units.degreesToRadians(360), Units.degreesToRadians(540)),
+    //         null, // Ideal starting state can be null for on-the-fly paths
+    //         new GoalEndState(0.0, currentPose.getRotation()));
   
-        // Prevent this path from being flipped on the red alliance, since the given
-        // positions are already correct
-        path.preventFlipping = true;
+    //     // Prevent this path from being flipped on the red alliance, since the given
+    //     // positions are already correct
+    //     path.preventFlipping = true;
   
-        AutoBuilder.followPath(path).schedule();
-      }));
+    //     AutoBuilder.followPath(path).schedule();
+    //   }));
   }
 
   /**
@@ -382,5 +476,17 @@ public class RobotContainer {
      * return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0,
      * false));
      */
+  }
+  public Command finishScoringCommand()
+  {
+    return  //TODO Replace with set of commands to align, score and drive backwards
+    new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PostScoringHeightMeters)
+    .andThen(m_elevator.setGoal(ElevatorConstants.kIntakeElevatorHeightMeters))
+    .andThen(new InstantCommand(()->m_robotDrive.driveRobotRelative(new ChassisSpeeds(0,0,0)))); 
+  }
+  public void ForceCancelScoreCommands()
+  {
+    visionAlignAndScoreLeft.cancel();
+    visionAlignAndScoreRight.cancel();
   }
 }

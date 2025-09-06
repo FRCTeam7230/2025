@@ -22,6 +22,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
@@ -63,6 +64,7 @@ public class ElevatorSubsystem extends SubsystemBase
   DoublePublisher heightError_publisher = NetworkTableInstance.getDefault().getDoubleTopic("Elevator/heightError").publish();
   DoublePublisher current1_publisher = NetworkTableInstance.getDefault().getDoubleTopic("Elevator/currentMotor1").publish();
   DoublePublisher current2_publisher = NetworkTableInstance.getDefault().getDoubleTopic("Elevator/currentMotor2").publish();
+  BooleanPublisher elevReset_publisher = NetworkTableInstance.getDefault().getBooleanTopic("Elevator/resetElev").publish();
   
   // Constructor
   public ElevatorSubsystem()
@@ -75,9 +77,10 @@ public class ElevatorSubsystem extends SubsystemBase
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .pid(ElevatorConstants.kElevatorKp, ElevatorConstants.kElevatorKi, ElevatorConstants.kElevatorKd, ClosedLoopSlot.kSlot0)//Change PID with these constants.
         .pid(ElevatorConstants.kSlowElevatorKp, ElevatorConstants.kSlowElevatorKi, ElevatorConstants.kSlowElevatorKd, ClosedLoopSlot.kSlot1)
-        .outputRange(-1, 1, ClosedLoopSlot.kSlot0)
-        .outputRange(-0.3, 0.3, ClosedLoopSlot.kSlot1);
+        .outputRange(-1, 1, ClosedLoopSlot.kSlot0) //TODO: RESET TO -1 to 1!!!!!
+        .outputRange(-0.4, 0.4, ClosedLoopSlot.kSlot1);
     m_config_motor1.closedLoop.maxMotion
+    
         .maxVelocity(ElevatorConstants.kElevatorMaxVelocity)
         .maxAcceleration(ElevatorConstants.kElevatorMaxAcceleration)
         .allowedClosedLoopError(Units.inchesToMeters(0.1)); // TODO: Tune this as we go -see what's reasonable
@@ -155,7 +158,10 @@ public class ElevatorSubsystem extends SubsystemBase
                                              getHeight(),
                                              tolerance));
   }
-
+  public boolean isFullyExtended(double tolerance)
+  {
+    return MathUtil.isNear(ElevatorConstants.kL4PreScoringHeightMeters,getHeight(),tolerance);
+  }
   /**
    * Set the goal of the elevator
    *
@@ -188,6 +194,25 @@ public class ElevatorSubsystem extends SubsystemBase
     m_motor1.set(-0.15);
   }
 
+  public void ElevatorIncrementDown() {
+    if (m_desiredHeight > Constants.ElevatorConstants.kL4PostScoringHeightMeters) {
+      reachGoal(Constants.ElevatorConstants.kL4PostScoringHeightMeters);
+    }
+    else {
+      reachGoal(Constants.ElevatorConstants.kIntakeElevatorHeightMeters);
+    }
+    
+  }
+  /**
+   * Update telemetry, including the mechanism visualization.
+   */
+  public void updateTelemetry()
+  {
+    // Update elevator visualization with position
+    //m_elevatorMech2d.setLength(RobotBase.isSimulation() ? m_elevatorSim.getPositionMeters() : m_encoder.getPosition());
+    SmartDashboard.putNumber("Elevator Position",getHeight());
+  }
+
   @Override
   public void periodic() {
 
@@ -201,7 +226,7 @@ public class ElevatorSubsystem extends SubsystemBase
     current1_publisher.set(m_motor1.getOutputCurrent());
     current2_publisher.set(m_motor2.getOutputCurrent());
 
-    //updateTelemetry();
+    boolean reset = false;
     if (m_encoder.getVelocity() < 0.01 && m_motor1.getOutputCurrent() > Constants.ElevatorConstants.kResetCurrent) {
       if (m_motor1.getAppliedOutput() > 0) {
         m_encoder.setPosition(Constants.ElevatorConstants.kMaxRealElevatorHeightMeters);
@@ -210,8 +235,10 @@ public class ElevatorSubsystem extends SubsystemBase
         m_encoder.setPosition(Constants.ElevatorConstants.kMinRealElevatorHeightMeters);
       }
       m_motor1.set(0);
+      reset = true;
     }  
     SmartDashboard.putNumber("Elevator Position (Meters)", m_encoder.getPosition());
-  }
+    elevReset_publisher.set(reset);
+  }  
 
 }

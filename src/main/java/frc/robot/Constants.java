@@ -24,7 +24,7 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
 
   public static final double slowSpeedMode = 0.1;
-  public static final double movementDivider = 2;
+  public static final double movementDivider = 4;
   public static final double rotateDivider = 5;
   
   public static class OperatorConstants {
@@ -43,20 +43,33 @@ public final class Constants {
     public static final int kButton12 = 12;
 
     // Drive Stick Buttons
-    //testing buttons: 2, 7-12
     public static final int BRAKE_BUTTON = kButton1;
-    public static final int ZERO_HEADING_BUTTON = kButton2;
+    public static final int INTAKE_BUTTON = kButton2;
     public static final int SLOW_MODE_LEFT = kButton3;
     public static final int SLOW_MODE_RIGHT = kButton4;  
-    public static final int SLOW_MODE_FORWARD = kButton5;
-    public static final int SLOW_MODE_BACKWARD = kButton6;          
-    public static final int INTAKE_BUTTON = kButton7;
-    public static final int ELEVATOR_MAXHEIGHT = kButton8;
-    public static final int ROBOT_RELATIVE = kButton9;   
-    public static final int ELEVATOR_SCORINGHEIGHT = kButton10;
-    public static final int ELEVATOR_SLOW_DOWN_BUTTON = kButton11;    
-    public static final int ELEVATOR_MINHEIGHT = kButton12; 
-    
+    public static final int SCORE_LEFT = kButton5;
+    public static final int SCORE_RIGHT = kButton6;          
+    public static final int MANUAL_ELEVATOR_DOWN = kButton7;
+    public static final int ZERO_HEADING_BUTTON = kButton8;
+    public static final int DRIVENOTUSED_9 = kButton9;   
+    public static final int DRIVENOTUSED_10 = kButton10;
+    public static final int ELEVATOR_INCREMENT_DOWN = kButton11;    
+    public static final int ELEVATOR_MAXHEIGHT = kButton12; 
+
+  //test joystick buttons
+    public static final int NOT_USED_1 = kButton1;
+    public static final int NOT_USED_2 = kButton2;
+    public static final int NOT_USED_3 = kButton3;
+    public static final int NOT_USED_4 = kButton4;  
+    public static final int NOT_USED_5 = kButton5;
+    public static final int NOT_USED_6 = kButton6;
+    public static final int SPIN_30= kButton7;
+    public static final int MANUAL_UP = kButton8;
+    public static final int SPIN_0 = kButton9;
+    public static final int HOVER_ELEVATOR = kButton10;
+    public static final int WHEEL_CHARACTERIZATION = kButton11;
+    public static final int MANUAL_DOWN = kButton12;
+
   }
 
   public static final class DriveConstants {
@@ -130,6 +143,7 @@ public final class Constants {
 
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int kTestControllerPort = 1;
   
     // Original value: public static final double kDriveDeadband = 0.05;
     public static final double kDriveDeadband = 0.1;
@@ -189,10 +203,11 @@ public final class Constants {
     public static final double kMinRealElevatorHeightMeters = 0;    // m
     public static final double kMaxRealElevatorHeightMeters = 1.575; // m
     
-    public static final double kL4PreScoringHeightMeters = kMaxRealElevatorHeightMeters-0.01;
-    public static final double kL4PostScoringHeightMeters = kMaxRealElevatorHeightMeters-0.4;
+    public static final double kL4PreScoringHeightMeters = 1.558; 
+    public static final double kL4PostScoringHeightNoAlgeaMeters = kL4PreScoringHeightMeters-0.3;
+    public static final double kL4PostScoringHeightMeters = kL4PreScoringHeightMeters-0.43;
 
-    public static final double kIntakeElevatorHeightMeters = 0.01;    // m
+    public static final double kIntakeElevatorHeightMeters = 0.08;    // m
 
     public static final double kRotationToMeters = kGearCircumference / kGearRatio;// Revolutions to Output units conversion factor
     public static final double kElevatorMaxVelocity = 4000; // Motor RPM - does not get affected by conversion factor TODO: Need a good inches per sec max, start slow (10?)
@@ -201,5 +216,27 @@ public final class Constants {
   
   public static class IntakeConstants{
     public static final int intakeRollerMotorID = 2;
+  }
+  public static class LimelightConstants
+  {
+    public static final String kLimelightName = "limelight";
+
+    public static final double kDriveForwardKp = 2.4;
+    public static final double kDriveHorizontalKp = 1.5; //output = -1 to 1, .1 m off want .1 m/s, 0.1 m/s = 0.04 % output, .04 = kp*0.1, kp = .4
+    public static final double kRotationKp = 0.06; //output = -1 to 1, 15 deg off want 60 deg/sec, 60 deg/sec = 1.0 % output, 1.0 = kp*15deg, kp = 0.06
+
+    public static final double kHorizontalOffset = 0.17;
+    public static final double kForwardExtendedOffset = -0.43; //TODO: -0.47 at comp!
+    public static final double kForwardUnextendedOffset = -0.7;
+
+    public static final double kPositionErrorThreshold = 0.05;
+    public static final double kRotationErrorThreshold = 1; // deg
+    public static final double kElevatorTolerance = 0.02; //m
+
+    public enum reefAlignSide
+    {
+      Right,
+      Left,
+    }
   }
 }
