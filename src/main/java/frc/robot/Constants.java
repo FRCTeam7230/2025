@@ -203,7 +203,7 @@ public final class Constants {
     public static final double kMinRealElevatorHeightMeters = 0;    // m
     public static final double kMaxRealElevatorHeightMeters = 1.575; // m
     
-    public static final double kL4PreScoringHeightMeters = 1.558;
+    public static final double kL4PreScoringHeightMeters = 1.558; 
     public static final double kL4PostScoringHeightNoAlgeaMeters = kL4PreScoringHeightMeters-0.3;
     public static final double kL4PostScoringHeightMeters = kL4PreScoringHeightMeters-0.43;
 
@@ -226,7 +226,7 @@ public final class Constants {
     public static final double kRotationKp = 0.06; //output = -1 to 1, 15 deg off want 60 deg/sec, 60 deg/sec = 1.0 % output, 1.0 = kp*15deg, kp = 0.06
 
     public static final double kHorizontalOffset = 0.17;
-    public static final double kForwardExtendedOffset = -0.47;
+    public static final double kForwardExtendedOffset = -0.43; //TODO: -0.47 at comp!
     public static final double kForwardUnextendedOffset = -0.7;
 
     public static final double kPositionErrorThreshold = 0.05;
