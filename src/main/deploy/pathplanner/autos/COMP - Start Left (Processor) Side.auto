@@ -30,7 +30,7 @@
           }
         },
         {
-          "type": "sequential",
+          "type": "parallel",
           "data": {
             "commands": [
               {
@@ -80,7 +80,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Coral 5 Cycle Right"
+                  "pathName": "Coral 5 Cycle RIght"
                 }
               }
             ]
