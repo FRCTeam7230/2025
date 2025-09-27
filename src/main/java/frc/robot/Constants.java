@@ -130,7 +130,7 @@ public final class Constants {
     public static final int SLOW_MODE_RIGHT = kButton6;
     public static final int SCORE_LEFT = leftTrigger;
     public static final int SCORE_RIGHT = rightTrigger;
-    public static final int MANUAL_ELEVATOR_DOWN = kButton1;
+    public static final int MANUAL_ELEVATOR_DOWN = kButton10;
     public static final int ZERO_HEADING_BUTTON = kButton8;
     public static final int DRIVENOTUSED_9 = 0; //literally not used
     public static final int DRIVENOTUSED_10 = 0; //this too
