@@ -27,8 +27,48 @@ public final class Constants {
   public static final double movementDivider = 4;
   public static final double rotateDivider = 5;
   
-  public static class OperatorConstants {
+  public static class ControllerConstants {
+    //Centeralized controller constants that the code reads from. If usingXBoxController is true, then the buttons are using the XBoxConstants' button numbers
+    public static final boolean usingXBoxController = true;
 
+    // Drive Stick Buttons. 
+    public static final int BRAKE_BUTTON = usingXBoxController ? XBoxConstants.BRAKE_BUTTON : JoystickConstants.BRAKE_BUTTON;
+    public static final int INTAKE_BUTTON = usingXBoxController ? XBoxConstants.INTAKE_BUTTON : JoystickConstants.INTAKE_BUTTON;
+    public static final int SLOW_MODE_LEFT = usingXBoxController ? XBoxConstants.SLOW_MODE_LEFT : JoystickConstants.SLOW_MODE_LEFT;
+    public static final int SLOW_MODE_RIGHT = usingXBoxController ? XBoxConstants.SLOW_MODE_RIGHT : JoystickConstants.SLOW_MODE_RIGHT;
+    public static final int SCORE_LEFT = usingXBoxController ? XBoxConstants.SCORE_LEFT : JoystickConstants.SCORE_LEFT;
+    public static final int SCORE_RIGHT = usingXBoxController ? XBoxConstants.SCORE_RIGHT : JoystickConstants.SCORE_RIGHT;
+    public static final int MANUAL_ELEVATOR_DOWN = usingXBoxController ? XBoxConstants.MANUAL_ELEVATOR_DOWN : JoystickConstants.MANUAL_ELEVATOR_DOWN;
+    public static final int ZERO_HEADING_BUTTON = usingXBoxController ? XBoxConstants.ZERO_HEADING_BUTTON : JoystickConstants.ZERO_HEADING_BUTTON;
+    public static final int DRIVENOTUSED_9 = usingXBoxController ? XBoxConstants.DRIVENOTUSED_9 : JoystickConstants.DRIVENOTUSED_9;
+    public static final int DRIVENOTUSED_10 = usingXBoxController ? XBoxConstants.DRIVENOTUSED_10 : JoystickConstants.DRIVENOTUSED_10;
+    public static final int ELEVATOR_INCREMENT_DOWN = usingXBoxController ? XBoxConstants.ELEVATOR_INCREMENT_DOWN : JoystickConstants.ELEVATOR_INCREMENT_DOWN;
+    public static final int ELEVATOR_MAXHEIGHT = usingXBoxController ? XBoxConstants.ELEVATOR_MAXHEIGHT : JoystickConstants.ELEVATOR_MAXHEIGHT;
+    public static final int ROBOT_RELATIVE = usingXBoxController ? XBoxConstants.ROBOT_RELATIVE : JoystickConstants.ROBOT_RELATIVE;
+    
+    public static final int throttleButton1 = usingXBoxController ? 0 : JoystickConstants.throttleButton1;
+    public static final int throttleButton2 = usingXBoxController ? 0 : JoystickConstants.throttleButton2;
+
+  //test joystick buttons for joystick. Used during testing, not updated nor used anymore.
+  /*
+    public static final int NOT_USED_1 = kButton1;
+    public static final int NOT_USED_2 = kButton2;
+    public static final int NOT_USED_3 = kButton3;
+    public static final int NOT_USED_4 = kButton4;  
+    public static final int NOT_USED_5 = kButton5;
+    public static final int NOT_USED_6 = kButton6;
+    public static final int SPIN_30= kButton7;
+    public static final int MANUAL_UP = kButton8;
+    public static final int SPIN_0 = kButton9;
+    public static final int HOVER_ELEVATOR = kButton10;
+    public static final int WHEEL_CHARACTERIZATION = kButton11;
+    public static final int MANUAL_DOWN = kButton12;
+    */
+
+  }
+
+  public static class JoystickConstants {
+    //Button mappings for the joystick
     public static final int kButton1 = 1;
     public static final int kButton2 = 2;
     public static final int kButton3 = 3;
@@ -42,34 +82,66 @@ public final class Constants {
     public static final int kButton11 = 11;
     public static final int kButton12 = 12;
 
-    // Drive Stick Buttons
+    //These are the numbers that are used for the ButtonMappings check, these must be unique numbers. Ahana chose these, not me
+    public static final int throttleButton1 = 15; // for when below -0.7
+    public static final int throttleButton2 = 30; // for above 0.7
+
+    // Joystick driving mappings
     public static final int BRAKE_BUTTON = kButton1;
     public static final int INTAKE_BUTTON = kButton2;
     public static final int SLOW_MODE_LEFT = kButton3;
-    public static final int SLOW_MODE_RIGHT = kButton4;  
+    public static final int SLOW_MODE_RIGHT = kButton4;
     public static final int SCORE_LEFT = kButton5;
-    public static final int SCORE_RIGHT = kButton6;          
+    public static final int SCORE_RIGHT = kButton6;
     public static final int MANUAL_ELEVATOR_DOWN = kButton7;
     public static final int ZERO_HEADING_BUTTON = kButton8;
-    public static final int DRIVENOTUSED_9 = kButton9;   
+    public static final int DRIVENOTUSED_9 = kButton9;
     public static final int DRIVENOTUSED_10 = kButton10;
-    public static final int ELEVATOR_INCREMENT_DOWN = kButton11;    
-    public static final int ELEVATOR_MAXHEIGHT = kButton12; 
+    public static final int ELEVATOR_INCREMENT_DOWN = kButton11;
+    public static final int ELEVATOR_MAXHEIGHT = kButton12;
+    public static final int ROBOT_RELATIVE = 0; // using the throttle buttons for now
+  }
 
-  //test joystick buttons
-    public static final int NOT_USED_1 = kButton1;
-    public static final int NOT_USED_2 = kButton2;
-    public static final int NOT_USED_3 = kButton3;
-    public static final int NOT_USED_4 = kButton4;  
-    public static final int NOT_USED_5 = kButton5;
-    public static final int NOT_USED_6 = kButton6;
-    public static final int SPIN_30= kButton7;
-    public static final int MANUAL_UP = kButton8;
-    public static final int SPIN_0 = kButton9;
-    public static final int HOVER_ELEVATOR = kButton10;
-    public static final int WHEEL_CHARACTERIZATION = kButton11;
-    public static final int MANUAL_DOWN = kButton12;
+  public static class XBoxConstants{
+    //Button configurations for the XBox controller
+    public static final int kButton1 = 1; //A
+    public static final int kButton2 = 2; //B
+    public static final int kButton3 = 3; //X
+    public static final int kButton4 = 4; //Y
+    public static final int kButton5 = 5; //LB, left button
+    public static final int kButton6 = 6; //RB, right button
+    public static final int kButton7 = 7; //Screenshare button, probably dont use
+    public static final int kButton8 = 8; //Menu button, probably dont use, also the back button
+    public static final int kButton9 = 9; //Pressing down left joystick
+    public static final int kButton10 = 10; //Pressing down right joystick
 
+    public static final int leftTrigger = -2; //LT, left trigger 
+    public static final int rightTrigger = -3; //RT, right trigger
+
+    public static final int leftStick_XAXIS = 0;
+    public static final int leftStick_YAXIS = 1;
+    public static final int rightStick_XAXIS = 4;
+    public static final int rightStick_YAXIS = 5;
+
+    // Xbox controller mappings
+    public static final int BRAKE_BUTTON = kButton3;
+    public static final int INTAKE_BUTTON = kButton9;
+    public static final int SLOW_MODE_LEFT = kButton5;
+    public static final int SLOW_MODE_RIGHT = kButton6;
+    public static final int SCORE_LEFT = leftTrigger;
+    public static final int SCORE_RIGHT = rightTrigger;
+    public static final int MANUAL_ELEVATOR_DOWN = kButton1;
+    public static final int ZERO_HEADING_BUTTON = kButton8;
+    public static final int DRIVENOTUSED_9 = 0; //literally not used
+    public static final int DRIVENOTUSED_10 = 0; //this too
+    public static final int ELEVATOR_INCREMENT_DOWN = kButton1;
+    public static final int ELEVATOR_MAXHEIGHT = kButton4;
+    public static final int ROBOT_RELATIVE = kButton2;
+    
+    // XBox movement mappings
+    public static final int MOVE_XAXIS = leftStick_XAXIS;
+    public static final int MOVE_YAXIS = leftStick_YAXIS;
+    public static final int MOVE_ZAXIS = rightStick_XAXIS;
   }
 
   public static final class DriveConstants {
