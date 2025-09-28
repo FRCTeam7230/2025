@@ -46,8 +46,8 @@ public final class Constants {
     public static final int ELEVATOR_MAXHEIGHT = usingXBoxController ? XBoxConstants.ELEVATOR_MAXHEIGHT : JoystickConstants.ELEVATOR_MAXHEIGHT;
     public static final int ROBOT_RELATIVE = usingXBoxController ? XBoxConstants.ROBOT_RELATIVE : JoystickConstants.ROBOT_RELATIVE;
     
-    public static final int throttleButton1 = usingXBoxController ? 0 : JoystickConstants.throttleButton1;
-    public static final int throttleButton2 = usingXBoxController ? 0 : JoystickConstants.throttleButton2;
+    public static final int throttleButton1 = usingXBoxController ? 100 : JoystickConstants.throttleButton1;
+    public static final int throttleButton2 = usingXBoxController ? 100 : JoystickConstants.throttleButton2;
 
   //test joystick buttons for joystick. Used during testing, not updated nor used anymore.
   /*
@@ -99,7 +99,7 @@ public final class Constants {
     public static final int DRIVENOTUSED_10 = kButton10;
     public static final int ELEVATOR_INCREMENT_DOWN = kButton11;
     public static final int ELEVATOR_MAXHEIGHT = kButton12;
-    public static final int ROBOT_RELATIVE = 0; // using the throttle buttons for now
+    public static final int ROBOT_RELATIVE = 100; // using the throttle buttons for now
   }
 
   public static class XBoxConstants{
@@ -132,8 +132,8 @@ public final class Constants {
     public static final int SCORE_RIGHT = rightTrigger;
     public static final int MANUAL_ELEVATOR_DOWN = kButton10;
     public static final int ZERO_HEADING_BUTTON = kButton8;
-    public static final int DRIVENOTUSED_9 = 0; //literally not used
-    public static final int DRIVENOTUSED_10 = 0; //this too
+    public static final int DRIVENOTUSED_9 = 100; //literally not used
+    public static final int DRIVENOTUSED_10 = 100; //this too
     public static final int ELEVATOR_INCREMENT_DOWN = kButton1;
     public static final int ELEVATOR_MAXHEIGHT = kButton4;
     public static final int ROBOT_RELATIVE = kButton2;

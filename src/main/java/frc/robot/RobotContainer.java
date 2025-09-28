@@ -203,7 +203,7 @@ public class RobotContainer {
     // );
 
     // Configure default commands
-    if(Constants.ControllerConstants.usingXBoxController){
+    if(!Constants.ControllerConstants.usingXBoxController){
     m_robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
@@ -305,7 +305,7 @@ public class RobotContainer {
         m_intake));
 
     //new Trigger(() -> m_driverController.getThrottle() < -0.75)
-    if(Constants.ControllerConstants.usingXBoxController){
+    if(!Constants.ControllerConstants.usingXBoxController){
         ButtonMappings.button(m_driverController, Constants.ControllerConstants.throttleButton1)
             .onTrue(Commands.sequence(
                 new InstantCommand(() -> fieldRelative = !fieldRelative, m_robotDrive),
