@@ -14,13 +14,14 @@ import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
@@ -29,6 +30,7 @@ import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -107,7 +109,7 @@ public class DriveSubsystem extends SubsystemBase {
   // }
 
   // Odometry class for tracking robot pose
-  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
+  SwerveDrivePoseEstimator m_odometry = new SwerveDrivePoseEstimator(
       DriveConstants.kDriveKinematics,
       Rotation2d.fromDegrees(getFieldAngle()),
       new SwerveModulePosition[] {
@@ -115,7 +117,7 @@ public class DriveSubsystem extends SubsystemBase {
           m_frontRight.getPosition(),
           m_rearLeft.getPosition(),
           m_rearRight.getPosition()
-      });
+      },new Pose2d());
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -201,7 +203,7 @@ public class DriveSubsystem extends SubsystemBase {
       }
 
     }
-
+    
     // Update the odometry in the periodic block
     currentPose = m_odometry.update(
         Rotation2d.fromDegrees(getFieldAngle()),
@@ -211,6 +213,15 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
         });
+
+        SmartDashboard.putNumber("Pose Estimate X",currentPose.getX());
+        SmartDashboard.putNumber("Pose Estimate X",currentPose.getY());
+        SmartDashboard.putNumber("Pose Estimate Yaw",currentPose.getRotation().getDegrees());
+
+        Field2d field = new Field2d();
+        field.setRobotPose(currentPose);
+        SmartDashboard.putData("Field Pose Estimate - Drivetrain", field);
+
 
     double[] gyroData = {(double) m_gyro.getYaw(), 
       m_gyro.getAngle(), (double) m_gyro.getRoll(), 
@@ -310,7 +321,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return The pose.
    */
   public Pose2d getPose() {
-    return m_odometry.getPoseMeters();
+    return m_odometry.getEstimatedPosition();
   }
 
   /**
@@ -328,6 +339,27 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearRight.getPosition()
         },
         pose);
+        if(RobotState.isTeleop())
+        {
+          boolean doRejectUpdate = false;
+          LimelightHelpers.SetRobotOrientation("limelight", m_odometry.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+          LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+          if(Math.abs(m_gyro.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
+          {
+            doRejectUpdate = true;
+          }
+          if(mt2.tagCount == 0)
+          {
+            doRejectUpdate = true;
+          }
+          if(!doRejectUpdate)
+          {
+            m_odometry.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
+            m_odometry.addVisionMeasurement(
+                mt2.pose,
+                mt2.timestampSeconds);
+          }
+        }
   }
 
   /**

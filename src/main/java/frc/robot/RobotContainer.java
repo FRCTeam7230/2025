@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.LimelightConstants.reefAlignSide;
+import frc.robot.commands.AlignToCoralStation;
 import frc.robot.commands.AlignWithLimelight;
 import frc.robot.commands.AutoElevatorCommand;
 import frc.robot.Constants.AutoConstants;
@@ -99,6 +100,8 @@ public class RobotContainer {
   Command visionAlignAndScoreLeft;
   Command visionAlignAndScoreRight;
 
+  Command alignToCoralStation;
+
   private final SendableChooser<Command> autoChooser;
 
   /**
@@ -160,7 +163,9 @@ public class RobotContainer {
         .andThen(new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PostScoringHeightMeters)) //lower for scoring
          .andThen(new RunCommand(() -> m_robotDrive.drive(-2*Constants.slowSpeedMode, 0, 0, false, true),m_robotDrive).withTimeout(0.5))
          .andThen(new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kIntakeElevatorHeightMeters)))
-        .andThen(new InstantCommand(()->m_robotDrive.drive(0, 0, 0, false, false), m_robotDrive));       
+        .andThen(new InstantCommand(()->m_robotDrive.drive(0, 0, 0, false, false), m_robotDrive));      
+    
+        alignToCoralStation = new AlignToCoralStation(m_robotDrive);
          //lower for scoring
         //.andThen(new RunCommand(() -> m_robotDrive.drive(-1*Constants.slowSpeedMode, 0, 0, false, true),m_robotDrive).withTimeout(1));
     NamedCommands.registerCommand("Raise Elevator",elevUp);
@@ -303,6 +308,9 @@ public class RobotContainer {
         () -> m_intake.runIntakeRollerMotor(), 
         () -> m_intake.stopIntakeRollerMotor(),
         m_intake));
+    
+    ButtonMappings.button(m_driverController, Constants.ControllerConstants.STATION_ALIGN)
+        .whileTrue(alignToCoralStation);
 
     //new Trigger(() -> m_driverController.getThrottle() < -0.75)
     if(!Constants.ControllerConstants.usingXBoxController){

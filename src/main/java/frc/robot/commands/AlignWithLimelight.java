@@ -39,6 +39,7 @@ public class AlignWithLimelight extends Command {
     m_limelight = limelight;
     m_elevator = elevator;
     addRequirements(m_drive,m_limelight,m_elevator);
+    
 
     alignSide = side;
 
@@ -96,7 +97,7 @@ public class AlignWithLimelight extends Command {
     //ensures valid targetdata
     if(m_limelight.isTV() && targetData.length>=5)
     {
-
+      m_drive.resetOdometry(m_drive.getPose());
       double tx = targetData[0];
       double tz = targetData[2];
       double yaw = targetData[4];
@@ -105,7 +106,7 @@ public class AlignWithLimelight extends Command {
       // {
       //   yaw = -(((m_drive.getFieldAngle()+30)%60) - 30);
       // }
-  
+      
       double xValue = xController.calculate(tx);
       double zValue = forwardController.calculate(tz);
       double yawValue = yawController.calculate(yaw);

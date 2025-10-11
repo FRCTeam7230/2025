@@ -40,7 +40,7 @@ public final class Constants {
     public static final int SCORE_RIGHT = usingXBoxController ? XBoxConstants.SCORE_RIGHT : JoystickConstants.SCORE_RIGHT;
     public static final int MANUAL_ELEVATOR_DOWN = usingXBoxController ? XBoxConstants.MANUAL_ELEVATOR_DOWN : JoystickConstants.MANUAL_ELEVATOR_DOWN;
     public static final int ZERO_HEADING_BUTTON = usingXBoxController ? XBoxConstants.ZERO_HEADING_BUTTON : JoystickConstants.ZERO_HEADING_BUTTON;
-    public static final int DRIVENOTUSED_9 = usingXBoxController ? XBoxConstants.DRIVENOTUSED_9 : JoystickConstants.DRIVENOTUSED_9;
+    public static final int STATION_ALIGN = usingXBoxController ? XBoxConstants.STATION_ALIGN : JoystickConstants.STATION_ALIGN;
     public static final int DRIVENOTUSED_10 = usingXBoxController ? XBoxConstants.DRIVENOTUSED_10 : JoystickConstants.DRIVENOTUSED_10;
     public static final int ELEVATOR_INCREMENT_DOWN = usingXBoxController ? XBoxConstants.ELEVATOR_INCREMENT_DOWN : JoystickConstants.ELEVATOR_INCREMENT_DOWN;
     public static final int ELEVATOR_MAXHEIGHT = usingXBoxController ? XBoxConstants.ELEVATOR_MAXHEIGHT : JoystickConstants.ELEVATOR_MAXHEIGHT;
@@ -95,7 +95,7 @@ public final class Constants {
     public static final int SCORE_RIGHT = kButton6;
     public static final int MANUAL_ELEVATOR_DOWN = kButton7;
     public static final int ZERO_HEADING_BUTTON = kButton8;
-    public static final int DRIVENOTUSED_9 = kButton9;
+    public static final int STATION_ALIGN = kButton9;
     public static final int DRIVENOTUSED_10 = kButton10;
     public static final int ELEVATOR_INCREMENT_DOWN = kButton11;
     public static final int ELEVATOR_MAXHEIGHT = kButton12;
@@ -132,7 +132,7 @@ public final class Constants {
     public static final int SCORE_RIGHT = rightTrigger;
     public static final int MANUAL_ELEVATOR_DOWN = kButton10;
     public static final int ZERO_HEADING_BUTTON = kButton8;
-    public static final int DRIVENOTUSED_9 = 100; //literally not used
+    public static final int STATION_ALIGN = kButton7; //literally not used
     public static final int DRIVENOTUSED_10 = 100; //this too
     public static final int ELEVATOR_INCREMENT_DOWN = kButton1;
     public static final int ELEVATOR_MAXHEIGHT = kButton4;
@@ -311,4 +311,18 @@ public final class Constants {
       Left,
     }
   }
+  public static class CoralStationAlignConstants
+  {
+    public static final double kTargetX = 1.2; // M
+    public static final double ktargetY = 7; // M
+    public static final double kTargetYaw = 126; //deg
+
+    public static final double fieldCenterX = 8.75;
+    public static final double fieldCenterY = 4;
+    
+    public static final double kPositionErrorThreshold = 0.05;
+    public static final double kRotationErrorThreshold = 1; // deg 
+    public static final double kDriveKp = 1; // 2.4?
+    public static final double kRotationKp = 0.06;
+   }
 }
