@@ -27,6 +27,30 @@ public final class Constants {
   public static final double movementDivider = 4;
   public static final double rotateDivider = 5;
   
+
+  public static class L1Constants {
+    public static final int kL1Motor = 67676767;//Choose a port for motor. 
+
+    public static final int extendedPosition = 0;
+    public static final int retractedPosition = 0;
+
+    //public static final double kResetCurrent = 0; //max current tbd TODO: Will need to tune these currents
+    public static final int kMaxCurrent   = 20;//In amps? TODO: Will need to tune these currents
+
+    public static final double kL1Kp = 0; //TODO: Will need to tune this, I lowered it to start 
+    public static final double kL1Ki = 0;
+    public static final double kL1Kd = 0;
+    public static final double kL1RampRate = 0.2;//not sure what this one is for
+
+
+
+//     Gear ratio
+// Output pulley radius/diameter
+// Encoder ticks per revolution
+// CAN IDs
+// Will need to decide on a motor current limit config value
+
+  }
   public static class ControllerConstants {
     //Centeralized controller constants that the code reads from. If usingXBoxController is true, then the buttons are using the XBoxConstants' button numbers
     public static final boolean usingXBoxController = true;
@@ -276,15 +300,19 @@ public final class Constants {
     public static final double kMaxRealElevatorHeightMeters = 1.575; // m
     
     public static final double kL4PreScoringHeightMeters = 1.558; 
-    public static final double kL4PostScoringHeightNoAlgeaMeters = kL4PreScoringHeightMeters-0.3;
+    //public static final double kL4PostScoringHeightNoAlgeaMeters = kL4PreScoringHeightMeters-0.3; //Are we using this constant?
     public static final double kL4PostScoringHeightMeters = kL4PreScoringHeightMeters-0.43;
+    public static final double kL1ScoringHeightMeters = 0;// TODO: Set the value  Whatever the scoring height is for L1
 
-    public static final double kIntakeElevatorHeightMeters = 0.08;    // m
+    public static final double kIntakeElevatorHeightMeters = 0.08;    //Whatever the intake height is for L4
+    public static final double kL1IntakeElevatorHeightMeters = 0; // TODO: Set the value. Whatever the intake height is for L1
 
     public static final double kRotationToMeters = kGearCircumference / kGearRatio;// Revolutions to Output units conversion factor
     public static final double kElevatorMaxVelocity = 4000; // Motor RPM - does not get affected by conversion factor TODO: Need a good inches per sec max, start slow (10?)
     public static final double kElevatorMaxAcceleration = 4000; // Motor RPM - does not get affected by conversion factor TODO: Need a good inches per sec per sec max, start slow (10?)
+  
   }
+
   
   public static class IntakeConstants{
     public static final int intakeRollerMotorID = 2;
