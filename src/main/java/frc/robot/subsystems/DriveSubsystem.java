@@ -94,6 +94,10 @@ public class DriveSubsystem extends SubsystemBase {
 
   StructPublisher<Pose2d> odomPublisher = NetworkTableInstance.getDefault().getStructTopic("Pose", Pose2d.struct).publish();  
   
+  //Idea: rename this to getDriverFieldAngle, since this is based on the viewpoint of the driver, then create a new method that is
+  //      getBlueOriginFieldAngle() which will flip or not flip the angle based on whether or not you are red or blue 
+  //      - that angle would be what you feed MT2.
+  //      The pose should be the same regardless, since pathplanner takes care of flipping for the start pose 
   public double getFieldAngle(){
     return -m_gyro.getAngle();
   }
@@ -215,7 +219,7 @@ public class DriveSubsystem extends SubsystemBase {
         });
 
         SmartDashboard.putNumber("Pose Estimate X",currentPose.getX());
-        SmartDashboard.putNumber("Pose Estimate X",currentPose.getY());
+        SmartDashboard.putNumber("Pose Estimate Y",currentPose.getY());
         SmartDashboard.putNumber("Pose Estimate Yaw",currentPose.getRotation().getDegrees());
 
         Field2d field = new Field2d();
@@ -490,15 +494,6 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void elevDownAccelerationLimiter() {
     isElevUp = false;    
-  }
-
-  /**
-   * Returns the heading of the robot.
-   *
-   * @return the robot's heading in degrees, from -180 to 180
-   */
-  public double getHeading() {
-    return Rotation2d.fromDegrees(getFieldAngle()).getDegrees();
   }
 
   /**
