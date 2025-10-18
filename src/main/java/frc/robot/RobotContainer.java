@@ -38,7 +38,7 @@ import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.utils.ButtonMappings;
 import frc.robot.subsystems.IntakeSubsystem;
-//import frc.robot.subsystems.L1Subsystem;
+import frc.robot.subsystems.L1Subsystem;
 import frc.robot.subsystems.SwerveSubsystemSim;
 import frc.robot.subsystems.UsbCameraSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -86,7 +86,7 @@ public class RobotContainer {
   DriveSubsystem m_robotDrive;
   ElevatorSubsystem m_elevator;
   IntakeSubsystem m_intake;
-  //L1Subsystem m_L1Subsystem;
+  L1Subsystem m_L1Subsystem;
   private Boolean fieldRelative = true;
 
 
@@ -118,14 +118,14 @@ public class RobotContainer {
       m_elevator = new ElevatorSubsystem();
       m_intake = new IntakeSubsystem();
 
-      //m_L1Subsystem = new L1Subsystem();
+      m_L1Subsystem = new L1Subsystem();
 
     } else {
       m_robotDrive = new SwerveSubsystemSim();
       m_elevator = new ElevatorSubsystem();
       m_intake = new IntakeSubsystem();
 
-     // m_L1Subsystem = new L1Subsystem();
+      m_L1Subsystem = new L1Subsystem();
 
     }
     m_limelight = new LimelightSubsystem();

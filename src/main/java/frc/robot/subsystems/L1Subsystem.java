@@ -44,7 +44,7 @@ public class L1Subsystem extends SubsystemBase {
 
     ArmFeedforward m_feedforward = new ArmFeedforward(
         Constants.L1Constants.kL1kS, //volts 
-        Constants.L1Constants.kL1kG, //volts
+        Constants.L1Constants.kL1kG, //volts,  test this using revclient 
         Constants.L1Constants.kL1kV, //volts * seconds / radians
         Constants.L1Constants.kL1kA  //volts * seconds ^ 2 / radians
         );//In case we need this if L1 needs to be more accurate, smooth
@@ -113,6 +113,10 @@ public class L1Subsystem extends SubsystemBase {
         
     }    ///reach goal 
 
+    public void setGoal(){
+        
+    }
+
     //Use this after we know L1 works
     public void autoControl(ElevatorSubsystem elev){
         if (elev.getHeight()>Constants.L1Constants.elevatorHeight){
@@ -133,15 +137,6 @@ public class L1Subsystem extends SubsystemBase {
         SmartDashboard.putNumber("L1 Encoder Angle",m_encoder.getPosition());
         
     }
-    // public void reachGoal(double goal)
-    // {
-    //     m_config.setReference(goal,
-    //                             ControlType.kPosition,
-    //                             ClosedLoopSlot.kSlot1,
-
-    //                             );
-    //     }
-
-    // }
+    
 
 }

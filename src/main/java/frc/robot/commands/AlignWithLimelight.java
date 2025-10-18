@@ -33,6 +33,20 @@ public class AlignWithLimelight extends Command {
   LinearFilter filter= LinearFilter.movingAverage(5);
 
   /** Creates a new AlignWithLimelight. */
+  public AlignWithLimelight(DriveSubsystem drive, LimelightSubsystem limelight, ElevatorSubsystem elevator) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    m_drive = drive;
+    m_limelight = limelight;
+    m_elevator = elevator;
+    addRequirements(m_drive,m_limelight,m_elevator);
+
+    alignSide = null;
+
+    xController = new PIDController(LimelightConstants.kDriveHorizontalKp,0,0);
+    forwardController = new PIDController(LimelightConstants.kDriveForwardKp,0,0);
+    yawController = new PIDController(LimelightConstants.kRotationKp,0,0);
+    targetingExtendedPosition = false;
+  }
   public AlignWithLimelight(DriveSubsystem drive, LimelightSubsystem limelight, ElevatorSubsystem elevator,LimelightConstants.reefAlignSide side) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_drive = drive;
@@ -49,9 +63,25 @@ public class AlignWithLimelight extends Command {
   }
 
   // Called when the command is initially scheduled.
+  public void selectSide(){
+    double[] targetData = m_limelight.getPose();
+    if(m_limelight.isTV() && targetData.length>=5)
+    {
+      double tx = targetData[0];//Tx represents the robot location relative to the apriltag for x.
+      if (tx<0){
+        alignSide = LimelightConstants.reefAlignSide.Left;
+      } else {
+        alignSide = LimelightConstants.reefAlignSide.Right;
+      }
+    }
+    // else{
+    //   m_drive.drive(0,0 ,0, false, true);
+    // }
+  }
   @Override
   public void initialize() 
   {
+    if (alignSide==null){selectSide();}
     targetingExtendedPosition = false;
     if(alignSide == LimelightConstants.reefAlignSide.Left)
     {
@@ -99,7 +129,8 @@ public class AlignWithLimelight extends Command {
 
       double tx = targetData[0];
       double tz = targetData[2];
-      double yaw = targetData[4];
+      double yaw = targetData[4];//Yaw is 0 deg when it's facing tag
+
       yaw = filter.calculate(yaw);
       // if(Math.abs(yaw)<5)
       // {
