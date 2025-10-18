@@ -126,6 +126,11 @@ public class RobotContainer {
     m_visionSubsystem = new VisionSubsystem(m_UsbCamera);
 
     alignToCoralStation = new AlignToCoralStation(m_robotDrive);
+    // alignToCoralStation = new SequentialCommandGroup
+    // (
+    //     new AlignToCoralStation(m_robotDrive),
+    //     new RunCommand(()->{m_robotDrive.setX();})
+    // );
 
     for(int port = 5800; port<=5809; port++)
     {
