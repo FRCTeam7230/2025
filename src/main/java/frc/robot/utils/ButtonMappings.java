@@ -2,6 +2,7 @@ package frc.robot.utils;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 
@@ -23,6 +24,6 @@ public class ButtonMappings {
                 return new Trigger(() -> controller.getRawAxis(/*change*/3) > 0.5);
             }
         }
-        return new JoystickButton(controller, buttonNumber);
+        return buttonNumber%45==0 ? new POVButton(controller, buttonNumber) : new JoystickButton(controller, buttonNumber);
     }
 }

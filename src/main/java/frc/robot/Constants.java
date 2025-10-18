@@ -115,6 +115,18 @@ public final class Constants {
     public static final int kButton9 = 9; //Pressing down left joystick
     public static final int kButton10 = 10; //Pressing down right joystick
 
+    /**
+     * Setting the numbers of the povs to literally anything else will probably break everything 
+     */
+    public static final int pov0 = 0; //up
+    public static final int pov45 = 45; //up right
+    public static final int pov90 = 90; //right
+    public static final int pov135 = 135; //down right
+    public static final int pov180 = 180; //down
+    public static final int pov225 = 225; //down left
+    public static final int pov270 = 270; //left
+    public static final int pov315 = 315; //up left
+
     public static final int leftTrigger = -2; //LT, left trigger 
     public static final int rightTrigger = -3; //RT, right trigger
 
