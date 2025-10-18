@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
-import edu.wpi.first.wpilibj.event.EventLoop;
 import frc.robot.Constants;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.LimelightConstants.reefAlignSide;
@@ -51,7 +50,6 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import java.util.List;
@@ -101,7 +99,6 @@ public class RobotContainer {
   BooleanPublisher mode_publisher = NetworkTableInstance.getDefault().getBooleanTopic("Is Field Relative").publish();
   Command visionAlignAndScoreLeft;
   Command visionAlignAndScoreRight;
-
   Command alignToCoralStation;
 
   private final SendableChooser<Command> autoChooser;
@@ -113,7 +110,6 @@ public class RobotContainer {
   private boolean isCompetition = true;//What replaces this?
 
   public RobotContainer() {
-    
     //Set up Subsystems
     if (RobotBase.isReal()) {
       m_robotDrive = new DriveSubsystem();
@@ -124,9 +120,16 @@ public class RobotContainer {
       m_elevator = new ElevatorSubsystem();
       m_intake = new IntakeSubsystem();
     }
+    
     m_limelight = new LimelightSubsystem();
     m_UsbCamera = new UsbCameraSubsystem();
     m_visionSubsystem = new VisionSubsystem(m_UsbCamera);
+
+    alignToCoralStation = new SequentialCommandGroup
+    (
+        new AlignToCoralStation(m_robotDrive),
+        new RunCommand(()->{m_robotDrive.setX();})
+    );
 
     for(int port = 5800; port<=5809; port++)
     {
@@ -165,9 +168,9 @@ public class RobotContainer {
         .andThen(new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PostScoringHeightMeters)) //lower for scoring
          .andThen(new RunCommand(() -> m_robotDrive.drive(-2*Constants.slowSpeedMode, 0, 0, false, true),m_robotDrive).withTimeout(0.5))
          .andThen(new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kIntakeElevatorHeightMeters)))
-        .andThen(new InstantCommand(()->m_robotDrive.drive(0, 0, 0, false, false), m_robotDrive));      
+        .andThen(new InstantCommand(()->m_robotDrive.drive(0, 0, 0, false, false), m_robotDrive));
+        
     
-        alignToCoralStation = new AlignToCoralStation(m_robotDrive);
          //lower for scoring
         //.andThen(new RunCommand(() -> m_robotDrive.drive(-1*Constants.slowSpeedMode, 0, 0, false, true),m_robotDrive).withTimeout(1));
     NamedCommands.registerCommand("Raise Elevator",elevUp);
@@ -310,9 +313,6 @@ public class RobotContainer {
         () -> m_intake.runIntakeRollerMotor(), 
         () -> m_intake.stopIntakeRollerMotor(),
         m_intake));
-    
-    ButtonMappings.button(m_driverController, Constants.ControllerConstants.STATION_ALIGN)
-        .whileTrue(alignToCoralStation);
 
     //new Trigger(() -> m_driverController.getThrottle() < -0.75)
     if(!Constants.ControllerConstants.usingXBoxController){
@@ -345,6 +345,8 @@ public class RobotContainer {
     .whileTrue(new InstantCommand(
         () -> m_robotDrive.elevDownAccelerationLimiter()
         ));
+    ButtonMappings.button(m_driverController,Constants.ControllerConstants.STATION_ALIGN)
+    .whileTrue(alignToCoralStation);
     
 
     //////// TESTING CONTROLLER ////////////// not updated nor used, commented out
