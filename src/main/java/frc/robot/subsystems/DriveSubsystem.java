@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -15,20 +17,24 @@ import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -79,6 +85,9 @@ public class DriveSubsystem extends SubsystemBase {
   SlewRateLimiter slowdriveLimitY = new SlewRateLimiter(slowTranslationRateLimit);  
   SlewRateLimiter slowdriveLimitRot = new SlewRateLimiter(slowRotRateLimit);  
   boolean isElevUp = false;
+
+  private static Rotation2d prevAngle = new Rotation2d();
+  private static Rotation2d currentAngle;
 
   boolean allianceInitialized = false;
 
@@ -339,6 +348,62 @@ public class DriveSubsystem extends SubsystemBase {
    * @param fieldRelative Whether the provided x and y speeds are relative to the
    *                      field.
    */
+  public void drive(DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier xRotationSupplier, DoubleSupplier yRotationSupplier, boolean fieldRelative, boolean useLimiter) {
+    // Convert the commanded speeds into the correct units for the drivetrain
+    double xSpeedDelivered = xSpeed.getAsDouble() * DriveConstants.kMaxSpeedMetersPerSecond;
+    double ySpeedDelivered = ySpeed.getAsDouble() * DriveConstants.kMaxSpeedMetersPerSecond;
+    double rotDelivered = Math.atan2(yRotationSupplier.getAsDouble(), xRotationSupplier.getAsDouble()) * DriveConstants.kMaxAngularSpeed;
+
+    // Create PID controller
+    ProfiledPIDController angleController = new ProfiledPIDController(
+                    5, 0.0, 0.4,
+                    new TrapezoidProfile.Constraints(Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+    angleController.enableContinuousInput(-Math.PI, Math.PI);
+
+    if(useLimiter) {
+      if(isElevUp) {
+        xSpeedDelivered = slowdriveLimitX.calculate(xSpeedDelivered);
+        ySpeedDelivered = slowdriveLimitY.calculate(ySpeedDelivered);
+        rotDelivered = slowdriveLimitRot.calculate(rotDelivered/Constants.rotateDivider);  
+      }
+      else {
+        xSpeedDelivered = driveLimitX.calculate(xSpeedDelivered);
+        ySpeedDelivered = driveLimitY.calculate(ySpeedDelivered);
+        rotDelivered = driveLimitRot.calculate(rotDelivered);
+      }
+    }
+
+    if(Math.sqrt(Math.pow(xRotationSupplier.getAsDouble(), 2)+Math.pow(yRotationSupplier.getAsDouble(), 2))>0.7){
+      currentAngle = new Rotation2d(-rotDelivered).rotateBy(new Rotation2d(0, -1));
+      prevAngle = currentAngle;                                                
+    } else {
+      currentAngle = prevAngle;
+    }
+
+    // Calculate angular speed
+    double omega = angleController.calculate(
+      currentPose.getRotation().getRadians(),
+      currentAngle.getRadians());
+
+    boolean isFlipped = DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red;
+    
+    var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
+        fieldRelative
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, omega,
+                Rotation2d.fromDegrees(getFieldAngle()))
+                //isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation());
+            : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, omega));
+
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+        swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
+
+    m_frontLeft.setDesiredState(swerveModuleStates[0]);
+    m_frontRight.setDesiredState(swerveModuleStates[1]);
+    m_rearLeft.setDesiredState(swerveModuleStates[2]);
+    m_rearRight.setDesiredState(swerveModuleStates[3]);
+  }
+
+  //overloaded
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean useLimiter) {
     // Convert the commanded speeds into the correct units for the drivetrain
     double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond;

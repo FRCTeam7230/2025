@@ -153,7 +153,8 @@ public final class Constants {
     // XBox movement mappings
     public static final int MOVE_XAXIS = leftStick_XAXIS;
     public static final int MOVE_YAXIS = leftStick_YAXIS;
-    public static final int MOVE_ZAXIS = rightStick_XAXIS;
+    public static final int MOVE_ZXAXIS = rightStick_XAXIS;
+    public static final int MOVE_ZYAXIS = rightStick_YAXIS;
   }
 
   public static final class DriveConstants {
