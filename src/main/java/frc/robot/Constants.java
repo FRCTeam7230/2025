@@ -27,13 +27,17 @@ public final class Constants {
   public static final double movementDivider = 4;
   public static final double rotateDivider = 5;
   
-
   public static class L1Constants {
     public static final int kL1Motor = 67676767;//Choose a port for motor. 
 
     // L1 TODO - Will need an intake position, a score position, a stow position, and an L4 score position
     public static final int extendedPosition = 0;
     public static final int retractedPosition = 0;
+
+    public static final int intakePosition = 0;
+    public static final int scorePosition = 0;
+    public static final int stowPosition = 0;
+    public static final int l4Position = 0;
 
     //public static final double kResetCurrent = 0; //max current tbd TODO: Will need to tune these currents
     public static final int kMaxCurrent   = 20;//In amps? TODO: Will need to tune these currents
@@ -50,7 +54,6 @@ public final class Constants {
     public static final double kL1kA = 0;
 
     public static final double elevatorHeight = 1; //This is the constant to determine whether to extend or retract based on elevator height.
-
 
 
 //     Gear ratio
