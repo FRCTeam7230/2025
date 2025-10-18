@@ -392,7 +392,7 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearRight.setDesiredState(swerveModuleStates[3]);
   }
 
-  public double degreesToRadians(double angle){
+  public double degreesToRadians(double angle){ //from joshua the goat, class of 2026
     return Math.toRadians(angle);
   }
 
