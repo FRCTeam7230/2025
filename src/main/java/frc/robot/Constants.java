@@ -297,6 +297,24 @@ public final class Constants {
     public static final double kElevatorMaxVelocity = 4000; // Motor RPM - does not get affected by conversion factor TODO: Need a good inches per sec max, start slow (10?)
     public static final double kElevatorMaxAcceleration = 4000; // Motor RPM - does not get affected by conversion factor TODO: Need a good inches per sec per sec max, start slow (10?)
   }
+
+  public static class ClimberConstants { // change all these valus 
+    public static final double kClimbRampRate = 0.4;
+    public static final int kMaxCurrent = 20; //?????????
+    public static final double kClimbMaxPosition = 0; //?????????
+    public static final double kClimbMinPosition = 1; //?????????
+
+    public static final int kClimbMotor1 = 0;
+    public static final int kClimbMotor2 = 0;
+    public static final int kClimbMotor3 = 0;
+
+    public static final int kClimbSwitch1 = 0;
+    public static final int kClimbSwitch2 = 0;
+
+    public static final double kClimbMotorSpeed = 0.1; 
+    public static final double kClimbMotorSpeedDown = -0.1;
+    public static final double kClimbWheelSpeed = 0.05;
+  }
   
   public static class IntakeConstants{
     public static final int intakeRollerMotorID = 2;
