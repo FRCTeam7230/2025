@@ -42,7 +42,9 @@ public class L1Subsystem extends SubsystemBase {
     public L1Subsystem(){
         //1 motor subsytem spinning back and forth
         
-        //ArmFeedforward feed = new ArmFeedforward(0, 0, 0);//In case we need this if L1 needs to be more accurate, smooth
+        ArmFeedforward feed = new ArmFeedforward(0, 0, 0);//In case we need this if L1 needs to be more accurate, smooth
+        //Need to change the voltage for the gravity because the weight of the coral is not negligible, with setgains method.
+        
         m_encoderConfig   //maybe this isnt how you do it????
         .positionConversionFactor(360)
         .velocityConversionFactor(0);
@@ -68,13 +70,36 @@ public class L1Subsystem extends SubsystemBase {
         
     }
 
+    public void spinForward(){
+        //if (m_encoder.getPosition()<Constants.L1Constants.extendedPosition){
+            m_motor.set(0.1);
+        //}
+    }
+    public void spinBackward(){
+        //if (m_encoder.getPosition()>Constants.L1Constants.retractedPosition){
+            m_motor.set(-0.1);
+        //}
+    }
+    public void reachGoal(double goal){
+        m_controller.setReference(goal,
+                              ControlType.kPosition,//might mean to set the velocity to 0 (no velocity goal)
+                              ClosedLoopSlot.kSlot0,
+                             0);//armfeedforward
+    }    ///reach goal 
+    public void stop(){
+        m_motor.set(0);
+    }
+
+
     
     
 
     @Override
     public void periodic(){
+        
         encoder_publisher.set(m_encoder.getPosition());
         SmartDashboard.putNumber("L1 Encoder Angle",m_encoder.getPosition());
+        
     }
     // public void reachGoal(double goal)
     // {
