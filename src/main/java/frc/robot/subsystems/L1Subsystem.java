@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
+import frc.robot.Constants.L1Constants;
 
 public class L1Subsystem extends SubsystemBase {
     private final SparkMax                  m_motor        = new SparkMax(Constants.L1Constants.kL1Motor, MotorType.kBrushless);
@@ -93,7 +94,7 @@ public class L1Subsystem extends SubsystemBase {
         m_controller.setReference(goal,  //Docs says this is going to change to setSetpoint() in future versions.
                               ControlType.kPosition,//might mean to set the velocity to 0 (no velocity goal)
                               ClosedLoopSlot.kSlot0,
-                             0);//armfeedforward
+                              m_feedforward.calculate(convertDegtoRad(m_encoder.getPosition()), convertDegtoRad(m_encoder.getVelocity())));//armfeedforward
         
     }    ///reach goal 
 
@@ -104,13 +105,10 @@ public class L1Subsystem extends SubsystemBase {
 
     //Use this after we know L1 works
     //L1 TODO - copy in the feedforward to the regular reach goal. Update this to be a "hover" method which uses the ControlType.Voltage
-    public void reachGoalWithFeedForward(double goal){
-        m_controller.setReference(goal,  //Docs says this is going to change to setSetpoint() in future versions.
-                              ControlType.kPosition,//might mean to set the velocity to 0 (no velocity goal)
-                              ClosedLoopSlot.kSlot0,
-                             m_feedforward.calculate(convertDegtoRad(m_encoder.getPosition()), convertDegtoRad(m_encoder.getVelocity())));//armfeedforward
-        
-    }    ///reach goal 
+    public void HoverL1(double goal){
+        m_controller.setReference(L1Constants.kL1kG,  //Docs says this is going to change to setSetpoint() in future versions.
+                              ControlType.kVoltage);
+    }
 /**
    * Set the goal of the elevator
    *
@@ -139,7 +137,6 @@ public class L1Subsystem extends SubsystemBase {
     public void periodic(){
         // L1 TODO - don't these two publish the same thing? Can delete one of them
         encoder_publisher.set(m_encoder.getPosition());
-        SmartDashboard.putNumber("L1 Encoder Angle",m_encoder.getPosition());
         //if the elevator position is too low, automatically extend the l1 
         //or the velocity
     }
