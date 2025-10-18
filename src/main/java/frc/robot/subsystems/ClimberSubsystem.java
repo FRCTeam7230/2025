@@ -42,6 +42,7 @@ public class ClimberSubsystem extends SubsystemBase
 
 
   // Set up publishers to Advatage Scope
+  // Climber TODO - rename height to angle? (throughout the file)
   DoublePublisher encoder1_publisher = NetworkTableInstance.getDefault().getDoubleTopic("Climber/encoder1value").publish();
   DoublePublisher encoder2_publisher = NetworkTableInstance.getDefault().getDoubleTopic("Climber/encoder2value").publish();
   DoublePublisher velocity_publisher = NetworkTableInstance.getDefault().getDoubleTopic("Climber/velocity").publish();
@@ -56,9 +57,11 @@ public class ClimberSubsystem extends SubsystemBase
   public ClimberSubsystem()
   {
     //Set up motor configs
+    //Climber TODO - set conversion factor to either 2*PI or 360 deg
     m_config_motor1.absoluteEncoder
         .positionConversionFactor(1)
         .velocityConversionFactor(1);
+    //Climber TODO - don't use the elevator constants here, need separate climber constants
     m_config_motor1.closedLoop
         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
         .pid(ElevatorConstants.kElevatorKp, ElevatorConstants.kElevatorKi, ElevatorConstants.kElevatorKd, ClosedLoopSlot.kSlot0)//Change PID with these constants.
@@ -68,6 +71,7 @@ public class ClimberSubsystem extends SubsystemBase
     m_config_motor1.idleMode(SparkBaseConfig.IdleMode.kBrake);
     m_config_motor2.idleMode(SparkBaseConfig.IdleMode.kBrake);
     m_config_motor3.idleMode(SparkBaseConfig.IdleMode.kBrake);
+    //Climber TODO - lift motors should have a max current of 80, not 20. The wheel motor needs a max current of 20
     m_config_motor1.smartCurrentLimit(Constants.ClimberConstants.kMaxCurrent);
     m_config_motor2.smartCurrentLimit(Constants.ClimberConstants.kMaxCurrent);
     m_config_motor1.closedLoopRampRate(Constants.ClimberConstants.kClimbRampRate);
@@ -79,6 +83,8 @@ public class ClimberSubsystem extends SubsystemBase
     m_motor1.configure(m_config_motor1, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     m_config_motor2.follow(m_motor1,true);
     m_motor2.configure(m_config_motor2, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+
+    //Climber TODO - Connect motor config for wheel motors to the wheel motor
 
     // desired height
     m_desiredHeight = 0;
@@ -181,6 +187,7 @@ public class ClimberSubsystem extends SubsystemBase
     current1_publisher.set(m_motor1.getOutputCurrent());
     current2_publisher.set(m_motor2.getOutputCurrent());
 
+    //Climber TODO - not meters, either degrees or radians (depending on your conversion factor)
     SmartDashboard.putNumber("Climber Position (Meters)", m_encoder.getPosition());
     elevReset_publisher.set(false);
 
