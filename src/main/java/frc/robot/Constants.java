@@ -300,20 +300,27 @@ public final class Constants {
 
   public static class ClimberConstants { // change all these valus 
     public static final double kClimbRampRate = 0.4;
-    public static final int kMaxCurrent = 20; //????????? // Climber TODO - Different max currents for the NEO 550 and the NEOs
-    public static final double kClimbMaxPosition = 0; //????????? Climber TODO - Tune late
-    public static final double kClimbMinPosition = 1; //?????????Climber TODO - Tune later
 
-    public static final int kClimbMotor1 = 0; //Climber TODO - Are these CAN IDs? Set to something much higher
-    public static final int kClimbMotor2 = 0;
-    public static final int kClimbMotor3 = 0;
+    public static final int kMaxCurrent = 80;  //Climber TODO - Different max currents for the NEO 550 and the NEOs
+    public static final int kWheelMaxCurrent = 20;
+    public static final double kClimbMaxDegree = 90; //Climber TODO - Tune later
+    public static final double kClimbMinDegree = 95; //Climber TODO - Tune later
 
-    public static final int kClimbSwitch1 = 0;
-    public static final int kClimbSwitch2 = 0;
+    public static final double kClimberKp = 4.5; //Climber TODO - Tune later
+    public static final double kClimberKi = 0; //Climber TODO - Tune later
+    public static final double kClimberKd = 1; //Climber TODO - Tune later
+    
+
+    public static final int kClimbMotor1 = 5; //Climber TODO - Are these CAN IDs? Set to something much higher
+    public static final int kClimbMotor2 = 5;
+    public static final int kClimbMotor3 = 5;
+
+    public static final int kClimbSwitch1 = 5;
+    public static final int kClimbSwitch2 = 5;
 
     public static final double kClimbMotorSpeed = 0.1; 
     public static final double kClimbMotorSpeedDown = -0.1;
-    public static final double kClimbWheelSpeed = 0.05; //Climber TODO - This will probably be higher
+    public static final double kClimbWheelSpeed = 0.2; //Climber TODO - This will probably be higher
   }
   
   public static class IntakeConstants{
