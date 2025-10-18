@@ -94,7 +94,6 @@ public class DriveSubsystem extends SubsystemBase {
   BooleanPublisher gyro_calibrated = NetworkTableInstance.getDefault().getBooleanTopic("IsCalibearted").publish();
 
   StructPublisher<Pose2d> odomPublisher = NetworkTableInstance.getDefault().getStructTopic("Pose", Pose2d.struct).publish();  
-  
   //Idea: rename this to getDriverFieldAngle, since this is based on the viewpoint of the driver, then create a new method that is
   //      getBlueOriginFieldAngle() which will flip or not flip the angle based on whether or not you are red or blue 
   //      - that angle would be what you feed MT2.
@@ -225,7 +224,8 @@ public class DriveSubsystem extends SubsystemBase {
 
         Field2d fieldEstimate = new Field2d();
         fieldEstimate.setRobotPose(currentPose);
-        SmartDashboard.putData("Field Pose Estimate - Gyro", fieldEstimate);
+        //SmartDashboard.putData("Field Pose Estimate - Gyro", fieldEstimate);
+
 
 
     double[] gyroData = {(double) m_gyro.getYaw(), 
