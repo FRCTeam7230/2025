@@ -316,7 +316,7 @@ public class RobotContainer {
             () -> m_elevator.reachGoal(Constants.ElevatorConstants.kL4PreScoringHeightMeters),
             m_elevator));
     //Moving the L1 subsystem forward and backward. 
-    /*ButtonMappings.button(m_driverController,Constants.ControllerConstants.MANUAL_L1_DOWN)
+    ButtonMappings.button(m_driverController,Constants.ControllerConstants.MANUAL_L1_DOWN)
     .whileTrue(Commands.startEnd(
                             () -> m_L1Subsystem.spinBackward(), //negative direction
                             () -> m_L1Subsystem.stop(), 
@@ -325,7 +325,7 @@ public class RobotContainer {
     .whileTrue(Commands.startEnd(
                             () -> m_L1Subsystem.spinForward(), //positive direction
                             () -> m_L1Subsystem.stop(), 
-                            m_elevator));*/
+                            m_elevator));
 
     //new JoystickButton(m_driverController, Constants.ControllerConstants.INTAKE_BUTTON)
     ButtonMappings.button(m_driverController,Constants.ControllerConstants.INTAKE_BUTTON)

@@ -24,6 +24,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -75,7 +76,6 @@ public class L1Subsystem extends SubsystemBase {
         m_motorConfig.smartCurrentLimit(Constants.L1Constants.kMaxCurrent);
 
         m_motor.configure(m_motorConfig, ResetMode.kNoResetSafeParameters,PersistMode.kNoPersistParameters);
-
         
         
     }
@@ -112,9 +112,14 @@ public class L1Subsystem extends SubsystemBase {
                              m_feedforward.calculate(convertRottoRad(m_encoder.getPosition()), convertRottoRad(m_encoder.getVelocity())));//armfeedforward
         
     }    ///reach goal 
-
-    public void setGoal(){
-        
+/**
+   * Set the goal of the elevator
+   *
+   * @param goal Goal in meters
+   * @return {@link edu.wpi.first.wpilibj2.command.Command}
+   */
+    public Command setGoal(double goal){
+        return run(()-> reachGoal(goal));//converting runnable to command. proudly copied and pasted from the elevator subsytem/
     }
 
     //Use this after we know L1 works
