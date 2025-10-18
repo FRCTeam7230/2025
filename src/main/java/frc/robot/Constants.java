@@ -31,6 +31,7 @@ public final class Constants {
   public static class L1Constants {
     public static final int kL1Motor = 67676767;//Choose a port for motor. 
 
+    // L1 TODO - Will need an intake position, a score position, a stow position, and an L4 score position
     public static final int extendedPosition = 0;
     public static final int retractedPosition = 0;
 
@@ -42,7 +43,7 @@ public final class Constants {
     public static final double kL1Kd = 0;
     public static final double kL1RampRate = 0.2;//not sure what this one is for
 
-
+    //Note, all should be ok at zero except kG 
     public static final double kL1kS = 0;
     public static final double kL1kV = 0;
     public static final double kL1kG = 0;
