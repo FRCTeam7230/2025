@@ -30,6 +30,7 @@ import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -222,9 +223,9 @@ public class DriveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Pose Estimate Y",currentPose.getY());
         SmartDashboard.putNumber("Pose Estimate Yaw",currentPose.getRotation().getDegrees());
 
-        Field2d field = new Field2d();
-        field.setRobotPose(currentPose);
-        SmartDashboard.putData("Field Pose Estimate - Drivetrain", field);
+        Field2d fieldEstimate = new Field2d();
+        fieldEstimate.setRobotPose(currentPose);
+        SmartDashboard.putData("Field Pose Estimate - Gyro", fieldEstimate);
 
 
     double[] gyroData = {(double) m_gyro.getYaw(), 
@@ -362,6 +363,9 @@ public class DriveSubsystem extends SubsystemBase {
             m_odometry.addVisionMeasurement(
                 mt2.pose,
                 mt2.timestampSeconds);
+            SmartDashboard.putNumber("Last Vision Gyro Recalibration",RobotController.getFPGATime()/1e6);
+            SmartDashboard.putNumber("Vision pose X",mt2.pose.getX());
+            SmartDashboard.putNumber("Vision pose Y",mt2.pose.getY());
           }
         }
   }

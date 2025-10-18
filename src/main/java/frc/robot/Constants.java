@@ -144,7 +144,7 @@ public final class Constants {
     public static final int SCORE_RIGHT = rightTrigger;
     public static final int MANUAL_ELEVATOR_DOWN = kButton10;
     public static final int ZERO_HEADING_BUTTON = kButton8;
-    public static final int STATION_ALIGN = kButton7; //literally not used
+    public static final int STATION_ALIGN = pov0; //literally not used
     public static final int DRIVENOTUSED_10 = 100; //this too
     public static final int ELEVATOR_INCREMENT_DOWN = kButton1;
     public static final int ELEVATOR_MAXHEIGHT = kButton4;
