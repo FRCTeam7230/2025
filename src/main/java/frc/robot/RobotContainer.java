@@ -38,6 +38,7 @@ import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.utils.ButtonMappings;
 import frc.robot.subsystems.IntakeSubsystem;
+//import frc.robot.subsystems.L1Subsystem;
 import frc.robot.subsystems.SwerveSubsystemSim;
 import frc.robot.subsystems.UsbCameraSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -85,6 +86,7 @@ public class RobotContainer {
   DriveSubsystem m_robotDrive;
   ElevatorSubsystem m_elevator;
   IntakeSubsystem m_intake;
+  //L1Subsystem m_L1Subsystem;
   private Boolean fieldRelative = true;
 
 
@@ -98,6 +100,7 @@ public class RobotContainer {
   BooleanPublisher mode_publisher = NetworkTableInstance.getDefault().getBooleanTopic("Is Field Relative").publish();
   Command visionAlignAndScoreLeft;
   Command visionAlignAndScoreRight;
+  Command visionAlignAndScoreAuto;
 
   private final SendableChooser<Command> autoChooser;
 
@@ -114,10 +117,16 @@ public class RobotContainer {
       m_robotDrive = new DriveSubsystem();
       m_elevator = new ElevatorSubsystem();
       m_intake = new IntakeSubsystem();
+
+      //m_L1Subsystem = new L1Subsystem();
+
     } else {
       m_robotDrive = new SwerveSubsystemSim();
       m_elevator = new ElevatorSubsystem();
       m_intake = new IntakeSubsystem();
+
+     // m_L1Subsystem = new L1Subsystem();
+
     }
     m_limelight = new LimelightSubsystem();
     m_UsbCamera = new UsbCameraSubsystem();
@@ -160,7 +169,15 @@ public class RobotContainer {
         .andThen(new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PostScoringHeightMeters)) //lower for scoring
          .andThen(new RunCommand(() -> m_robotDrive.drive(-2*Constants.slowSpeedMode, 0, 0, false, true),m_robotDrive).withTimeout(0.5))
          .andThen(new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kIntakeElevatorHeightMeters)))
-        .andThen(new InstantCommand(()->m_robotDrive.drive(0, 0, 0, false, false), m_robotDrive));       
+        .andThen(new InstantCommand(()->m_robotDrive.drive(0, 0, 0, false, false), m_robotDrive));   
+    visionAlignAndScoreAuto = 
+    new WaitUntilCommand(()->m_limelight.isTV()).andThen(
+        new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kL4PreScoringHeightMeters))) //TODO: Elevator set goals should probably be changed to Instance Commands
+        .andThen(new AlignWithLimelight(m_robotDrive, m_limelight, m_elevator)) //TODO Replace with set of commands to align, score and drive backwards
+        .andThen(new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PostScoringHeightMeters)) //lower for scoring
+            .andThen(new RunCommand(() -> m_robotDrive.drive(-2*Constants.slowSpeedMode, 0, 0, false, true),m_robotDrive).withTimeout(0.5))
+            .andThen(new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kIntakeElevatorHeightMeters)))
+        .andThen(new InstantCommand(()->m_robotDrive.drive(0, 0, 0, false, false), m_robotDrive));   
          //lower for scoring
         //.andThen(new RunCommand(() -> m_robotDrive.drive(-1*Constants.slowSpeedMode, 0, 0, false, true),m_robotDrive).withTimeout(1));
     NamedCommands.registerCommand("Raise Elevator",elevUp);
@@ -170,6 +187,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Stop Intake", new InstantCommand(() -> m_intake.stopIntakeRollerMotor()));//Is this how it's done?
     NamedCommands.registerCommand("Vision Align And Score Left",visionAlignAndScoreLeft);
     NamedCommands.registerCommand("Vision Align And Score Right",visionAlignAndScoreRight);
+    NamedCommands.registerCommand("Vision Align And Score Auto",visionAlignAndScoreAuto);
     // Use event markers as triggers
     // new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
     // new EventTrigger("Dance").onTrue(Commands.print("This will not be a command where the robot will spin around itself."));
@@ -286,6 +304,7 @@ public class RobotContainer {
                               m_elevator));
 
     //new JoystickButton(m_driverController, Constants.ControllerConstants.ELEVATOR_INCREMENT_DOWN)
+    
     ButtonMappings.button(m_driverController,Constants.ControllerConstants.ELEVATOR_INCREMENT_DOWN)
         .whileTrue(new InstantCommand(
             () -> m_elevator.ElevatorIncrementDown(),
@@ -296,7 +315,18 @@ public class RobotContainer {
         .whileTrue(new InstantCommand(
             () -> m_elevator.reachGoal(Constants.ElevatorConstants.kL4PreScoringHeightMeters),
             m_elevator));
-    
+    //Moving the L1 subsystem forward and backward. 
+    /*ButtonMappings.button(m_driverController,Constants.ControllerConstants.MANUAL_L1_DOWN)
+    .whileTrue(Commands.startEnd(
+                            () -> m_L1Subsystem.spinBackward(), //negative direction
+                            () -> m_L1Subsystem.stop(), 
+                            m_elevator));
+    ButtonMappings.button(m_driverController,Constants.ControllerConstants.MANUAL_L1_UP)
+    .whileTrue(Commands.startEnd(
+                            () -> m_L1Subsystem.spinForward(), //positive direction
+                            () -> m_L1Subsystem.stop(), 
+                            m_elevator));*/
+
     //new JoystickButton(m_driverController, Constants.ControllerConstants.INTAKE_BUTTON)
     ButtonMappings.button(m_driverController,Constants.ControllerConstants.INTAKE_BUTTON)
         .whileTrue(new StartEndCommand(
@@ -391,7 +421,7 @@ public class RobotContainer {
     //TODO: This needs to wait until alliance specified!!
      SmartDashboard.putData("COMP - Start Center to Left (Processor) Coral Station", new PathPlannerAuto("COMP - Start Center to Left (Processor) Coral Station"));
      SmartDashboard.putData("COMP - Start Center to Right (Our Barge) Coral Station", new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"));
-     SmartDashboard.putData("COMP - Start Right (Our Barge) Side", new PathPlannerAuto("COMP - Start Right (Our Barge) Side"));
+     SmartDashboard.putData("COMP - Start Right (Our Barge) Side", new PathPlannerAuto("COMP - Start Left (Processor) Side",true));
      SmartDashboard.putData("COMP - Start Left (Processor) Side", new PathPlannerAuto("COMP - Start Left (Processor) Side"));
     // // Add a button to run pathfinding commands to SmartDashboard
     // SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
@@ -522,5 +552,6 @@ public class RobotContainer {
   {
     visionAlignAndScoreLeft.cancel();
     visionAlignAndScoreRight.cancel();
+    visionAlignAndScoreAuto.cancel();
   }
 }

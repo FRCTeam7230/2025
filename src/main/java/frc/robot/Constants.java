@@ -43,6 +43,14 @@ public final class Constants {
     public static final double kL1RampRate = 0.2;//not sure what this one is for
 
 
+    public static final double kL1kS = 0;
+    public static final double kL1kV = 0;
+    public static final double kL1kG = 0;
+    public static final double kL1kA = 0;
+
+    public static final double elevatorHeight = 1; //This is the constant to determine whether to extend or retract based on elevator height.
+
+
 
 //     Gear ratio
 // Output pulley radius/diameter

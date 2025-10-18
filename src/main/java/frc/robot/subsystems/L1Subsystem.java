@@ -23,7 +23,10 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
+
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 
 public class L1Subsystem extends SubsystemBase {
@@ -39,25 +42,30 @@ public class L1Subsystem extends SubsystemBase {
 
     DoublePublisher encoder_publisher = NetworkTableInstance.getDefault().getDoubleTopic("L1/encoder1value").publish();//I'm guessing this makes a new section for L1
 
+    ArmFeedforward m_feedforward = new ArmFeedforward(
+        Constants.L1Constants.kL1kS, //volts 
+        Constants.L1Constants.kL1kG, //volts
+        Constants.L1Constants.kL1kV, //volts * seconds / radians
+        Constants.L1Constants.kL1kA  //volts * seconds ^ 2 / radians
+        );//In case we need this if L1 needs to be more accurate, smooth
+
     public L1Subsystem(){
         //1 motor subsytem spinning back and forth
-        
-        ArmFeedforward feed = new ArmFeedforward(0, 0, 0);//In case we need this if L1 needs to be more accurate, smooth
         //Need to change the voltage for the gravity because the weight of the coral is not negligible, with setgains method.
         
         m_encoderConfig   //maybe this isnt how you do it????
         .positionConversionFactor(360)
-        .velocityConversionFactor(0);
+        .velocityConversionFactor(360);
 
         m_motorConfig.absoluteEncoder
         .positionConversionFactor(360)
-        .velocityConversionFactor(0)
+        .velocityConversionFactor(360)
         .setSparkMaxDataPortConfig(); //i think this configures it to the encoder through the controller, but i'm not sure.
 
         m_motorConfig.closedLoop
         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder) //Maybe this is how you do it? 
         .pid(Constants.L1Constants.kL1Kp,Constants.L1Constants.kL1Ki,Constants.L1Constants.kL1Kd)//I don't understand the kSlot stuff. What do each of the slots represent. A: It represents pid settings that can be stored in each "slot".
-        .outputRange(-1,1)//determines the speeeeed limit. 
+        .outputRange(-0.1,0.1)//determines the speeeeed limit. 
         .maxMotion
         .maxAcceleration(0)
         .maxVelocity(0) //I saw in the documentation that this is getting replaced with cruiseVelocity
@@ -67,31 +75,51 @@ public class L1Subsystem extends SubsystemBase {
         m_motorConfig.smartCurrentLimit(Constants.L1Constants.kMaxCurrent);
 
         m_motor.configure(m_motorConfig, ResetMode.kNoResetSafeParameters,PersistMode.kNoPersistParameters);
+
+        
         
     }
 
     public void spinForward(){
         //if (m_encoder.getPosition()<Constants.L1Constants.extendedPosition){
             m_motor.set(0.1);
+            //reachGoal(Constants.L1Constants.extendedPosition);//Figure out which way is which
         //}
     }
     public void spinBackward(){
         //if (m_encoder.getPosition()>Constants.L1Constants.retractedPosition){
             m_motor.set(-0.1);
+            //reachGoal(Constants.L1Constants.retractedPosition);
         //}
     }
     public void reachGoal(double goal){
-        m_controller.setReference(goal,
+        m_controller.setReference(goal,  //Docs says this is going to change to setSetpoint() in future versions.
                               ControlType.kPosition,//might mean to set the velocity to 0 (no velocity goal)
                               ClosedLoopSlot.kSlot0,
                              0);//armfeedforward
+        
     }    ///reach goal 
+
+    //Use this after we know L1 works
+    public void reachGoalWithFeedForward(double goal){
+        m_controller.setReference(goal,  //Docs says this is going to change to setSetpoint() in future versions.
+                              ControlType.kPosition,//might mean to set the velocity to 0 (no velocity goal)
+                              ClosedLoopSlot.kSlot0,
+                             m_feedforward.calculate(m_encoder.getPosition()*Math.PI/180, m_encoder.getVelocity()*Math.PI/180));//armfeedforward
+        
+    }    ///reach goal 
+
+    //Use this after we know L1 works
+    public void autoControl(ElevatorSubsystem elev){
+        if (elev.getHeight()>Constants.L1Constants.elevatorHeight){
+            spinForward();
+        } else {
+            spinBackward();
+        } 
+    }
     public void stop(){
         m_motor.set(0);
     }
-
-
-    
     
 
     @Override
