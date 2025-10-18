@@ -100,12 +100,16 @@ public class L1Subsystem extends SubsystemBase {
         
     }    ///reach goal 
 
+    public double convertRottoRad(double val){
+        return val*Math.PI/180;
+    }
+
     //Use this after we know L1 works
     public void reachGoalWithFeedForward(double goal){
         m_controller.setReference(goal,  //Docs says this is going to change to setSetpoint() in future versions.
                               ControlType.kPosition,//might mean to set the velocity to 0 (no velocity goal)
                               ClosedLoopSlot.kSlot0,
-                             m_feedforward.calculate(m_encoder.getPosition()*Math.PI/180, m_encoder.getVelocity()*Math.PI/180));//armfeedforward
+                             m_feedforward.calculate(convertRottoRad(m_encoder.getPosition()), convertRottoRad(m_encoder.getVelocity())));//armfeedforward
         
     }    ///reach goal 
 
