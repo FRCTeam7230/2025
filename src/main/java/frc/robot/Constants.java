@@ -76,8 +76,8 @@ public final class Constants {
     public static final int SCORE_RIGHT = usingXBoxController ? XBoxConstants.SCORE_RIGHT : JoystickConstants.SCORE_RIGHT;
     public static final int MANUAL_ELEVATOR_DOWN = usingXBoxController ? XBoxConstants.MANUAL_ELEVATOR_DOWN : JoystickConstants.MANUAL_ELEVATOR_DOWN;
     public static final int ZERO_HEADING_BUTTON = usingXBoxController ? XBoxConstants.ZERO_HEADING_BUTTON : JoystickConstants.ZERO_HEADING_BUTTON;
-    public static final int MANUAL_L1_UP = usingXBoxController ? XBoxConstants.DRIVENOTUSED_9 : JoystickConstants.MANUAL_L1_UP;
-    public static final int MANUAL_L1_DOWN = usingXBoxController ? XBoxConstants.DRIVENOTUSED_10 : JoystickConstants.MANUAL_L1_DOWN;
+    public static final int MANUAL_L1_DOWN = usingXBoxController ? XBoxConstants.MANUAL_L1_DOWN : JoystickConstants.MANUAL_L1_DOWN;
+    public static final int MANUAL_L1_UP = usingXBoxController ? XBoxConstants.MANUAL_L1_UP : JoystickConstants.MANUAL_L1_UP;
     public static final int ELEVATOR_INCREMENT_DOWN = usingXBoxController ? XBoxConstants.ELEVATOR_INCREMENT_DOWN : JoystickConstants.ELEVATOR_INCREMENT_DOWN;
     public static final int ELEVATOR_MAXHEIGHT = usingXBoxController ? XBoxConstants.ELEVATOR_MAXHEIGHT : JoystickConstants.ELEVATOR_MAXHEIGHT;
     public static final int ROBOT_RELATIVE = usingXBoxController ? XBoxConstants.ROBOT_RELATIVE : JoystickConstants.ROBOT_RELATIVE;
@@ -180,8 +180,8 @@ public final class Constants {
     public static final int SCORE_RIGHT = rightTrigger;
     public static final int MANUAL_ELEVATOR_DOWN = kButton10;
     public static final int ZERO_HEADING_BUTTON = pov0;
-    public static final int DRIVENOTUSED_9 = 100; //literally not used
-    public static final int DRIVENOTUSED_10 = 100; //this too
+    public static final int MANUAL_L1_DOWN = pov180; //literally not used
+    public static final int MANUAL_L1_UP = pov0; //this too
     public static final int ELEVATOR_INCREMENT_DOWN = kButton1;
     public static final int ELEVATOR_MAXHEIGHT = kButton4;
     public static final int ROBOT_RELATIVE = kButton2;

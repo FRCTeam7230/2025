@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import frc.robot.Constants;
@@ -353,7 +354,13 @@ public class RobotContainer {
     } else {
         ButtonMappings.button(m_driverController, Constants.ControllerConstants.ROBOT_RELATIVE)
         .onTrue(Commands.sequence(
-                new InstantCommand(() -> fieldRelative = !fieldRelative, m_robotDrive),
+                new InstantCommand(() -> fieldRelative = !fieldRelative, m_robotDrive)
+                .andThen(() -> m_driverController.setRumble(
+                    fieldRelative 
+                    ? RumbleType.kLeftRumble
+                    : RumbleType.kRightRumble
+                    , 0.5))
+                ,
                 new InstantCommand(() -> mode_publisher.set(fieldRelative))
             ));
     }
