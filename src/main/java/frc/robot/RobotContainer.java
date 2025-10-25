@@ -31,6 +31,7 @@ import frc.robot.commands.AutoElevatorCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.L1Constants;
 import frc.robot.Constants.OIConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 //import frc.robot.subsystems.Climber;
@@ -320,16 +321,20 @@ public class RobotContainer {
             m_elevator));
     //Moving the L1 subsystem forward and backward. 
     ButtonMappings.button(m_driverController,Constants.ControllerConstants.MANUAL_L1_DOWN)
-    .whileTrue(Commands.startEnd(
-                            () -> m_L1Subsystem.spinBackward(), //negative direction
-                            () -> m_L1Subsystem.stop(), 
-                            m_elevator));
-    ButtonMappings.button(m_driverController,Constants.ControllerConstants.MANUAL_L1_UP)
-    .whileTrue(Commands.startEnd(
-                            () -> m_L1Subsystem.spinForward(), //positive direction
-                            () -> m_L1Subsystem.stop(), 
-                            m_elevator));
+    .whileTrue(new InstantCommand(
+        ()-> m_L1Subsystem.reachGoal(L1Constants.scorePosition),
+        m_elevator, m_L1Subsystem));
 
+    ButtonMappings.button(m_driverController,Constants.ControllerConstants.MANUAL_L1_UP)
+    .whileTrue(new InstantCommand(
+        ()-> m_L1Subsystem.reachGoal(L1Constants.stowPosition),
+        m_elevator, m_L1Subsystem));
+        
+    ButtonMappings.button(m_driverController,Constants.ControllerConstants.HOVER_L1)
+    .whileTrue(Commands.startEnd(
+                            () -> m_L1Subsystem.HoverL1(), //negative direction
+                            () -> m_L1Subsystem.stop(), 
+                            m_elevator));
     //new JoystickButton(m_driverController, Constants.ControllerConstants.INTAKE_BUTTON)
     ButtonMappings.button(m_driverController,Constants.ControllerConstants.INTAKE_BUTTON)
         .whileTrue(new StartEndCommand(
