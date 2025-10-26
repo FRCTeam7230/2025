@@ -38,12 +38,15 @@ public class L1Subsystem extends SubsystemBase {
     private final SparkMaxConfig            m_motorConfig        = new SparkMaxConfig();
     private final SparkClosedLoopController m_controller;//    = m_motor.getClosedLoopController();
 
-
+    private ElevatorSubsystem m_elevator;
+    private double storedPosition;
+    private double m_desiredPosition;
     //m_encoder is a seperate part in the motor.
     //this is why you need to make its own config.
 
     DoublePublisher encoder_publisher = NetworkTableInstance.getDefault().getDoubleTopic("L1/encoder1value").publish();//I'm guessing this makes a new section for L1
-
+    DoublePublisher current1_publisher = NetworkTableInstance.getDefault().getDoubleTopic("L1/currentMotor1").publish();
+    DoublePublisher position_publisher = NetworkTableInstance.getDefault().getDoubleTopic("L1/targetPosition").publish();
     ArmFeedforward m_feedforward = new ArmFeedforward(
         Constants.L1Constants.kL1kS, //volts 
         Constants.L1Constants.kL1kG, //volts,  test this using revclient 
@@ -54,10 +57,11 @@ public class L1Subsystem extends SubsystemBase {
     
     public double m_targetPositionMode;
 
-    public L1Subsystem(){
+    public L1Subsystem(ElevatorSubsystem elevator){
         m_motor   = new SparkMax(Constants.L1Constants.kL1Motor, MotorType.kBrushed);
         m_encoder = m_motor.getAbsoluteEncoder();
         m_controller    = m_motor.getClosedLoopController();
+        
         //1 motor subsytem spinning back and forth
         //Need to change the voltage for the gravity because the weight of the coral is not negligible, with setgains method.
 
@@ -85,7 +89,8 @@ public class L1Subsystem extends SubsystemBase {
 
         m_motor.configure(m_motorConfig, ResetMode.kNoResetSafeParameters,PersistMode.kNoPersistParameters);
         
-        
+        m_elevator = elevator;
+        storedPosition = Constants.L1Constants.stowPosition;
     }
 
     public void spinForward(){
@@ -98,12 +103,13 @@ public class L1Subsystem extends SubsystemBase {
             m_motor.set(-0.1);
             //reachGoal(Constants.L1Constants.retractedPosition);
     }
-    public void reachGoal(double goal){
+    public void reachGoal(double goal, boolean override){
+        m_desiredPosition = goal;
         m_controller.setReference(goal,  //Docs says this is going to change to setSetpoint() in future versions.
                               ControlType.kPosition,//might mean to set the velocity to 0 (no velocity goal)
                               ClosedLoopSlot.kSlot0,
                               m_feedforward.calculate(convertDegtoRad(m_encoder.getPosition()), convertDegtoRad(m_encoder.getVelocity())));//armfeedforward
-        
+        if (!override){storedPosition = goal;}
     }    ///reach goal 
 
     // L1 TODO - this function converts degrees to rads, not rot to radians. Rename please
@@ -125,20 +131,42 @@ public class L1Subsystem extends SubsystemBase {
    * @return {@link edu.wpi.first.wpilibj2.command.Command}
    */
     public Command setGoal(double goal){
-        return run(()-> reachGoal(goal));//converting runnable to command. 
+        return run(()-> reachGoal(goal,false));//converting runnable to command. 
     }
 
     public void stop(){
         m_motor.set(0);
     }
     
-
+    boolean overriden = false;
+    double originalSetPoint;
     @Override
     public void periodic(){
         // L1 TODO - don't these two publish the same thing? Can delete one of them
         encoder_publisher.set(m_encoder.getPosition());
+        current1_publisher.set(m_motor.getOutputCurrent());
+        position_publisher.set(m_desiredPosition);
         //if the elevator position is too low, automatically extend the l1 
         //or the velocity
+        boolean isL1Safe = (m_encoder.getPosition()>12&&m_encoder.getPosition()<180);
+        if (m_elevator.getSetPoint()<0.53&&!isL1Safe){
+            originalSetPoint = m_elevator.getSetPoint();
+            m_elevator.reachGoal(0.53);
+            overriden = true;
+        } else if (overriden&&isL1Safe){
+            m_elevator.reachGoal(originalSetPoint);
+            overriden = false;
+        }
+
+        if (m_elevator.getHeight()<Constants.L1Constants.overrideHeight||
+        (m_elevator.getHeight()<Constants.L1Constants.overrideHeightDown 
+            && (m_elevator.getVelocity()<-0.2||m_elevator.getSetPoint()<Constants.L1Constants.overrideHeight))){
+            reachGoal(Constants.L1Constants.stowPosition,true);
+        } else {
+            reachGoal(storedPosition ,false);
+        }
+
+        
     }
     
 

@@ -33,9 +33,9 @@ public final class Constants {
     // L1 TODO - Will need an intake position, a score position, a stow position, and an L4 score position
     public static final double intakePosition  = 21;
     public static final double scorePosition   = 342; // deg
-    public static final double stowPosition    = 32; // deg
+    public static final double stowPosition    = 24; // deg
     public static final double l4ScorePosition = 239; // deg
-    public static final double l4Intake        = 345;
+    public static final double l4Intake        = 24;
 
     public static final double kElevMaxHeightForL4Scoring = .5;
 
@@ -54,7 +54,8 @@ public final class Constants {
     public static final double kL1kA = 0;
 
     public static final double elevatorHeight = 0.5; //This is the constant to determine whether to extend or retract based on elevator height.
-
+    public static final double overrideHeight = 0.6;
+    public static final double overrideHeightDown = 0.7;
 
 //     Gear ratio
 // Output pulley radius/diameter
@@ -75,13 +76,13 @@ public final class Constants {
     public static final int SCORE_LEFT = usingXBoxController ? XBoxConstants.SCORE_LEFT : JoystickConstants.SCORE_LEFT;
     public static final int SCORE_RIGHT = usingXBoxController ? XBoxConstants.SCORE_RIGHT : JoystickConstants.SCORE_RIGHT;
     public static final int MANUAL_ELEVATOR_DOWN = usingXBoxController ? XBoxConstants.MANUAL_ELEVATOR_DOWN : JoystickConstants.MANUAL_ELEVATOR_DOWN;
-    public static final int ZERO_HEADING_BUTTON = usingXBoxController ? XBoxConstants.ZERO_HEADING_BUTTON : JoystickConstants.ZERO_HEADING_BUTTON;
+    //public static final int ZERO_HEADING_BUTTON = usingXBoxController ? XBoxConstants.ZERO_HEADING_BUTTON : JoystickConstants.ZERO_HEADING_BUTTON;
     public static final int MANUAL_L1_DOWN = usingXBoxController ? XBoxConstants.MANUAL_L1_DOWN : JoystickConstants.MANUAL_L1_DOWN;
     public static final int MANUAL_L1_UP = usingXBoxController ? XBoxConstants.MANUAL_L1_UP : JoystickConstants.MANUAL_L1_UP;
     public static final int ELEVATOR_INCREMENT_DOWN = usingXBoxController ? XBoxConstants.ELEVATOR_INCREMENT_DOWN : JoystickConstants.ELEVATOR_INCREMENT_DOWN;
     public static final int ELEVATOR_MAXHEIGHT = usingXBoxController ? XBoxConstants.ELEVATOR_MAXHEIGHT : JoystickConstants.ELEVATOR_MAXHEIGHT;
     public static final int ROBOT_RELATIVE = usingXBoxController ? XBoxConstants.ROBOT_RELATIVE : JoystickConstants.ROBOT_RELATIVE;
-    public static final int HOVER_L1 = XBoxConstants.HOVER_L1;
+    //public static final int HOVER_L1 = XBoxConstants.HOVER_L1;
     public static final int throttleButton1 = usingXBoxController ? 100 : JoystickConstants.throttleButton1;
     public static final int throttleButton2 = usingXBoxController ? 100 : JoystickConstants.throttleButton2;
 
@@ -146,17 +147,17 @@ public final class Constants {
     public static final int kButton4 = 4; //Y
     public static final int kButton5 = 5; //LB, left button
     public static final int kButton6 = 6; //RB, right button
-    public static final int kButton7 = 7; //Screenshare button, probably dont use
+    public static final int kButton7 = 7; //Screenshare button, probably dont use   //not used
     public static final int kButton8 = 8; //Menu button, probably dont use, also the back button
-    public static final int kButton9 = 9; //Pressing down left joystick
-    public static final int kButton10 = 10; //Pressing down right joystick
+    public static final int kButton9 = 9; //Pressing down left joystick DO NOT USE
+    public static final int kButton10 = 10; //Pressing down right joystick DO NOT USE  //not used
 
     /**
      * Setting the numbers of the povs to literally anything else will probably break everything 
      */
     public static final int pov0 = 0; //up
     public static final int pov45 = 45; //up right
-    public static final int pov90 = 90; //right
+    public static final int pov90 = 90; //right          probably make it elevator intake
     public static final int pov135 = 135; //down right
     public static final int pov180 = 180; //down
     public static final int pov225 = 225; //down left
@@ -174,18 +175,26 @@ public final class Constants {
     // Xbox controller mappings
     public static final int BRAKE_BUTTON = kButton3;
     public static final int INTAKE_BUTTON = kButton9;
-    public static final int SLOW_MODE_LEFT = kButton5;
-    public static final int SLOW_MODE_RIGHT = kButton6;
+    public static final int SLOW_MODE_LEFT = 67;   //dead
+    public static final int SLOW_MODE_RIGHT = 67;  //dead
     public static final int SCORE_LEFT = leftTrigger;
     public static final int SCORE_RIGHT = rightTrigger;
-    public static final int MANUAL_ELEVATOR_DOWN = kButton10;
-    public static final int ZERO_HEADING_BUTTON = pov90;
-    public static final int MANUAL_L1_DOWN = pov180; //literally not used
-    public static final int MANUAL_L1_UP = pov0; //this too
-    public static final int ELEVATOR_INCREMENT_DOWN = kButton1;
-    public static final int ELEVATOR_MAXHEIGHT = kButton4;
+    public static final int MANUAL_ELEVATOR_DOWN = pov270;
+    
+    public static final int ZERO_HEADING_BUTTON = kButton7; 
+    public static final int MANUAL_L1_DOWN = 67; //dead
+    public static final int MANUAL_L1_UP = 67; //dead
+    public static final int L1_STOW = kButton5; //connect
+    public static final int L1_SCORE = kButton6; //connect
+    
+    public static final int ELEVATOR_INCREMENT_DOWN = pov180;
+    public static final int ELEVATOR_MAXHEIGHT = pov0;
+    public static final int L4_INTAKE = kButton1; //connect
+    public static final int L1_INTAKE = kButton4; //connect
+
+
     public static final int ROBOT_RELATIVE = kButton2;
-    public static final int HOVER_L1 = pov270;
+    //public static final int HOVER_L1 = pov270;
     //button 7 is not used
     
     // XBox movement mappings
@@ -331,7 +340,7 @@ public final class Constants {
     public static final double kL1ScoringHeightMeters = 0.63;// TODO: Set the value  Whatever the scoring height is for L1
 
     public static final double kIntakeElevatorHeightMeters = 0.08;    //Whatever the intake height is for L4
-    public static final double kL1IntakeElevatorHeightMeters = 0.8; // TODO: Set the value. Whatever the intake height is for L1
+    public static final double kL1IntakeElevatorHeightMeters = 0.75; // TODO: Set the value. Whatever the intake height is for L1
 
     public static final double kRotationToMeters = kGearCircumference / kGearRatio;// Revolutions to Output units conversion factor
     public static final double kElevatorMaxVelocity = 4000; // Motor RPM - does not get affected by conversion factor TODO: Need a good inches per sec max, start slow (10?)

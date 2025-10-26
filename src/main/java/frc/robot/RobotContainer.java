@@ -33,6 +33,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.L1Constants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.XBoxConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 //import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.DriveSubsystem;
@@ -122,14 +123,14 @@ public class RobotContainer {
       m_elevator = new ElevatorSubsystem();
       m_intake = new IntakeSubsystem();
 
-      m_L1Subsystem = new L1Subsystem();
+      m_L1Subsystem = new L1Subsystem(m_elevator);
 
     } else {
       m_robotDrive = new SwerveSubsystemSim();
       m_elevator = new ElevatorSubsystem();
       m_intake = new IntakeSubsystem();
 
-      m_L1Subsystem = new L1Subsystem();
+      m_L1Subsystem = new L1Subsystem(m_elevator);
 
     }
     m_limelight = new LimelightSubsystem();
@@ -159,24 +160,31 @@ public class RobotContainer {
                 // .andThen(new RunCommand(() -> m_robotDrive.drive(-Constants.slowSpeedMode, 0, 0, false), m_robotDrive).withTimeout(0.5))
                 // .andThen(new RunCommand(() -> m_elevator.reachGoal(Constants.ElevatorConstants.kIntakeElevatorHeightMeters), m_elevator))
                 // );
-    visionAlignAndScoreLeft  = new WaitUntilCommand(()->m_limelight.isTV()).andThen(
-        new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kL4PreScoringHeightMeters))) //TODO: Elevator set goals should probably be changed to Instance Commands
+    visionAlignAndScoreLeft
+    = new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kL1IntakeElevatorHeightMeters)) 
+    .andThen(new WaitUntilCommand(()->m_limelight.isTV())).andThen(
+        new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kL4PreScoringHeightMeters)))
+        .alongWith(new InstantCommand(()->m_L1Subsystem.reachGoal(L1Constants.l4ScorePosition, false))) //TODO: Elevator set goals should probably be changed to Instance Commands
         .andThen(new AlignWithLimelight(m_robotDrive, m_limelight, m_elevator, reefAlignSide.Left))
         .andThen(new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PostScoringHeightMeters)) //lower for scoring
          .andThen(new RunCommand(() -> m_robotDrive.drive(-2*Constants.slowSpeedMode, 0, 0, false, true),m_robotDrive).withTimeout(0.5))
          .andThen(new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kIntakeElevatorHeightMeters)))
         .andThen(new InstantCommand(()->m_robotDrive.drive(0, 0, 0, false, false), m_robotDrive));    
-    visionAlignAndScoreRight = 
-    new WaitUntilCommand(()->m_limelight.isTV()).andThen(
-        new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kL4PreScoringHeightMeters))) //TODO: Elevator set goals should probably be changed to Instance Commands
+    visionAlignAndScoreRight =
+    new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kL1IntakeElevatorHeightMeters)) 
+    .andThen(new WaitUntilCommand(()->m_limelight.isTV())).andThen(
+        new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kL4PreScoringHeightMeters)))
+        .alongWith(new InstantCommand(()->m_L1Subsystem.reachGoal(L1Constants.l4ScorePosition, false))) //TODO: Elevator set goals should probably be changed to Instance Commands
         .andThen(new AlignWithLimelight(m_robotDrive, m_limelight, m_elevator, reefAlignSide.Right)) //TODO Replace with set of commands to align, score and drive backwards
         .andThen(new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PostScoringHeightMeters)) //lower for scoring
          .andThen(new RunCommand(() -> m_robotDrive.drive(-2*Constants.slowSpeedMode, 0, 0, false, true),m_robotDrive).withTimeout(0.5))
          .andThen(new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kIntakeElevatorHeightMeters)))
         .andThen(new InstantCommand(()->m_robotDrive.drive(0, 0, 0, false, false), m_robotDrive));   
     visionAlignAndScoreAuto = 
-    new WaitUntilCommand(()->m_limelight.isTV()).andThen(
+    new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kL1IntakeElevatorHeightMeters)) 
+    .andThen(new WaitUntilCommand(()->m_limelight.isTV())).andThen(
         new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kL4PreScoringHeightMeters))) //TODO: Elevator set goals should probably be changed to Instance Commands
+        .alongWith(new InstantCommand(()->m_L1Subsystem.reachGoal(L1Constants.l4ScorePosition, false))) //TODO: Elevator set goals should probably be changed to Instance Commands
         .andThen(new AlignWithLimelight(m_robotDrive, m_limelight, m_elevator)) //TODO Replace with set of commands to align, score and drive backwards
         .andThen(new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PostScoringHeightMeters)) //lower for scoring
             .andThen(new RunCommand(() -> m_robotDrive.drive(-2*Constants.slowSpeedMode, 0, 0, false, true),m_robotDrive).withTimeout(0.5))
@@ -275,9 +283,9 @@ public class RobotContainer {
             m_robotDrive));
 
     //new JoystickButton(m_driverController, Constants.ControllerConstants.ZERO_HEADING_BUTTON)
-    ButtonMappings.button(m_driverController,Constants.ControllerConstants.ZERO_HEADING_BUTTON)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.zeroHeading()));
+    // ButtonMappings.button(m_driverController,Constants.ControllerConstants.ZERO_HEADING_BUTTON)
+    //     .whileTrue(new RunCommand(
+    //         () -> m_robotDrive.zeroHeading()));
 
     //new JoystickButton(m_driverController, Constants.ControllerConstants.SLOW_MODE_LEFT)
     ButtonMappings.button(m_driverController,Constants.ControllerConstants.SLOW_MODE_LEFT)
@@ -306,6 +314,12 @@ public class RobotContainer {
                               () -> m_elevator.ManualElevatorDown(), 
                               () -> m_elevator.motorStop(), 
                               m_elevator));
+        // //new JoystickButton(m_driverController, Constants.ControllerConstants.MANUAL_ELEVATOR_DOWN)
+        // ButtonMappings.button(m_driverController,Constants.XBoxConstants.MANUAL_ELEVATOR_UP)
+        // .whileTrue(Commands.startEnd(
+        //                       () -> m_elevator.ManualElevatorUp(), 
+        //                       () -> m_elevator.motorStop(), 
+        //                       m_elevator));
 
     //new JoystickButton(m_driverController, Constants.ControllerConstants.ELEVATOR_INCREMENT_DOWN)
     
@@ -317,24 +331,26 @@ public class RobotContainer {
     //new JoystickButton(m_driverController, Constants.ControllerConstants.ELEVATOR_MAXHEIGHT)
     ButtonMappings.button(m_driverController,Constants.ControllerConstants.ELEVATOR_MAXHEIGHT)
         .whileTrue(new InstantCommand(
-            () -> m_elevator.reachGoal(Constants.ElevatorConstants.kL4PreScoringHeightMeters),
+            () -> 
+            {m_elevator.reachGoal(Constants.ElevatorConstants.kL4PreScoringHeightMeters);
+            m_L1Subsystem.reachGoal(L1Constants.l4ScorePosition,false);},
             m_elevator));
     //Moving the L1 subsystem forward and backward. 
     ButtonMappings.button(m_driverController,Constants.ControllerConstants.MANUAL_L1_DOWN)
     .whileTrue(new InstantCommand(
-        ()-> m_L1Subsystem.reachGoal(L1Constants.scorePosition),
+        ()-> m_L1Subsystem.reachGoal(L1Constants.scorePosition, false),
         m_elevator, m_L1Subsystem));
 
     ButtonMappings.button(m_driverController,Constants.ControllerConstants.MANUAL_L1_UP)
     .whileTrue(new InstantCommand(
-        ()-> m_L1Subsystem.reachGoal(L1Constants.stowPosition),
+        ()-> m_L1Subsystem.reachGoal(L1Constants.stowPosition, false),
         m_elevator, m_L1Subsystem));
-        
-    ButtonMappings.button(m_driverController,Constants.ControllerConstants.HOVER_L1)
-    .whileTrue(Commands.startEnd(
-                            () -> m_L1Subsystem.HoverL1(), //negative direction
-                            () -> m_L1Subsystem.stop(), 
-                            m_elevator));
+
+    // ButtonMappings.button(m_driverController,Constants.ControllerConstants.HOVER_L1)
+    // .whileTrue(Commands.startEnd(
+    //                         () -> m_L1Subsystem.HoverL1(), //negative direction
+    //                         () -> m_L1Subsystem.stop(), 
+    //                         m_elevator));
     //new JoystickButton(m_driverController, Constants.ControllerConstants.INTAKE_BUTTON)
     ButtonMappings.button(m_driverController,Constants.ControllerConstants.INTAKE_BUTTON)
         .whileTrue(new StartEndCommand(
@@ -379,6 +395,44 @@ public class RobotContainer {
     .whileTrue(new InstantCommand(
         () -> m_robotDrive.elevDownAccelerationLimiter()
         ));
+    ButtonMappings.button(m_driverController,XBoxConstants.L1_INTAKE)
+    .whileTrue
+    (
+      new InstantCommand
+      (
+        ()->{m_L1Subsystem.reachGoal(L1Constants.intakePosition, false);
+        m_elevator.reachGoal(ElevatorConstants.kL1IntakeElevatorHeightMeters);}
+      )  
+    );
+    ButtonMappings.button(m_driverController,XBoxConstants.L4_INTAKE)
+    .whileTrue
+    (
+      new InstantCommand
+      (
+        ()->{m_L1Subsystem.reachGoal(L1Constants.l4Intake, false);
+            m_elevator.reachGoal(ElevatorConstants.kIntakeElevatorHeightMeters);}
+      )  
+    );
+    ButtonMappings.button(m_driverController,XBoxConstants.L1_STOW)
+    .whileTrue
+    (
+      new InstantCommand
+      (
+        ()->{m_L1Subsystem.reachGoal(L1Constants.stowPosition, false);
+            m_elevator.reachGoal(ElevatorConstants.kIntakeElevatorHeightMeters);}
+      )  
+    );
+    ButtonMappings.button(m_driverController,XBoxConstants.L1_SCORE)
+    .whileTrue
+    (
+        new AutoElevatorCommand(m_elevator, ElevatorConstants.kL1ScoringHeightMeters)
+        .andThen(
+      new InstantCommand
+      (
+        ()->{m_L1Subsystem.reachGoal(L1Constants.scorePosition, false);}
+      )  
+    ));
+    
     
 
     //////// TESTING CONTROLLER ////////////// not updated nor used, commented out

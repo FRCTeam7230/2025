@@ -77,7 +77,7 @@ public class ElevatorSubsystem extends SubsystemBase
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .pid(ElevatorConstants.kElevatorKp, ElevatorConstants.kElevatorKi, ElevatorConstants.kElevatorKd, ClosedLoopSlot.kSlot0)//Change PID with these constants.
         .pid(ElevatorConstants.kSlowElevatorKp, ElevatorConstants.kSlowElevatorKi, ElevatorConstants.kSlowElevatorKd, ClosedLoopSlot.kSlot1)
-        .outputRange(-1, 1, ClosedLoopSlot.kSlot0) //TODO: RESET TO -1 to 1!!!!!
+        .outputRange(-0.8, 0.8, ClosedLoopSlot.kSlot0) //TODO: RESET TO -1 to 1!!!!!
         .outputRange(-0.4, 0.4, ClosedLoopSlot.kSlot1);
     m_config_motor1.closedLoop.maxMotion
     
@@ -144,7 +144,12 @@ public class ElevatorSubsystem extends SubsystemBase
   {
     return m_encoder.getPosition();
   }
-
+  public double getVelocity(){
+    return m_encoder.getVelocity();
+  }
+  public double getSetPoint(){
+    return m_desiredHeight;
+  }
   /**
    * A trigger for when the height is at an acceptable tolerance.
    *
