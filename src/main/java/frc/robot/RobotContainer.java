@@ -107,6 +107,8 @@ public class RobotContainer {
   Command visionAlignAndScoreRight;
   Command visionAlignAndScoreAuto;
 
+  Command visionL1Score;
+
   private final SendableChooser<Command> autoChooser;
 
   /**
@@ -149,7 +151,8 @@ public class RobotContainer {
     m_elevator.resetEncoder();
 
     // Register named commands
-    AutoElevatorCommand elevUp = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PreScoringHeightMeters); 
+    Command elevUp = new InstantCommand(()->{m_L1Subsystem.reachGoal(L1Constants.l4ScorePosition,false);})
+    .andThen(new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PreScoringHeightMeters)); 
     AutoElevatorCommand elevDown = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kIntakeElevatorHeightMeters);
     AutoElevatorCommand score = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PostScoringHeightMeters);
     // Command visionAlignAndScoreLeft  = // NB: This is Alex's version, do not use. Use Graham's below.
@@ -192,6 +195,14 @@ public class RobotContainer {
         .andThen(new InstantCommand(()->m_robotDrive.drive(0, 0, 0, false, false), m_robotDrive));   
          //lower for scoring
         //.andThen(new RunCommand(() -> m_robotDrive.drive(-1*Constants.slowSpeedMode, 0, 0, false, true),m_robotDrive).withTimeout(1));
+    // visionL1Score = 
+    //     new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kL1ScoringHeightMeters))
+    //     .andThen(new WaitUntilCommand(()->m_limelight.isTV()))
+    //     .andThen(new InstantCommand(()m_L1Subsystem.reachGoal(L1Constants.stowPosition)))
+
+    
+    
+    
     NamedCommands.registerCommand("Raise Elevator",elevUp);
     NamedCommands.registerCommand("Lower Elevator",elevDown);
     NamedCommands.registerCommand("Score",score);
@@ -282,10 +293,10 @@ public class RobotContainer {
             () -> m_robotDrive.setX(),
             m_robotDrive));
 
-    //new JoystickButton(m_driverController, Constants.ControllerConstants.ZERO_HEADING_BUTTON)
-    // ButtonMappings.button(m_driverController,Constants.ControllerConstants.ZERO_HEADING_BUTTON)
-    //     .whileTrue(new RunCommand(
-    //         () -> m_robotDrive.zeroHeading()));
+    // new JoystickButton(m_driverController, Constants.ControllerConstants.ZERO_HEADING_BUTTON)
+    ButtonMappings.button(m_driverController,Constants.ControllerConstants.ZERO_HEADING_BUTTON)
+        .whileTrue(new RunCommand(
+            () -> m_robotDrive.zeroHeading()));
 
     //new JoystickButton(m_driverController, Constants.ControllerConstants.SLOW_MODE_LEFT)
     ButtonMappings.button(m_driverController,Constants.ControllerConstants.SLOW_MODE_LEFT)

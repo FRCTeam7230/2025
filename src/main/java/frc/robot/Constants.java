@@ -39,6 +39,8 @@ public final class Constants {
 
     public static final double kElevMaxHeightForL4Scoring = .5;
 
+    public static final double kScoreForwardOffset = -1;
+
     //public static final double kResetCurrent = 0; //max current tbd TODO: Will need to tune these currents
     public static final int kMaxCurrent   = 20;//In amps? TODO: Will need to tune these currents
 
@@ -76,7 +78,7 @@ public final class Constants {
     public static final int SCORE_LEFT = usingXBoxController ? XBoxConstants.SCORE_LEFT : JoystickConstants.SCORE_LEFT;
     public static final int SCORE_RIGHT = usingXBoxController ? XBoxConstants.SCORE_RIGHT : JoystickConstants.SCORE_RIGHT;
     public static final int MANUAL_ELEVATOR_DOWN = usingXBoxController ? XBoxConstants.MANUAL_ELEVATOR_DOWN : JoystickConstants.MANUAL_ELEVATOR_DOWN;
-    //public static final int ZERO_HEADING_BUTTON = usingXBoxController ? XBoxConstants.ZERO_HEADING_BUTTON : JoystickConstants.ZERO_HEADING_BUTTON;
+    public static final int ZERO_HEADING_BUTTON = usingXBoxController ? XBoxConstants.ZERO_HEADING_BUTTON : JoystickConstants.ZERO_HEADING_BUTTON;
     public static final int MANUAL_L1_DOWN = usingXBoxController ? XBoxConstants.MANUAL_L1_DOWN : JoystickConstants.MANUAL_L1_DOWN;
     public static final int MANUAL_L1_UP = usingXBoxController ? XBoxConstants.MANUAL_L1_UP : JoystickConstants.MANUAL_L1_UP;
     public static final int ELEVATOR_INCREMENT_DOWN = usingXBoxController ? XBoxConstants.ELEVATOR_INCREMENT_DOWN : JoystickConstants.ELEVATOR_INCREMENT_DOWN;
@@ -339,7 +341,7 @@ public final class Constants {
     public static final double kL4PostScoringHeightMeters = kL4PreScoringHeightMeters-0.43;
     public static final double kL1ScoringHeightMeters = 0.63;// TODO: Set the value  Whatever the scoring height is for L1
 
-    public static final double kIntakeElevatorHeightMeters = 0.08;    //Whatever the intake height is for L4
+    public static final double kIntakeElevatorHeightMeters = 0.04;    //Whatever the intake height is for L4
     public static final double kL1IntakeElevatorHeightMeters = 0.75; // TODO: Set the value. Whatever the intake height is for L1
 
     public static final double kRotationToMeters = kGearCircumference / kGearRatio;// Revolutions to Output units conversion factor
