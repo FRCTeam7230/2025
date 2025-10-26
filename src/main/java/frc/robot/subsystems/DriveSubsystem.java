@@ -87,7 +87,7 @@ public class DriveSubsystem extends SubsystemBase {
   boolean isElevUp = false;
 
   private static Rotation2d prevAngle = new Rotation2d();
-  private static Rotation2d currentAngle;
+  private static Rotation2d desiredAngle;
 
   boolean allianceInitialized = false;
 
@@ -352,11 +352,12 @@ public class DriveSubsystem extends SubsystemBase {
     // Convert the commanded speeds into the correct units for the drivetrain
     double xSpeedDelivered = xSpeed.getAsDouble() * DriveConstants.kMaxSpeedMetersPerSecond;
     double ySpeedDelivered = ySpeed.getAsDouble() * DriveConstants.kMaxSpeedMetersPerSecond;
-    double rotDelivered = Math.atan2(yRotationSupplier.getAsDouble(), xRotationSupplier.getAsDouble()) * DriveConstants.kMaxAngularSpeed;
+    double rotDelivered = Math.atan2(yRotationSupplier.getAsDouble(), xRotationSupplier.getAsDouble());
+    double xRotation = xRotationSupplier.getAsDouble() * DriveConstants.kMaxAngularSpeed;
 
     // Create PID controller
     ProfiledPIDController angleController = new ProfiledPIDController(
-                    5, 0.0, 0.4,
+                    5, 0.0, 0.0,
                     new TrapezoidProfile.Constraints(Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
     angleController.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -364,7 +365,7 @@ public class DriveSubsystem extends SubsystemBase {
       if(isElevUp) {
         xSpeedDelivered = slowdriveLimitX.calculate(xSpeedDelivered);
         ySpeedDelivered = slowdriveLimitY.calculate(ySpeedDelivered);
-        rotDelivered = slowdriveLimitRot.calculate(rotDelivered/Constants.rotateDivider);  
+        rotDelivered = slowdriveLimitRot.calculate(rotDelivered);  
       }
       else {
         xSpeedDelivered = driveLimitX.calculate(xSpeedDelivered);
@@ -373,26 +374,38 @@ public class DriveSubsystem extends SubsystemBase {
       }
     }
 
-    if(Math.sqrt(Math.pow(xRotationSupplier.getAsDouble(), 2)+Math.pow(yRotationSupplier.getAsDouble(), 2))>0.7){
-      currentAngle = new Rotation2d(-rotDelivered).rotateBy(new Rotation2d(0, -1));
-      prevAngle = currentAngle;                                                
+    if(Math.sqrt(Math.pow(xRotationSupplier.getAsDouble(), 2)+Math.pow(yRotationSupplier.getAsDouble(), 2))>0.5){
+      desiredAngle = new Rotation2d(-rotDelivered).rotateBy(new Rotation2d(0, -1));
+      prevAngle = desiredAngle;                                                
     } else {
-      currentAngle = prevAngle;
+      desiredAngle = prevAngle;
+    }
+    if(Math.sqrt(Math.pow(xRotationSupplier.getAsDouble(), 2)+Math.pow(yRotationSupplier.getAsDouble(), 2))>0.5 && fieldRelative){
+      desiredAngle = new Rotation2d(-rotDelivered).rotateBy(new Rotation2d(0, -1));
+      prevAngle = desiredAngle;                                                
+    } else if(!fieldRelative){
+      prevAngle = new Rotation2d(Math.toRadians(getFieldAngle()));
+      desiredAngle = new Rotation2d(Math.toRadians(getFieldAngle()));
+    } else {
+      desiredAngle = prevAngle;
     }
 
     // Calculate angular speed
     double omega = angleController.calculate(
-      currentPose.getRotation().getRadians(),
-      currentAngle.getRadians());
-
-    boolean isFlipped = DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red;
+      Math.toRadians(getFieldAngle()), //not sure if radians or angle
+      desiredAngle.getRadians());
     
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, omega,
-                Rotation2d.fromDegrees(getFieldAngle()))
+            ? new ChassisSpeeds(
+              xSpeedDelivered,
+              ySpeedDelivered,
+              omega
+            )
+            //? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, omega,
+            //    Rotation2d.fromDegrees(getFieldAngle()).plus(new Rotation2d(Math.PI)))
                 //isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation());
-            : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, omega));
+            : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, -xRotation));
 
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
