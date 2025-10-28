@@ -14,17 +14,17 @@ public class AutoElevatorCommand extends Command {
     @Override
     public void initialize(){
         //Intializes Robot
+        m_elev.reachGoal(finGoal);
     }
     @Override
     public void execute(){
-        m_elev.reachGoal(finGoal);
     }
     @Override
     public void end(boolean interrupted){
     }
     @Override 
     public boolean isFinished(){
-        if(Math.abs(m_elev.getHeight()-finGoal)<0.02){
+        if(Math.abs(m_elev.getHeight()-finGoal)<0.02){//was 0.02
             return true;
         } else {
             return false;

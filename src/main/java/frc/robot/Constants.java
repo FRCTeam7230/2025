@@ -34,12 +34,12 @@ public final class Constants {
     public static final double intakePosition  = 21;
     public static final double scorePosition   = 342; // deg
     public static final double stowPosition    = 24; // deg
-    public static final double l4ScorePosition = 239; // deg
+    public static final double l4ScorePosition = 255; // deg     was 239
     public static final double l4Intake        = 24;
 
     public static final double kElevMaxHeightForL4Scoring = .5;
 
-    public static final double kScoreForwardOffset = -1;
+    public static final double kScoreForwardOffset = -1; //TODO: convert 5.125 inches to m (plus distance to LL???)
 
     //public static final double kResetCurrent = 0; //max current tbd TODO: Will need to tune these currents
     public static final int kMaxCurrent   = 20;//In amps? TODO: Will need to tune these currents
@@ -338,7 +338,7 @@ public final class Constants {
     
     public static final double kL4PreScoringHeightMeters = 1.558; 
     //public static final double kL4PostScoringHeightNoAlgeaMeters = kL4PreScoringHeightMeters-0.3; //Are we using this constant?
-    public static final double kL4PostScoringHeightMeters = kL4PreScoringHeightMeters-0.43;
+    public static final double kL4PostScoringHeightMeters = kL4PreScoringHeightMeters-0.3;//0.43
     public static final double kL1ScoringHeightMeters = 0.63;// TODO: Set the value  Whatever the scoring height is for L1
 
     public static final double kIntakeElevatorHeightMeters = 0.04;    //Whatever the intake height is for L4

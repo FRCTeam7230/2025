@@ -75,7 +75,6 @@ public class L1Subsystem extends SubsystemBase {
         .feedbackSensor(FeedbackSensor.kAbsoluteEncoder) //Maybe this is how you do it? 
         .pid(Constants.L1Constants.kL1Kp,Constants.L1Constants.kL1Ki,Constants.L1Constants.kL1Kd)//I don't understand the kSlot stuff. What do each of the slots represent. A: It represents pid settings that can be stored in each "slot".
         .outputRange(-0.3,0.3)//determines the speed limit. L1 TODO - this will likely need to be raised before tuning
-        .positionWrappingEnabled(false)
         .positionWrappingEnabled(true)
         .positionWrappingInputRange(-180.0, 180.0)
         .maxMotion
