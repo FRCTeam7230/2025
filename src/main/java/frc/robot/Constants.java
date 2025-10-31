@@ -39,7 +39,7 @@ public final class Constants {
 
     public static final double kElevMaxHeightForL4Scoring = .5;
 
-    public static final double kScoreForwardOffset = -1; //TODO: convert 5.125 inches to m (plus distance to LL???)
+    public static final double kScoreForwardOffset = -0.46; //TODO: convert 5.125 inches to m (plus distance to LL???)
 
     //public static final double kResetCurrent = 0; //max current tbd TODO: Will need to tune these currents
     public static final int kMaxCurrent   = 20;//In amps? TODO: Will need to tune these currents
@@ -84,7 +84,7 @@ public final class Constants {
     public static final int ELEVATOR_INCREMENT_DOWN = usingXBoxController ? XBoxConstants.ELEVATOR_INCREMENT_DOWN : JoystickConstants.ELEVATOR_INCREMENT_DOWN;
     public static final int ELEVATOR_MAXHEIGHT = usingXBoxController ? XBoxConstants.ELEVATOR_MAXHEIGHT : JoystickConstants.ELEVATOR_MAXHEIGHT;
     public static final int ROBOT_RELATIVE = usingXBoxController ? XBoxConstants.ROBOT_RELATIVE : JoystickConstants.ROBOT_RELATIVE;
-    //public static final int HOVER_L1 = XBoxConstants.HOVER_L1;
+    public static final int HOVER_L1 = XBoxConstants.HOVER_L1;
     public static final int throttleButton1 = usingXBoxController ? 100 : JoystickConstants.throttleButton1;
     public static final int throttleButton2 = usingXBoxController ? 100 : JoystickConstants.throttleButton2;
 
@@ -200,7 +200,7 @@ public final class Constants {
 
 
     public static final int ROBOT_RELATIVE = kButton2;
-    //public static final int HOVER_L1 = pov270;
+    public static final int HOVER_L1 = pov90;
     //button 7 is not used
     
     // XBox movement mappings
@@ -320,7 +320,7 @@ public final class Constants {
     public static final double kElevatorKp = 4.5; //TODO: Will need to tune this, I lowered it to start 
     public static final double kElevatorKi = 0;
     public static final double kElevatorKd = 1;
-    public static final double kElevatorRampRate = 0.2;
+    public static final double kElevatorRampRate = 0.2; // Time to get from 0 to full power
 
     //elevator score slow
     public static final double kSlowElevatorKp = 4.5; //TODO: Will need to tune this, I lowered it to start 
@@ -363,11 +363,11 @@ public final class Constants {
     public static final String kLimelightName = "limelight";
 
     public static final double kDriveForwardKp = 2.4;
-    public static final double kDriveHorizontalKp = 1.5; //output = -1 to 1, .1 m off want .1 m/s, 0.1 m/s = 0.04 % output, .04 = kp*0.1, kp = .4
+    public static final double kDriveHorizontalKp = 1.6; //output = -1 to 1, .1 m off want .1 m/s, 0.1 m/s = 0.04 % output, .04 = kp*0.1, kp = .4
     public static final double kRotationKp = 0.06; //output = -1 to 1, 15 deg off want 60 deg/sec, 60 deg/sec = 1.0 % output, 1.0 = kp*15deg, kp = 0.06
 
     public static final double kHorizontalOffset = 0.17;
-    public static final double kForwardExtendedOffset = -0.43; //TODO: -0.47 at comp!
+    public static final double kForwardExtendedOffset = -0.45; //TODO: -0.47 at comp!
     public static final double kForwardUnextendedOffset = -0.7;
 
     public static final double kPositionErrorThreshold = 0.05;

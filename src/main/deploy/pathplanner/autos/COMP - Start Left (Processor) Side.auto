@@ -82,6 +82,12 @@
                 "data": {
                   "pathName": "Coral 5 Cycle RIght"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Raise Elevator A Little"
+                }
               }
             ]
           }
@@ -144,6 +150,12 @@
                 "type": "path",
                 "data": {
                   "pathName": "Coral 5 Cycle 1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Raise Elevator A Little"
                 }
               }
             ]
