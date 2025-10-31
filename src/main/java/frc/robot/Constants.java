@@ -33,9 +33,9 @@ public final class Constants {
     // L1 TODO - Will need an intake position, a score position, a stow position, and an L4 score position
     public static final double intakePosition  = 21;
     public static final double scorePosition   = 342; // deg
-    public static final double stowPosition    = 24; // deg
+    public static final double stowPosition    = 30; // deg
     public static final double l4ScorePosition = 255; // deg     was 239
-    public static final double l4Intake        = 24;
+    public static final double l4Intake        = stowPosition;
 
     public static final double kElevMaxHeightForL4Scoring = .5;
 
@@ -44,9 +44,9 @@ public final class Constants {
     //public static final double kResetCurrent = 0; //max current tbd TODO: Will need to tune these currents
     public static final int kMaxCurrent   = 20;//In amps? TODO: Will need to tune these currents
 
-    public static final double kL1Kp = 0.015; //TODO: Will need to tune this, I lowered it to start 
+    public static final double kL1Kp = 0.012; //TODO: Will need to tune this, I lowered it to start 
     public static final double kL1Ki = 0;
-    public static final double kL1Kd = 0;
+    public static final double kL1Kd = 0; //0.00075;
     public static final double kL1RampRate = 0.2;//not sure what this one is for
 
     //Note, all should be ok at zero except kG 
@@ -76,7 +76,7 @@ public final class Constants {
     public static final int SLOW_MODE_LEFT = usingXBoxController ? XBoxConstants.SLOW_MODE_LEFT : JoystickConstants.SLOW_MODE_LEFT;
     public static final int SLOW_MODE_RIGHT = usingXBoxController ? XBoxConstants.SLOW_MODE_RIGHT : JoystickConstants.SLOW_MODE_RIGHT;
     public static final int SCORE_LEFT = usingXBoxController ? XBoxConstants.SCORE_LEFT : JoystickConstants.SCORE_LEFT;
-    public static final int SCORE_RIGHT = usingXBoxController ? XBoxConstants.SCORE_RIGHT : JoystickConstants.SCORE_RIGHT;
+    public static final int SCORE_AUTO = usingXBoxController ? XBoxConstants.SCORE_AUTO : JoystickConstants.SCORE_AUTO;
     public static final int MANUAL_ELEVATOR_DOWN = usingXBoxController ? XBoxConstants.MANUAL_ELEVATOR_DOWN : JoystickConstants.MANUAL_ELEVATOR_DOWN;
     public static final int ZERO_HEADING_BUTTON = usingXBoxController ? XBoxConstants.ZERO_HEADING_BUTTON : JoystickConstants.ZERO_HEADING_BUTTON;
     public static final int MANUAL_L1_DOWN = usingXBoxController ? XBoxConstants.MANUAL_L1_DOWN : JoystickConstants.MANUAL_L1_DOWN;
@@ -131,7 +131,7 @@ public final class Constants {
     public static final int SLOW_MODE_LEFT = kButton3;
     public static final int SLOW_MODE_RIGHT = kButton4;
     public static final int SCORE_LEFT = kButton5;
-    public static final int SCORE_RIGHT = kButton6;
+    public static final int SCORE_AUTO = kButton6;
     public static final int MANUAL_ELEVATOR_DOWN = kButton7;
     public static final int ZERO_HEADING_BUTTON = kButton8;
     public static final int MANUAL_L1_UP = kButton9;
@@ -177,22 +177,26 @@ public final class Constants {
     // Xbox controller mappings
     public static final int BRAKE_BUTTON = kButton3;
     public static final int INTAKE_BUTTON = kButton9;
-    public static final int SLOW_MODE_LEFT = 67;   //dead
-    public static final int SLOW_MODE_RIGHT = 67;  //dead
-    public static final int SCORE_LEFT = leftTrigger;
-    public static final int SCORE_RIGHT = rightTrigger;
+
+    public static final int SCORE_AUTO = rightTrigger;
     public static final int MANUAL_ELEVATOR_DOWN = pov270;
     
     public static final int ZERO_HEADING_BUTTON = kButton7; 
-    public static final int MANUAL_L1_DOWN = 67; //dead
-    public static final int MANUAL_L1_UP = 67; //dead
-    public static final int L1_STOW = kButton5; //connect
-    public static final int L1_SCORE = kButton6; //connect
+
+    public static final int L1_SCORE = kButton6;
     
     public static final int ELEVATOR_INCREMENT_DOWN = pov180;
     public static final int ELEVATOR_MAXHEIGHT = pov0;
-    public static final int L4_INTAKE = kButton1; //connect
-    public static final int L1_INTAKE = kButton4; //connect
+    public static final int L4_INTAKE = leftTrigger; //connect
+    public static final int L1_INTAKE = kButton5; //connect
+
+    //graveyard
+    public static final int MANUAL_L1_DOWN = 67;   //dead
+    public static final int MANUAL_L1_UP = 67;     //dead
+    public static final int L1_STOW = 67;          //dead
+    public static final int SLOW_MODE_LEFT = 67;   //dead
+    public static final int SLOW_MODE_RIGHT = 67;  //dead
+    public static final int SCORE_LEFT = 67;       //dead
 
 
     public static final int ROBOT_RELATIVE = kButton2;

@@ -153,8 +153,10 @@ public class RobotContainer {
     // Register named commands
     Command elevUp = new InstantCommand(()->{m_L1Subsystem.reachGoal(L1Constants.l4ScorePosition,false);})
     .andThen(new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PreScoringHeightMeters)); 
-    AutoElevatorCommand elevDown = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kIntakeElevatorHeightMeters);
-    AutoElevatorCommand score = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PostScoringHeightMeters);
+    Command elevDown = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kIntakeElevatorHeightMeters)
+    .alongWith(new InstantCommand(()->m_L1Subsystem.reachGoal(L1Constants.stowPosition, false)));
+    Command score = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PostScoringHeightMeters)
+    .alongWith(new InstantCommand(()->m_L1Subsystem.reachGoal(L1Constants.l4ScorePosition, false)));
     // Command visionAlignAndScoreLeft  = // NB: This is Alex's version, do not use. Use Graham's below.
     //             new RunCommand(() -> m_elevator.reachGoal(Constants.ElevatorConstants.kL4PreScoringHeightMeters), m_elevator)
     //             .andThen(new AlignWithLimelight(m_robotDrive, m_limelight, m_elevator, reefAlignSide.Left)
@@ -171,6 +173,7 @@ public class RobotContainer {
         .andThen(new AlignWithLimelight(m_robotDrive, m_limelight, m_elevator, reefAlignSide.Left))
         .andThen(new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PostScoringHeightMeters)) //lower for scoring
          .andThen(new RunCommand(() -> m_robotDrive.drive(-2*Constants.slowSpeedMode, 0, 0, false, true),m_robotDrive).withTimeout(0.5))
+         .andThen(new InstantCommand(()->m_L1Subsystem.reachGoal(L1Constants.stowPosition, false))) 
          .andThen(new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kIntakeElevatorHeightMeters)))
         .andThen(new InstantCommand(()->m_robotDrive.drive(0, 0, 0, false, false), m_robotDrive));    
     visionAlignAndScoreRight =
@@ -181,17 +184,18 @@ public class RobotContainer {
         .andThen(new AlignWithLimelight(m_robotDrive, m_limelight, m_elevator, reefAlignSide.Right)) //TODO Replace with set of commands to align, score and drive backwards
         .andThen(new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PostScoringHeightMeters)) //lower for scoring
          .andThen(new RunCommand(() -> m_robotDrive.drive(-2*Constants.slowSpeedMode, 0, 0, false, true),m_robotDrive).withTimeout(0.5))
-         //.andThen(new RunCommand(() -> m_L1Subsystem.reachGoal(270,false)))
+         .andThen(new InstantCommand(()->m_L1Subsystem.reachGoal(L1Constants.stowPosition, false))) 
          .andThen(new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kIntakeElevatorHeightMeters)))
         .andThen(new InstantCommand(()->m_robotDrive.drive(0, 0, 0, false, false), m_robotDrive));   
     visionAlignAndScoreAuto = 
-    new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kL1IntakeElevatorHeightMeters)) 
+    new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kIntakeElevatorHeightMeters+0.1)) 
     .andThen(new WaitUntilCommand(()->m_limelight.isTV())).andThen(
         new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kL4PreScoringHeightMeters))) //TODO: Elevator set goals should probably be changed to Instance Commands
         .alongWith(new InstantCommand(()->m_L1Subsystem.reachGoal(L1Constants.l4ScorePosition, false))) //TODO: Elevator set goals should probably be changed to Instance Commands
         .andThen(new AlignWithLimelight(m_robotDrive, m_limelight, m_elevator)) //TODO Replace with set of commands to align, score and drive backwards
         .andThen(new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PostScoringHeightMeters)) //lower for scoring
             .andThen(new RunCommand(() -> m_robotDrive.drive(-2*Constants.slowSpeedMode, 0, 0, false, true),m_robotDrive).withTimeout(0.5))
+            .andThen(new InstantCommand(()->m_L1Subsystem.reachGoal(L1Constants.stowPosition, false))) 
             .andThen(new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kIntakeElevatorHeightMeters)))
         .andThen(new InstantCommand(()->m_robotDrive.drive(0, 0, 0, false, false), m_robotDrive));   
          //lower for scoring
@@ -317,8 +321,8 @@ public class RobotContainer {
         .whileTrue(visionAlignAndScoreLeft);
 
     //new JoystickButton(m_driverController, Constants.ControllerConstants.SCORE_RIGHT)
-    ButtonMappings.button(m_driverController,Constants.ControllerConstants.SCORE_RIGHT)
-        .whileTrue(visionAlignAndScoreRight);
+    ButtonMappings.button(m_driverController,Constants.ControllerConstants.SCORE_AUTO)
+        .whileTrue(visionAlignAndScoreAuto);
                               
     //new JoystickButton(m_driverController, Constants.ControllerConstants.MANUAL_ELEVATOR_DOWN)
     ButtonMappings.button(m_driverController,Constants.ControllerConstants.MANUAL_ELEVATOR_DOWN)
@@ -410,10 +414,13 @@ public class RobotContainer {
     ButtonMappings.button(m_driverController,XBoxConstants.L1_INTAKE)
     .whileTrue
     (
-      new InstantCommand
+      new StartEndCommand
       (
         ()->{m_L1Subsystem.reachGoal(L1Constants.intakePosition, false);
-        m_elevator.reachGoal(ElevatorConstants.kL1IntakeElevatorHeightMeters);}
+        m_elevator.reachGoal(ElevatorConstants.kL1IntakeElevatorHeightMeters);},
+        ()->{m_L1Subsystem.reachGoal(L1Constants.stowPosition, false);
+            m_elevator.reachGoal(ElevatorConstants.kIntakeElevatorHeightMeters);},
+        m_elevator, m_L1Subsystem
       )  
     );
     ButtonMappings.button(m_driverController,XBoxConstants.L4_INTAKE)

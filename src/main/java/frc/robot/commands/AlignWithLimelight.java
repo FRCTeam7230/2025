@@ -69,9 +69,9 @@ public class AlignWithLimelight extends Command {
     {
       double tx = targetData[0];//Tx represents the robot location relative to the apriltag for x.
       if (tx<0){
-        alignSide = LimelightConstants.reefAlignSide.Left;
+        horizontalOffset = -1*LimelightConstants.kHorizontalOffset;
       } else {
-        alignSide = LimelightConstants.reefAlignSide.Right;
+        horizontalOffset = 1*LimelightConstants.kHorizontalOffset;
       }
     }
     // else{
@@ -81,15 +81,18 @@ public class AlignWithLimelight extends Command {
   @Override
   public void initialize() 
   {
-    if (alignSide==null){selectSide();}
+    
     targetingExtendedPosition = false;
     if(alignSide == LimelightConstants.reefAlignSide.Left)
     {
       horizontalOffset = -1*LimelightConstants.kHorizontalOffset;
     }
-    else
+    else if (alignSide==LimelightConstants.reefAlignSide.Right)
     {
       horizontalOffset = LimelightConstants.kHorizontalOffset;
+    }
+    else{
+      selectSide();
     }
     forwardOffset = LimelightConstants.kForwardUnextendedOffset;
 
@@ -144,7 +147,9 @@ public class AlignWithLimelight extends Command {
       SmartDashboard.putNumber("X Error",xController.getError());
       SmartDashboard.putNumber("z Error",forwardController.getError());
       SmartDashboard.putNumber("Yaw Error",yawController.getError());
-      
+      SmartDashboard.putNumber("X Error",tx);
+      SmartDashboard.putNumber("z Error",tz);
+      SmartDashboard.putNumber("Yaw Error",yaw);
   
       //drive x,z,yaw values
       m_drive.driveTagRelative(zValue,-xValue,-yawValue,-yaw);
@@ -164,7 +169,7 @@ public class AlignWithLimelight extends Command {
     //disable drive system
     m_drive.drive(0, 0, 0, false, false);
     //maybe trigger scoring
-
+    alignSide = null;
   }
 
   // Returns true when the command should end.

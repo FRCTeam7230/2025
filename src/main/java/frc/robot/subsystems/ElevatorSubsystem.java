@@ -244,6 +244,7 @@ public class ElevatorSubsystem extends SubsystemBase
     }  
     SmartDashboard.putNumber("Elevator Position (Meters)", m_encoder.getPosition());
     elevReset_publisher.set(reset);
+    SmartDashboard.putNumber("Elevator Goal",m_desiredHeight);
   }  
 
 }

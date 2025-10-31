@@ -86,7 +86,7 @@ public class L1Subsystem extends SubsystemBase {
         m_motorConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
         m_motorConfig.smartCurrentLimit(Constants.L1Constants.kMaxCurrent);
 
-        m_motor.configure(m_motorConfig, ResetMode.kNoResetSafeParameters,PersistMode.kNoPersistParameters);
+        m_motor.configure(m_motorConfig, ResetMode.kNoResetSafeParameters,PersistMode.kPersistParameters);
         
         m_elevator = elevator;
         storedPosition = Constants.L1Constants.stowPosition;
@@ -147,7 +147,7 @@ public class L1Subsystem extends SubsystemBase {
         position_publisher.set(m_desiredPosition);
         //if the elevator position is too low, automatically extend the l1 
         //or the velocity
-        boolean isL1Safe = (m_encoder.getPosition()>12&&m_encoder.getPosition()<180);
+        boolean isL1Safe = (m_encoder.getPosition()>0&&m_encoder.getPosition()<180); //was 12
         if (m_elevator.getSetPoint()<0.53&&!isL1Safe){
             originalSetPoint = m_elevator.getSetPoint();
             m_elevator.reachGoal(0.53);
