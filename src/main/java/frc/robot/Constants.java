@@ -32,14 +32,14 @@ public final class Constants {
 
     // L1 TODO - Will need an intake position, a score position, a stow position, and an L4 score position
     public static final double intakePosition  = 21;
-    public static final double scorePosition   = 342; // deg
+    public static final double scorePosition   = 336; // deg
     public static final double stowPosition    = 30; // deg
-    public static final double l4ScorePosition = 255; // deg     was 239
+    public static final double l4ScorePosition = 247; // deg     was 239 change to ~247
     public static final double l4Intake        = stowPosition;
 
     public static final double kElevMaxHeightForL4Scoring = .5;
 
-    public static final double kScoreForwardOffset = -0.46; //TODO: convert 5.125 inches to m (plus distance to LL???)
+    public static final double kScoreForwardOffset = -0.50;
 
     //public static final double kResetCurrent = 0; //max current tbd TODO: Will need to tune these currents
     public static final int kMaxCurrent   = 20;//In amps? TODO: Will need to tune these currents
@@ -178,16 +178,16 @@ public final class Constants {
     public static final int BRAKE_BUTTON = kButton3;
     public static final int INTAKE_BUTTON = kButton9;
 
-    public static final int SCORE_AUTO = rightTrigger;
+    public static final int SCORE_AUTO = 67; //score right now
     public static final int MANUAL_ELEVATOR_DOWN = pov270;
     
     public static final int ZERO_HEADING_BUTTON = kButton7; 
 
     public static final int L1_SCORE = kButton6;
     
-    public static final int ELEVATOR_INCREMENT_DOWN = pov180;
+    public static final int ELEVATOR_INCREMENT_DOWN = kButton1;
     public static final int ELEVATOR_MAXHEIGHT = pov0;
-    public static final int L4_INTAKE = leftTrigger; //connect
+    public static final int L4_INTAKE = kButton4; //connect
     public static final int L1_INTAKE = kButton5; //connect
 
     //graveyard
@@ -196,7 +196,8 @@ public final class Constants {
     public static final int L1_STOW = 67;          //dead
     public static final int SLOW_MODE_LEFT = 67;   //dead
     public static final int SLOW_MODE_RIGHT = 67;  //dead
-    public static final int SCORE_LEFT = 67;       //dead
+    public static final int SCORE_LEFT = leftTrigger;       //dead
+    public static final int SCORE_RIGHT = rightTrigger; //changed to exist
 
 
     public static final int ROBOT_RELATIVE = kButton2;
@@ -343,7 +344,7 @@ public final class Constants {
     public static final double kL4PreScoringHeightMeters = 1.558; 
     //public static final double kL4PostScoringHeightNoAlgeaMeters = kL4PreScoringHeightMeters-0.3; //Are we using this constant?
     public static final double kL4PostScoringHeightMeters = kL4PreScoringHeightMeters-0.3;//0.43
-    public static final double kL1ScoringHeightMeters = 0.63;// TODO: Set the value  Whatever the scoring height is for L1
+    public static final double kL1ScoringHeightMeters = 0.67;// 66-67
 
     public static final double kIntakeElevatorHeightMeters = 0.04;    //Whatever the intake height is for L4
     public static final double kL1IntakeElevatorHeightMeters = 0.75; // TODO: Set the value. Whatever the intake height is for L1
@@ -366,8 +367,8 @@ public final class Constants {
     public static final double kDriveHorizontalKp = 1.6; //output = -1 to 1, .1 m off want .1 m/s, 0.1 m/s = 0.04 % output, .04 = kp*0.1, kp = .4
     public static final double kRotationKp = 0.06; //output = -1 to 1, 15 deg off want 60 deg/sec, 60 deg/sec = 1.0 % output, 1.0 = kp*15deg, kp = 0.06
 
-    public static final double kHorizontalOffset = 0.17;
-    public static final double kForwardExtendedOffset = -0.45; //TODO: -0.47 at comp!
+    public static final double kHorizontalOffset = 0.18; // 0.19m
+    public static final double kForwardExtendedOffset = -0.47; //TODO: -0.47 at comp! recorded 0.52m
     public static final double kForwardUnextendedOffset = -0.7;
 
     public static final double kPositionErrorThreshold = 0.05;
