@@ -240,6 +240,7 @@ public class ElevatorSubsystem extends SubsystemBase
         m_encoder.setPosition(Constants.ElevatorConstants.kMinRealElevatorHeightMeters);
       }
       m_motor1.set(0);
+      
       reset = true;
     }  
     SmartDashboard.putNumber("Elevator Position (Meters)", m_encoder.getPosition());

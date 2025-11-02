@@ -154,7 +154,7 @@ public class RobotContainer {
     // Register named commands
     Command elevUp = new InstantCommand(()->{m_L1Subsystem.reachGoal(L1Constants.l4ScorePosition,false);})
     .andThen(new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kL4PreScoringHeightMeters)); 
-    Command elevUpALittle = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kIntakeElevatorHeightMeters + 0.15)
+    Command elevUpALittle = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kIntakeElevatorHeightMeters + 0.075)
     .alongWith(new InstantCommand(()->m_L1Subsystem.reachGoal(L1Constants.stowPosition, false)));
     Command elevDown = new AutoElevatorCommand(m_elevator,Constants.ElevatorConstants.kIntakeElevatorHeightMeters)
     .alongWith(new InstantCommand(()->m_L1Subsystem.reachGoal(L1Constants.stowPosition, false)));
@@ -179,7 +179,7 @@ public class RobotContainer {
         .andThen(new InstantCommand(()->m_L1Subsystem.reachGoal(L1Constants.stowPosition, false))) 
          .andThen(new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kIntakeElevatorHeightMeters)))
          .andThen(new RunCommand(() -> m_robotDrive.drive(0, 0, 0, false, true),m_robotDrive).withTimeout(0.25));
-         visionAlignAndScoreRight =
+    visionAlignAndScoreRight =
     new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kIntakeElevatorHeightMeters+0.1)) 
     .andThen(new WaitUntilCommand(()->m_limelight.isTV())).andThen(
         new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kL4PreScoringHeightMeters)))
@@ -190,7 +190,7 @@ public class RobotContainer {
         .andThen(new InstantCommand(()->m_L1Subsystem.reachGoal(L1Constants.stowPosition, false))) 
          .andThen(new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kIntakeElevatorHeightMeters)))
          .andThen(new RunCommand(() -> m_robotDrive.drive(0, 0, 0, false, true),m_robotDrive).withTimeout(0.25));
-         visionAlignAndScoreAuto = 
+    visionAlignAndScoreAuto = 
     new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kIntakeElevatorHeightMeters+0.1)) 
     .andThen(new WaitUntilCommand(()->m_limelight.isTV())).andThen(
         new InstantCommand(()->m_elevator.reachGoal(ElevatorConstants.kL4PreScoringHeightMeters))) //TODO: Elevator set goals should probably be changed to Instance Commands
@@ -209,6 +209,7 @@ public class RobotContainer {
         .andThen(new WaitUntilCommand(()->m_limelight.isTV()))
         .andThen(new InstantCommand(()->{m_L1Subsystem.reachGoal(L1Constants.stowPosition,false);}))
         .andThen(new AlignL1(m_robotDrive,m_limelight))
+        .andThen(new WaitCommand(0.5))
         .andThen(new InstantCommand(()->{m_L1Subsystem.reachGoal(L1Constants.scorePosition,false);}));
 
     
@@ -401,23 +402,17 @@ public class RobotContainer {
     } else {
         ButtonMappings.button(m_driverController, Constants.ControllerConstants.ROBOT_RELATIVE)
         .onTrue(Commands.sequence(
-                new InstantCommand(() -> fieldRelative = !fieldRelative, m_robotDrive)
-                .andThen(() -> m_driverController.setRumble(
-                    fieldRelative 
-                    ? RumbleType.kLeftRumble
-                    : RumbleType.kRightRumble
-                    , 0.5))
-                ,
+                new InstantCommand(() -> fieldRelative = !fieldRelative, m_robotDrive),
                 new InstantCommand(() -> mode_publisher.set(fieldRelative))
             ));
     }
 
-    new Trigger(() -> m_elevator.getHeight() > Constants.ElevatorConstants.kMaxRealElevatorHeightMeters/2)
+    new Trigger(() -> m_elevator.getHeight() > Constants.ElevatorConstants.slowModeThreshHold)
     .whileTrue(new InstantCommand(
         () -> m_robotDrive.elevUpAccelerationLimiter()
         ));
 
-    new Trigger(() -> m_elevator.getHeight() < Constants.ElevatorConstants.kMaxRealElevatorHeightMeters/2)
+    new Trigger(() -> m_elevator.getHeight() < Constants.ElevatorConstants.slowModeThreshHold)
     .whileTrue(new InstantCommand(
         () -> m_robotDrive.elevDownAccelerationLimiter()
         ));
@@ -429,7 +424,8 @@ public class RobotContainer {
         ()->{m_L1Subsystem.reachGoal(L1Constants.intakePosition, false);
         m_elevator.reachGoal(ElevatorConstants.kL1IntakeElevatorHeightMeters);},
         ()->{m_L1Subsystem.reachGoal(L1Constants.stowPosition, false);
-            m_elevator.reachGoal(ElevatorConstants.kIntakeElevatorHeightMeters);},
+            m_elevator.reachGoal(ElevatorConstants.kIntakeElevatorHeightMeters);
+            new RunCommand(()->m_robotDrive.drive(-2*Constants.slowSpeedMode, 0, 0, false,true),m_robotDrive).withTimeout(0.5).schedule();},
         m_elevator, m_L1Subsystem
       )  
     );
@@ -456,7 +452,8 @@ public class RobotContainer {
     (
         new StartEndCommand(()->visionL1Score.schedule(), 
           ()->{m_L1Subsystem.reachGoal(L1Constants.stowPosition, false);
-              m_elevator.reachGoal(ElevatorConstants.kIntakeElevatorHeightMeters);}
+              m_elevator.reachGoal(ElevatorConstants.kIntakeElevatorHeightMeters);
+            visionL1Score.cancel();}
           , m_elevator,m_L1Subsystem)
     );
     

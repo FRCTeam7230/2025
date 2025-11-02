@@ -39,7 +39,7 @@ public final class Constants {
 
     public static final double kElevMaxHeightForL4Scoring = .5;
 
-    public static final double kScoreForwardOffset = -0.50;
+    public static final double kScoreForwardOffset = -0.48;
 
     //public static final double kResetCurrent = 0; //max current tbd TODO: Will need to tune these currents
     public static final int kMaxCurrent   = 20;//In amps? TODO: Will need to tune these currents
@@ -342,16 +342,17 @@ public final class Constants {
     public static final double kMaxRealElevatorHeightMeters = 1.575; // m
     
     public static final double kL4PreScoringHeightMeters = 1.558; 
+    public static final double slowModeThreshHold = 0.67; 
     //public static final double kL4PostScoringHeightNoAlgeaMeters = kL4PreScoringHeightMeters-0.3; //Are we using this constant?
     public static final double kL4PostScoringHeightMeters = kL4PreScoringHeightMeters-0.3;//0.43
-    public static final double kL1ScoringHeightMeters = 0.67;// 66-67
+    public static final double kL1ScoringHeightMeters = 0.61;// 66-67
 
     public static final double kIntakeElevatorHeightMeters = 0.04;    //Whatever the intake height is for L4
-    public static final double kL1IntakeElevatorHeightMeters = 0.75; // TODO: Set the value. Whatever the intake height is for L1
+    public static final double kL1IntakeElevatorHeightMeters = 0.74; // TODO: Set the value. Whatever the intake height is for L1
 
     public static final double kRotationToMeters = kGearCircumference / kGearRatio;// Revolutions to Output units conversion factor
     public static final double kElevatorMaxVelocity = 4000; // Motor RPM - does not get affected by conversion factor TODO: Need a good inches per sec max, start slow (10?)
-    public static final double kElevatorMaxAcceleration = 4000; // Motor RPM - does not get affected by conversion factor TODO: Need a good inches per sec per sec max, start slow (10?)
+    public static final double kElevatorMaxAcceleration = 4000; // Mo tor RPM - does not get affected by conversion factor TODO: Need a good inches per sec per sec max, start slow (10?)
   
   }
 

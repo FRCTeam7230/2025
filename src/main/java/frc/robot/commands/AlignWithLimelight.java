@@ -23,7 +23,7 @@ public class AlignWithLimelight extends Command {
 
   LimelightConstants.reefAlignSide alignSide;
 
-  double horizontalOffset;
+  double horizontalOffset=LimelightConstants.kHorizontalOffset;
   double forwardOffset;
 
   PIDController xController;
@@ -169,7 +169,8 @@ public class AlignWithLimelight extends Command {
     //disable drive system
     m_drive.drive(0, 0, 0, false, false);
     //maybe trigger scoring
-    alignSide = null;
+    // 
+    alignSide = null; // TODO: Delete this line
   }
 
   // Returns true when the command should end.
