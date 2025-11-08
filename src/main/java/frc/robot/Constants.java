@@ -39,7 +39,7 @@ public final class Constants {
 
     public static final double kElevMaxHeightForL4Scoring = .5;
 
-    public static final double kScoreForwardOffset = -0.48;
+    public static final double kScoreForwardOffset = -0.45;
 
     //public static final double kResetCurrent = 0; //max current tbd TODO: Will need to tune these currents
     public static final int kMaxCurrent   = 20;//In amps? TODO: Will need to tune these currents
@@ -178,7 +178,7 @@ public final class Constants {
     public static final int BRAKE_BUTTON = kButton3;
     public static final int INTAKE_BUTTON = kButton9;
 
-    public static final int SCORE_AUTO = 67; //score right now
+    public static final int SCORE_AUTO = pov180; //score right now
     public static final int MANUAL_ELEVATOR_DOWN = pov270;
     
     public static final int ZERO_HEADING_BUTTON = kButton7; 
@@ -348,7 +348,7 @@ public final class Constants {
     public static final double kL1ScoringHeightMeters = 0.61;// 66-67
 
     public static final double kIntakeElevatorHeightMeters = 0.04;    //Whatever the intake height is for L4
-    public static final double kL1IntakeElevatorHeightMeters = 0.74; // TODO: Set the value. Whatever the intake height is for L1
+    public static final double kL1IntakeElevatorHeightMeters = 0.74; // TODO: Increase height, it got caught on l4 basket.
 
     public static final double kRotationToMeters = kGearCircumference / kGearRatio;// Revolutions to Output units conversion factor
     public static final double kElevatorMaxVelocity = 4000; // Motor RPM - does not get affected by conversion factor TODO: Need a good inches per sec max, start slow (10?)

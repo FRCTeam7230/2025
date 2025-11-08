@@ -170,7 +170,7 @@ public class AlignWithLimelight extends Command {
     m_drive.drive(0, 0, 0, false, false);
     //maybe trigger scoring
     // 
-    alignSide = null; // TODO: Delete this line
+    //alignSide = null; // TODO: Delete this line
   }
 
   // Returns true when the command should end.

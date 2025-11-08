@@ -408,12 +408,12 @@ public class RobotContainer {
     }
 
     new Trigger(() -> m_elevator.getHeight() > Constants.ElevatorConstants.slowModeThreshHold)
-    .whileTrue(new InstantCommand(
+    .whileTrue(new RunCommand(
         () -> m_robotDrive.elevUpAccelerationLimiter()
         ));
 
     new Trigger(() -> m_elevator.getHeight() < Constants.ElevatorConstants.slowModeThreshHold)
-    .whileTrue(new InstantCommand(
+    .whileTrue(new RunCommand(
         () -> m_robotDrive.elevDownAccelerationLimiter()
         ));
     ButtonMappings.button(m_driverController,XBoxConstants.L1_INTAKE)
@@ -421,8 +421,10 @@ public class RobotContainer {
     (
       new StartEndCommand
       (
+        //when pressed
         ()->{m_L1Subsystem.reachGoal(L1Constants.intakePosition, false);
         m_elevator.reachGoal(ElevatorConstants.kL1IntakeElevatorHeightMeters);},
+        //when released
         ()->{m_L1Subsystem.reachGoal(L1Constants.stowPosition, false);
             m_elevator.reachGoal(ElevatorConstants.kIntakeElevatorHeightMeters);
             new RunCommand(()->m_robotDrive.drive(-2*Constants.slowSpeedMode, 0, 0, false,true),m_robotDrive).withTimeout(0.5).schedule();},
