@@ -356,30 +356,25 @@ public class DriveSubsystem extends SubsystemBase {
     double xRotation = xRotationSupplier.getAsDouble() * DriveConstants.kMaxAngularSpeed;
 
     // Create PID controller
-    ProfiledPIDController angleController = new ProfiledPIDController(
-                    5, 0.0, 0.0,
-                    new TrapezoidProfile.Constraints(Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+    //  ProfiledPIDController angleController = new ProfiledPIDController(
+    //                  3, 0.0, 0.0,
+    //                  new TrapezoidProfile.Constraints(Constants.AutoConstants.kMaxAngularSpeedRadiansPerSecond, Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared));
+    PIDController angleController = new PIDController(
+    3, 0.0, 0.0);
     angleController.enableContinuousInput(-Math.PI, Math.PI);
 
     if(useLimiter) {
       if(isElevUp) {
         xSpeedDelivered = slowdriveLimitX.calculate(xSpeedDelivered);
         ySpeedDelivered = slowdriveLimitY.calculate(ySpeedDelivered);
-        rotDelivered = slowdriveLimitRot.calculate(rotDelivered);  
       }
       else {
         xSpeedDelivered = driveLimitX.calculate(xSpeedDelivered);
         ySpeedDelivered = driveLimitY.calculate(ySpeedDelivered);
-        rotDelivered = driveLimitRot.calculate(rotDelivered);
       }
     }
+    SmartDashboard.putNumber("rotationDelivered", rotDelivered);
 
-    if(Math.sqrt(Math.pow(xRotationSupplier.getAsDouble(), 2)+Math.pow(yRotationSupplier.getAsDouble(), 2))>0.5){
-      desiredAngle = new Rotation2d(-rotDelivered).rotateBy(new Rotation2d(0, -1));
-      prevAngle = desiredAngle;                                                
-    } else {
-      desiredAngle = prevAngle;
-    }
     if(Math.sqrt(Math.pow(xRotationSupplier.getAsDouble(), 2)+Math.pow(yRotationSupplier.getAsDouble(), 2))>0.5 && fieldRelative){
       desiredAngle = new Rotation2d(-rotDelivered).rotateBy(new Rotation2d(0, -1));
       prevAngle = desiredAngle;                                                
@@ -389,18 +384,27 @@ public class DriveSubsystem extends SubsystemBase {
     } else {
       desiredAngle = prevAngle;
     }
+    SmartDashboard.putNumber("desiredAngle", desiredAngle.getRadians());
+    SmartDashboard.putNumber("prevAngle", prevAngle.getRadians());
+    SmartDashboard.putNumber("fieldAngle", Math.toRadians(getFieldAngle()));
+    
 
     // Calculate angular speed
     double omega = angleController.calculate(
       Math.toRadians(getFieldAngle()), //not sure if radians or angle
       desiredAngle.getRadians());
     
+      SmartDashboard.putNumber("omgea", omega);
+      SmartDashboard.putNumber("error", angleController.getError());
+    
+    
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
-            ? new ChassisSpeeds(
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(
               xSpeedDelivered,
               ySpeedDelivered,
-              omega
+              omega,
+              Rotation2d.fromDegrees(getFieldAngle())
             )
             //? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, omega,
             //    Rotation2d.fromDegrees(getFieldAngle()).plus(new Rotation2d(Math.PI)))
